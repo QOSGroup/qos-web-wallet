@@ -1,5 +1,7 @@
 <template>
-  <p>Hello world233!</p>
+  <div class="pop-wrap">
+    123
+  </div>
 </template>
 
 <script>
