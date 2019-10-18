@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="test">test</button>
+  <script>
+    // var port = chrome.runtime.connect({ name: "qos-web-wallet" });
+    // port.postMessage({ joke: "qos-web-wallet" });
+    // port.onMessage.addListener(function (msg) {
+    //   if (msg.question == "是谁？")
+    //     port.postMessage({ answer: "女士" });
+    //   else if (msg.question == "哪位女士？")
+    //     port.postMessage({ answer: "Bovary 女士" });
+    // });
+    window.postMessage({type:'MsgFromPage', msg: 'Hello, I am page.'}, '*');
+
+  </script>
+</body>
+
+</html>
