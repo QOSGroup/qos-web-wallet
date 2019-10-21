@@ -4,7 +4,7 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <!-- <el-form-item label prop="name">
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
-      </el-form-item> -->
+      </el-form-item>-->
       <el-form-item>
         <el-button class="btn btn-register" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
       </el-form-item>
@@ -16,6 +16,8 @@
 </template>
 
 <script>
+// import QOSRpc from 'js-for-qos-httprpc'
+
 export default {
   data () {
     return {
@@ -29,19 +31,29 @@ export default {
         ]
       }
     }
+  },
+  mounted () {
+    // const rpc = new QOSRpc({ baseUrl: 'http://192.168.1.37:9876' })
+    // try {
+    //   const account = rpc.newAccount('fury flavor subway start spare hospital tag chief word start pencil borrow town mandate detect pencil cook bridge right scout remain this differ leader')
+    //   console.log(account)
+    // } catch (error) {
+    //   console.log(error)
+    // }
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "~style/common.scss";
 .register-wrap {
-  width: 308px;
-  padding: 30px 20px;
+  @include common-container;
   .logo {
     width: 20%;
     display: block;
     margin: 0 auto;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
   }
   .btn-register {
     width: 100%;

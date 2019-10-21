@@ -16,8 +16,25 @@
       "background.js"
     ]
   },
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
-  }
+  },
+  "permissions": [
+    "declarativeContent",
+    "tabs",
+    "storage"
+  ]
 }

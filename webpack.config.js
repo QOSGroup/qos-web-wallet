@@ -6,12 +6,15 @@ const ExtensionReloader = require('webpack-extension-reloader')
 const { VueLoaderPlugin } = require('vue-loader')
 const { version } = require('./package.json')
 const path = require('path')
-
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
 const config = {
   mode: process.env.NODE_ENV,
   context: path.join(__dirname, '/src'),
   entry: {
     'background': './background.js',
+    'content': './content.js',
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js'
   },
@@ -20,7 +23,14 @@ const config = {
     filename: '[name].js'
   },
   resolve: {
-    extensions: ['.js', '.vue']
+    extensions: ['.js', '.vue'],
+    alias: {
+      '@': resolve('src')
+    },
+    modules: [
+      './src/',
+      'node_modules'
+    ]
   },
   module: {
     rules: [
@@ -92,7 +102,19 @@ const config = {
         }
       }
     ])
-  ]
+  ],
+  node: {
+    // prevent webpack from injecting useless setImmediate polyfill because Vue
+    // source contains it (although only uses it if it's native).
+    setImmediate: false,
+    // prevent webpack from injecting mocks to Node native modules
+    // that does not make sense for the client
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty'
+  }
 }
 
 if (config.mode === 'production') {
