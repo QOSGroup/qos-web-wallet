@@ -19,8 +19,9 @@
     //   else if (msg.question == "哪位女士？")
     //     port.postMessage({ answer: "Bovary 女士" });
     // });
-    window.postMessage({type:'MsgFromPage', msg: 'Hello, I am page.'}, '*');
-
+    document.getElementById('test').addEventListener('click', function() {
+      window.postMessage({type:'MsgFromPage', msg: 'Hello, I am page.'}, '*');
+    })
   </script>
 </body>
 
