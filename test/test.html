@@ -23,12 +23,10 @@
       window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
     })
     window.addEventListener('DOMContentLoaded', function () {
-      setTimeout(() => {
-        // window.qosApi().then(function (qos) {
-        //   qos.test()
-        // })
-      }, 0);
-      console.log(window.qosApi)
+    })
+    console.log(window.qosApi)
+    window.qosApi().then(function (qos) {
+      qos.test()
     })
   </script>
 </body>

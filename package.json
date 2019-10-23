@@ -7,9 +7,10 @@
     "lint": "eslint --ext .js,.vue src",
     "prettier": "prettier \"src/**/*.{js,vue}\"",
     "prettier:write": "npm run prettier -- --write",
-    "build": "cross-env NODE_ENV=production run-s watch-webpack inject",
-    "build-webpack": "webpack --hide-modules",
-    "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
+    "build": "cross-env NODE_ENV=production run-s build-webpack-base inject build-webpack-prod",
+    "build-webpack-base": "webpack --config 'build/webpack.base.conf.js' --hide-modules",
+    "build-webpack-prod": "webpack --config 'build/webpack.prod.conf.js' --hide-modules",
+    "build:dev": "cross-env NODE_ENV=development webpack --config 'build/webpack.dev.conf.js' --hide-modules",
     "build-zip": "node scripts/build-zip.js",
     "watch": "npm run build -- --watch",
     "watch:dev": "run-p watch-webpack inject",
@@ -60,6 +61,7 @@
     "web-ext-types": "^2.1.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
-    "webpack-extension-reloader": "^1.1.0"
+    "webpack-extension-reloader": "^1.1.0",
+    "webpack-merge": "^4.2.2"
   }
 }
