@@ -19,8 +19,16 @@
     //   else if (msg.question == "哪位女士？")
     //     port.postMessage({ answer: "Bovary 女士" });
     // });
-    document.getElementById('test').addEventListener('click', function() {
-      window.postMessage({type:'MsgFromPage', msg: 'Hello, I am page.'}, '*');
+    document.getElementById('test').addEventListener('click', function () {
+      window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
+    })
+    window.addEventListener('DOMContentLoaded', function () {
+      setTimeout(() => {
+        // window.qosApi().then(function (qos) {
+        //   qos.test()
+        // })
+      }, 0);
+      console.log(window.qosApi)
     })
   </script>
 </body>

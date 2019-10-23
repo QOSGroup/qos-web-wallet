@@ -1,4 +1,4 @@
-import db from './db'
+import db from '../utils/db'
 
 const TOKEN_KEY = 'qos-web-wallet-token'
 const ACCOUNTLIST = 'qos-account-list'

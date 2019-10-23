@@ -15,6 +15,7 @@ const config = {
   entry: {
     'background': './background.js',
     'content': './content.js',
+    'inject': './inject.js',
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js'
   },

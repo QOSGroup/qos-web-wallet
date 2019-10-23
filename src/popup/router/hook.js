@@ -1,4 +1,4 @@
-import { getToken, getAccountList } from '../../utils/auth'
+import { getToken, getAccountList } from '../../business/auth'
 
 const whiteListPage = ['/login', '/register']
 

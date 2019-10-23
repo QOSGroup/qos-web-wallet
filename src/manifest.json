@@ -22,17 +22,23 @@
         "content.js"
       ],
       "matches": [
+        "file://*/*",
         "http://*/*",
         "https://*/*"
       ],
-      "run_at": "document_start"
+      "run_at": "document_start",
+      "all_frames": true
     }
+  ],
+  "web_accessible_resources": [
+    "inject.js"
   ],
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
   },
   "permissions": [
+    "unlimitedStorage",
     "declarativeContent",
     "tabs",
     "storage"

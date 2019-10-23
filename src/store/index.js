@@ -9,7 +9,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    pageType: 'login'
+    pageType: 'login',
+    toPage: {
+      pageName: '',
+      params: {}
+    }
   },
   getters,
   mutations,
