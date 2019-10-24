@@ -14,18 +14,26 @@ export default {
   },
   computed: {
     inputParams () {
-      return JSON.stringify(this.$store.state.toPage.params)
+      return JSON.stringify(this.$store.getters.firstMsg)
     }
   },
   mounted () {
-    const rpc = new QOSRpc({ baseUrl: 'http://192.168.1.37:9876' })
-    try {
-      const account = rpc.newAccount(
-        'fury flavor subway start spare hospital tag chief word start pencil borrow town mandate detect pencil cook bridge right scout remain this differ leader'
-      )
-      console.log(account)
-    } catch (error) {
-      console.log(error)
+    this.getAccount()
+  },
+  methods: {
+    getAccount () {
+      Promise((resolve, reject) => {
+        const rpc = new QOSRpc({ baseUrl: 'http://192.168.1.37:9876' })
+        try {
+          const account = rpc.newAccount(
+            'fury flavor subway start spare hospital tag chief word start pencil borrow town mandate detect pencil cook bridge right scout remain this differ leader'
+          )
+          console.log(account)
+          resolve()
+        } catch (error) {
+          console.log(error)
+        }
+      })
     }
   }
 }
@@ -33,4 +41,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "~style/common.scss";
+.transfer-wrap {
+  @include common-container;
+
+}
 </style>

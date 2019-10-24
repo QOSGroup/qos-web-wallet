@@ -22,5 +22,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "~style/common.scss";
+.template-wrap {
+  @include common-container;
 
+}
 </style>

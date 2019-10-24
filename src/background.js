@@ -19,7 +19,6 @@ extension.runtime.onMessage.addListener(function (
   )
 
   if (request.flag === 'qos_msg') {
-    request.hasDirect = false
     store.commit(types.ADD_MSG_QUEUE, request)
   }
   let msgHandler

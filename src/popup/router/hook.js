@@ -1,7 +1,7 @@
 import { getToken, getAccountList } from '../../business/auth'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
-import { ToPage } from '../../business/types'
+// import { ToPage } from '../../business/types'
 import { isNotEmpty } from '../../utils'
 import clone from 'clone'
 // import { isNotEmpty } from '../../utils'
@@ -13,7 +13,7 @@ const whiteListPage = ['/login', '/register', '/transfer']
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 store.commit(types.SET_MSG_QUEQUE, clone(bgState.msgQueue))
-store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage(bgState.toPage))
+// store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage(bgState.toPage))
 console.log('bgState.msgQueue', bgState.msgQueue)
 
 export async function beforeEach (to, from, next) {
