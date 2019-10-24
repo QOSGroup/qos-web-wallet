@@ -1,4 +1,5 @@
 import MsgHandler from './BaseHandler'
+import { InputParams } from './Common'
 
 class TransferHandler extends MsgHandler {
   constructor (params, callback) {
@@ -10,13 +11,14 @@ class TransferHandler extends MsgHandler {
     console.log('handler TransferHandler')
     console.log(this.params)
     const params = this.params
-    window.postMessage({
-      type: 'qosToPage',
-      params: {
-        pageName: 'transfer',
-        params: params.data
-      }
-    }, '*')
+    window.postMessage(
+      new InputParams(
+        'qosToPage',
+        {
+          pageName: 'transfer',
+          params: params.params
+        }
+      ), '*')
     this.callback()
   }
 }

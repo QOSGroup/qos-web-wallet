@@ -23,5 +23,12 @@ export default {
   },
   [types.INPUT_TOPAGE_PARAMS] (state, payload) {
     state.toPage = payload
+  },
+  [types.ADD_MSG_QUEUE] (state, payload) {
+    console.log('types.ADD_MSG_QUEUE', payload)
+    state.msgQueue.push(payload)
+  },
+  [types.SET_MSG_QUEQUE] (state, payload) {
+    state.msgQueue = payload
   }
 }

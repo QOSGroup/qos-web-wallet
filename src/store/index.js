@@ -13,7 +13,8 @@ export default new Vuex.Store({
     toPage: {
       pageName: '',
       params: {}
-    }
+    },
+    msgQueue: []
   },
   getters,
   mutations,

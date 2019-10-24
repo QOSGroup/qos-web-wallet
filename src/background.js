@@ -17,11 +17,15 @@ extension.runtime.onMessage.addListener(function (
       ? 'from a content script:' + sender.tab.url
       : 'from the extension'
   )
+
+  if (request.flag === 'qos_msg') {
+    store.commit(types.ADD_MSG_QUEUE, request)
+  }
   let msgHandler
   if (request.type === 'qosToPage') {
     // console.log("extension.browserAction.setBadgeText({ text: '1' })")
     // extension.browserAction.setBadgeText({ text: '1' })
-
+    console.log('request', request)
     msgHandler = new ShowPopupHandler(request.params, sendResponse)
     // sendResponse({ farewell: 'goodbye' })
     msgHandler.handler()

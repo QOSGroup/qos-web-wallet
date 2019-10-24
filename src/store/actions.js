@@ -11,3 +11,9 @@ export const getToPage = ({ commit, state, getters }, payload) => {
   commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: obj.params }))
   return obj
 }
+
+export const consumeMsg = ({ commit, state }, payload) => {
+  const first = state.msgQueue.shift()
+  commit(types.SET_MSG_QUEQUE, state.msgQueue)
+  return first
+}
