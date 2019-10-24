@@ -30,5 +30,9 @@ export default {
   },
   [types.SET_MSG_QUEQUE] (state, payload) {
     state.msgQueue = payload
+  },
+  [types.HAS_DIRECT_PAGE] (state, payload) {
+    console.log('state.msgQueue[0].hasDirect = true')
+    state.msgQueue[0].hasDirect = true
   }
 }

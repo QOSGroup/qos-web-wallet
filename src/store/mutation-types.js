@@ -9,3 +9,5 @@ export const INPUT_TOPAGE_PARAMS = 'INPUT_TOPAGE_PARAMS'
 export const ADD_MSG_QUEUE = 'ADD_MSG_QUEUE'
 
 export const SET_MSG_QUEQUE = 'SET_MSG_QUEQUE'
+
+export const HAS_DIRECT_PAGE = 'HAS_DIRECT_PAGE'

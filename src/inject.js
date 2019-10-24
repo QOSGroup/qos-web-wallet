@@ -13,7 +13,6 @@ class QOSWallet {
       handler = new TransferHandler(new InputParams(msg.type, msg.data))
     }
     if (handler) {
-      console.log('handler.handler()')
       handler.handler()
     }
   }

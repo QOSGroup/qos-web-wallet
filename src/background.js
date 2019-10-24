@@ -19,13 +19,11 @@ extension.runtime.onMessage.addListener(function (
   )
 
   if (request.flag === 'qos_msg') {
+    request.hasDirect = false
     store.commit(types.ADD_MSG_QUEUE, request)
   }
   let msgHandler
   if (request.type === 'qosToPage') {
-    // console.log("extension.browserAction.setBadgeText({ text: '1' })")
-    // extension.browserAction.setBadgeText({ text: '1' })
-    console.log('request', request)
     msgHandler = new ShowPopupHandler(request.params, sendResponse)
     // sendResponse({ farewell: 'goodbye' })
     msgHandler.handler()
@@ -38,6 +36,10 @@ window.getBgState = function () {
     store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: {} }))
   }, 0)
   return Object.assign({}, store.state)
+}
+
+window.getFirstMsg = async function () {
+  return store.getters.firstMsg
 }
 
 chrome.runtime.onInstalled.addListener(function () {
