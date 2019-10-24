@@ -11,14 +11,6 @@
 <body>
   <button id="test">test</button>
   <script>
-    // var port = chrome.runtime.connect({ name: "qos-web-wallet" });
-    // port.postMessage({ joke: "qos-web-wallet" });
-    // port.onMessage.addListener(function (msg) {
-    //   if (msg.question == "是谁？")
-    //     port.postMessage({ answer: "女士" });
-    //   else if (msg.question == "哪位女士？")
-    //     port.postMessage({ answer: "Bovary 女士" });
-    // });
     document.getElementById('test').addEventListener('click', function () {
       // window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
       window.qosApi().then(function (qos) {
@@ -34,7 +26,14 @@
     // window.addEventListener('DOMContentLoaded', function () {
     // })
     // console.log(window.qosApi)
-
+    // var port = chrome.runtime.connect({ name: "qos-web-wallet" });
+    // port.postMessage({ joke: "qos-web-wallet" });
+    // port.onMessage.addListener(function (msg) {
+    //   if (msg.question == "是谁？")
+    //     port.postMessage({ answer: "女士" });
+    //   else if (msg.question == "哪位女士？")
+    //     port.postMessage({ answer: "Bovary 女士" });
+    // });
   </script>
 </body>
 

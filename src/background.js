@@ -19,6 +19,9 @@ extension.runtime.onMessage.addListener(function (
   )
   let msgHandler
   if (request.type === 'qosToPage') {
+    // console.log("extension.browserAction.setBadgeText({ text: '1' })")
+    // extension.browserAction.setBadgeText({ text: '1' })
+
     msgHandler = new ShowPopupHandler(request.params, sendResponse)
     // sendResponse({ farewell: 'goodbye' })
     msgHandler.handler()

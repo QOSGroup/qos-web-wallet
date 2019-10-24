@@ -1,6 +1,6 @@
 import * as types from './mutation-types'
-import extensionizer from 'extensionizer'
 import { isNotEmpty } from '../utils'
+import extensionizer from 'extensionizer'
 
 export default {
   [types.UPDATE_FOO] (state, payload) {
@@ -8,7 +8,7 @@ export default {
   },
   [types.ADD_ACTIONNUM] (state, payload) {
     let num = state.actionNum
-    num = num === '' ? 1 : Number(num) + 1
+    num = num === '' ? 1 : (Number(num) + 1)
     state.actionNum = num.toString()
     extensionizer.browserAction.setBadgeText({ text: state.actionNum })
   },
