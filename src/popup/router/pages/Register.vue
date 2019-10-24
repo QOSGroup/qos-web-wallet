@@ -1,6 +1,8 @@
 <template>
   <div class="register-wrap">
     <img class="logo" src="/icons/qos.png" alt="qos logo" />
+    <div>111{{testName}}</div>
+
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <!-- <el-form-item label prop="name">
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
@@ -32,6 +34,11 @@ export default {
       }
     }
   },
+  computed: {
+    testName () {
+      return this.$store.state.toPage.pageName
+    }
+  },
   mounted () {
     // const rpc = new QOSRpc({ baseUrl: 'http://192.168.1.37:9876' })
     // try {
@@ -40,7 +47,7 @@ export default {
     // } catch (error) {
     //   console.log(error)
     // }
-
+    console.log(this.$store.state.toPage.pageName)
   }
 }
 </script>

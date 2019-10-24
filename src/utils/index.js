@@ -15,3 +15,14 @@ export function getJSON (str) {
 
   return ret
 }
+
+/**
+ * 是否合法数据
+ * @param value any
+ */
+export function isNotEmpty (value) {
+  if (value !== undefined && value !== '' && value != null) {
+    return true
+  }
+  return false
+}

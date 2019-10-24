@@ -20,14 +20,20 @@
     //     port.postMessage({ answer: "Bovary 女士" });
     // });
     document.getElementById('test').addEventListener('click', function () {
-      window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
+      // window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
+      window.qosApi().then(function (qos) {
+        qos.process({
+          data: {
+            pageName: 'transfer',
+            params: { a: 1 }
+          }
+        })
+      })
     })
     window.addEventListener('DOMContentLoaded', function () {
     })
     console.log(window.qosApi)
-    window.qosApi().then(function (qos) {
-      qos.test()
-    })
+
   </script>
 </body>
 

@@ -1,1 +1,7 @@
 export const UPDATE_FOO = 'UPDATE_FOO'
+
+export const ADD_ACTIONNUM = 'ADD_ACTIONNUM'
+
+export const DELETE_ACTIONNUM = 'ADD_ACTIONNUM'
+
+export const INPUT_TOPAGE_PARAMS = 'INPUT_TOPAGE_PARAMS'

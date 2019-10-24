@@ -23,12 +23,10 @@ window.addEventListener('message', function (event) {
   if (event.source !== window) {
     return
   }
-  if (event && event.data.type === 'toPage') {
-    console.log('--------event.data------')
+  if (event && event.data.type === 'qosToPage') {
     console.log(event.data)
-
-    chrome.runtime.sendMessage({ type: 'toPage', params: event.data.params }, function (response) {
-      console.log(response.farewell)
+    extension.runtime.sendMessage({ type: 'qosToPage', params: event.data.params }, function (response) {
+      console.log(response)
     })
   }
 }, false)

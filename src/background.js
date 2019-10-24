@@ -1,10 +1,13 @@
-// import store from './store'
+import store from './store'
+import * as types from './store/mutation-types'
 import { ShowPopupHandler } from './business/ShowPopupHandler'
+import { ToPage } from './business/types'
 global.browser = require('webextension-polyfill')
+const extension = require('extensionizer')
 
 // alert(`Hello ${store.getters.foo}!`)
 
-chrome.runtime.onMessage.addListener(function (
+extension.runtime.onMessage.addListener(function (
   request,
   sender,
   sendResponse
@@ -15,14 +18,20 @@ chrome.runtime.onMessage.addListener(function (
       : 'from the extension'
   )
   let msgHandler
-  if (request.greeting === 'hello') {
-    // const noti = new NotificationManager()
-    // noti.showPopup()
+  if (request.type === 'qosToPage') {
+    msgHandler = new ShowPopupHandler(request.params, sendResponse)
     // sendResponse({ farewell: 'goodbye' })
-    msgHandler = new ShowPopupHandler()
+    msgHandler.handler()
   }
-  msgHandler.handler()
 })
+
+// eslint-disable-next-line no-unused-vars
+window.getBgState = function () {
+  setTimeout(() => {
+    store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: {} }))
+  }, 0)
+  return Object.assign({}, store.state)
+}
 
 chrome.runtime.onInstalled.addListener(function () {
 

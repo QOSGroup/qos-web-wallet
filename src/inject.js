@@ -3,8 +3,9 @@ class QOSWallet {
 
   }
 
-  test () {
-    console.log(2)
+  process (msg) {
+    console.log(msg)
+    window.postMessage({ type: msg.type || 'qosToPage', params: msg.data }, '*')
   }
 }
 console.log(222)
