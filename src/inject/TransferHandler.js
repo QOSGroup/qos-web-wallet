@@ -6,9 +6,17 @@ class TransferHandler extends MsgHandler {
   }
 
   // 重写抽象类方法
-  handler () {
+  async handler () {
     console.log('handler TransferHandler')
     console.log(this.params)
+    const params = this.params
+    window.postMessage({
+      type: 'qosToPage',
+      params: {
+        pageName: 'transfer',
+        params: params.data
+      }
+    }, '*')
     this.callback()
   }
 }

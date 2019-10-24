@@ -8,8 +8,8 @@ export class Res {
 
 // 输入类型
 export class InputParams {
-  constructor (flag, data) {
-    this.flag = flag
+  constructor (type, data) {
+    this.type = type
     this.data = data
   }
 }

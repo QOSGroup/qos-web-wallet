@@ -23,9 +23,9 @@
       // window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
       window.qosApi().then(function (qos) {
         qos.process({
+          type: 'transfer',
           data: {
-            pageName: 'transfer',
-            params: { a: 1 }
+            a:1
           }
         })
       })
