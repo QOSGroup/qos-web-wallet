@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     inputParams () {
-      return this.$store.state.toPage
+      return JSON.stringify(this.$store.state.toPage.params)
     }
   },
   mounted () {

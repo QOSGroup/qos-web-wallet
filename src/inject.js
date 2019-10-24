@@ -3,11 +3,9 @@ import { InputParams } from './inject/Common'
 
 class QOSWallet {
   constructor () {
-    this.a = 1
   }
 
   process (msg) {
-    console.log(this.a)
     console.log(msg)
     // window.postMessage({ type: msg.type || 'qosToPage', params: msg.data }, '*')
     let handler
@@ -20,7 +18,6 @@ class QOSWallet {
     }
   }
 }
-console.log(222)
 
 window.qosApi = function () {
   return new Promise(function (resolve, reject) {
