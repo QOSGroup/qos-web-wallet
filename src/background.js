@@ -28,6 +28,7 @@ extension.runtime.onMessage.addListener(function (
     // sendResponse({ farewell: 'goodbye' })
     msgHandler.handler()
   }
+  return true
 })
 
 // eslint-disable-next-line no-unused-vars
