@@ -32,7 +32,18 @@ export default {
     state.msgQueue = payload
   },
   [types.HAS_DIRECT_PAGE] (state, payload) {
-    console.log('state.msgQueue[0].hasDirect = true')
     state.msgQueue[0].hasDirect = true
+  },
+  [types.DELETE_MSG_PROCESSED] (state, payload) {
+    const msgQueue = state.msgQueue
+    const msgs = msgQueue.splice(payload.msgIndex, 1)
+    if (msgs.length > 0) {
+      // 赋值回调消息索引
+      console.log(' 赋值回调消息索引', msgs[0])
+      payload.msg.callbackIndex = msgs[0].callbackIndex
+      // 回调消息
+      msgs[0].sendResponse(payload.msg)
+    }
+    state.msgQueue = msgQueue
   }
 }

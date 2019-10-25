@@ -24,7 +24,7 @@ extension.runtime.onMessage.addListener(function (
   }
   let msgHandler
   if (request.type === 'qosToPage') {
-    msgHandler = new ShowPopupHandler(request.params, sendResponse)
+    msgHandler = new ShowPopupHandler(request.params)
     // sendResponse({ farewell: 'goodbye' })
     msgHandler.handler()
   }
@@ -40,6 +40,12 @@ window.getBgState = function () {
 
 window.getFirstMsg = async function () {
   return store.getters.firstMsg
+}
+
+window.msgProcessed = function (msgIndex, msg) {
+  msgIndex = msgIndex || 0
+  // 删除指定索引消息, 并回调
+  store.commit(types.DELETE_MSG_PROCESSED, { msgIndex, msg })
 }
 
 chrome.runtime.onInstalled.addListener(function () {

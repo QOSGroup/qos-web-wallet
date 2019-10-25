@@ -1,4 +1,4 @@
-import { InputParams } from './inject/Common'
+// import { InputParams } from './inject/Common'
 const extension = require('extensionizer')
 const inpageContent = '<neeinject></neeinject>'
 const inpageSuffix = '//# sourceURL=' + extension.runtime.getURL('inpage.js') + '\n'
@@ -26,9 +26,15 @@ window.addEventListener('message', function (event) {
   if (event && event.data.type === 'qosToPage') {
     console.log(event.data)
     extension.runtime.sendMessage(
-      new InputParams('qosToPage', event.data.params),
+      // new InputParams('qosToPage', event.data.params, event.data.callbackIndex),
+      event.data,
       function (response) {
-        console.log(response)
+        console.log('response', response)
+        window.postMessage({
+          type: 'qosProcessCallback',
+          callbackIndex: response.callbackIndex,
+          res: response
+        }, '*')
       })
   }
 }, false)

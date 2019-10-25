@@ -23,6 +23,7 @@ class BaseMsgHandler {
   handler () { }
 
   callbackProcess (callback) {
+    if (typeof callback !== 'function') { return function () { } }
     return function (...args) {
       if (args.length === 0) {
         args = [new Res(true, {})]

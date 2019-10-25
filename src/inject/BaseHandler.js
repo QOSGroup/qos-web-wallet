@@ -1,5 +1,8 @@
 import { Res, InputParams } from './Common'
 
+// 存储回调函数数组
+export const ArrayCallBack = []
+
 // 抽象类
 class MsgHandler {
   constructor (params, callback) {

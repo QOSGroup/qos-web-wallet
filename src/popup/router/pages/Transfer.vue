@@ -2,11 +2,13 @@
   <div class="transfer-wrap">
     这是转账页面
     {{inputParams}}
+    <button @click="onProcess">processMsg</button>
   </div>
 </template>
 
 <script>
 import QOSRpc from 'js-for-qos-httprpc'
+import { processMsg } from '../../common/bgcontact'
 
 export default {
   data () {
@@ -21,6 +23,9 @@ export default {
     this.getAccount()
   },
   methods: {
+    onProcess () {
+      processMsg()
+    },
     getAccount () {
       Promise((resolve, reject) => {
         const rpc = new QOSRpc({ baseUrl: 'http://192.168.1.37:9876' })
