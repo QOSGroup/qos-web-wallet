@@ -1,6 +1,10 @@
 import TransferHandler from './inject/TransferHandler'
-import { InputParams } from './inject/Common'
-import { ArrayCallBack } from './inject/BaseHandler'
+import {
+  InputParams
+} from './inject/Common'
+import {
+  ArrayCallBack
+} from './inject/BaseHandler'
 
 class QOSWallet {
   constructor () {
@@ -19,27 +23,32 @@ class QOSWallet {
   process (msg) {
     console.log(msg)
     // window.postMessage({ type: msg.type || 'qosToPage', params: msg.data }, '*')
-    let handler
-    if (msg.type === 'transfer') {
-      handler = new TransferHandler(new InputParams(msg.type, msg.data))
-    }
-    if (handler) {
-      handler.handler(function (res) {
-        console.log('handler.handler', res)
-      })
-    }
+    const promise = new Promise((resolve, reject) => {
+      let handler
+      if (msg.type === 'transfer') {
+        handler = new TransferHandler(new InputParams(msg.type, msg.data))
+      }
+      if (handler) {
+        handler.handler(function (res) {
+          console.log('handler.handler', res)
+          resolve(res)
+        })
+      }
+    })
+    return promise
   }
 }
 
-window.qosApi = function () {
-  return new Promise(function (resolve, reject) {
-    try {
-      const qoswallet = new QOSWallet()
-      resolve(qoswallet)
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
+window.QOSWallet = QOSWallet
+// function () {
+//   return new Promise(function (resolve, reject) {
+//     try {
+//       const qoswallet = new QOSWallet()
+//       resolve(qoswallet)
+//     } catch (error) {
+//       reject(error)
+//     }
+//   })
+// }
 
 // window.qosApi = 2
