@@ -2,6 +2,10 @@ import PageIndex from './pages/Index'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Transfer from './pages/Transfer'
+import NewWallet from './pages/NewWallet'
+import NewWalletResult from './pages/NewWalletResult'
+import ImportWalletWithSeed from './pages/ImportWalletWithSeed'
+import HomePage from './pages/HomePage'
 
 export default [
   {
@@ -20,5 +24,25 @@ export default [
     path: '/transfer',
     name: 'transfer',
     component: Transfer
+  },
+  {
+    path: '/newwallet',
+    name: 'newwallet',
+    component: NewWallet
+  },
+  {
+    path: '/newwalletresult',
+    name: 'newwalletresult',
+    component: NewWalletResult
+  },
+  {
+    path: '/importwalletwithseed',
+    name: 'importwalletwithseed',
+    component: ImportWalletWithSeed
+  },
+  {
+    path: '/homepage',
+    name: 'homepage',
+    component: HomePage
   }
 ]

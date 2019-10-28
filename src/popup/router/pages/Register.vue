@@ -1,7 +1,7 @@
 <template>
   <div class="register-wrap">
     <img class="logo" src="/icons/qos.png" alt="qos logo" />
-    <div>111{{testName}}</div>
+    <div>{{testName}}</div>
 
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <!-- <el-form-item label prop="name">

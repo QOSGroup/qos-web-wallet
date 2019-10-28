@@ -4,6 +4,8 @@
     {{inputParams}}
     <button @click="onProcess">processMsg</button>
   </div>
+
+  
 </template>
 
 <script>
