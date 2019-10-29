@@ -1,50 +1,80 @@
 <template>
   <div class="homepage-wrap">
-    <div style="background:#426ab3;">
+    <div style="background:rgba(87, 163, 241, 0.79);height:30%;">
       <div>
-        <span>{{ userName }}</span>
-        <i @click="showAccountList" class="el-icon-more" style>更多</i>
+        <br />
+        <div style="float:left;">
+          <span style="font-size:24px;">{{ userName }}</span>
+        </div>
+        <div style="float:right;">
+          <i @click="showAccountList" class="el-icon-more" style="font-size:24px;"></i>
+        </div>
       </div>
       <div>
-        <span style="word-break:break-all;word-wrap:break-word;">{{ address }}</span>
-        <i class="el-icon-document-copy"></i>
+        <span style="font-size:18px;">{{ address }}</span>
+        <i class="el-icon-document-copy" style="font-size:18px;"></i>
       </div>
     </div>
     <el-divider></el-divider>
     <div>
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="我的资产" name="balance">
-          <div class="b_div">QOS</div>
-          <div class="b_div">
-            1234567.765
-            <i class="el-icon-link"></i>
-          </div>
-          <div class="b_div">
-            <el-button type="primary" plain>转账</el-button>
-            <el-button type="primary" plain>预授权</el-button>
-          </div>
-          <el-divider style="dashed" width="80%"></el-divider>
-          <div class="b_div">QOS</div>
-          <div class="b_div">
-            1234567.765
-            <i class="el-icon-link"></i>
-          </div>
-          <div class="b_div">
-            <el-button type="primary" plain>转账</el-button>
-            <el-button type="primary" plain>预授权</el-button>
-          </div>
-          <el-divider style="dashed" width="80%"></el-divider>
-          <div class="b_div">QOS</div>
-          <div class="b_div">
-            1234567.765
-            <i class="el-icon-link"></i>
-          </div>
-          <div class="b_div">
-            <el-button type="primary" plain>转账</el-button>
-            <el-button type="primary" plain>预授权</el-button>
+          <div v-for="coin in coins" :key="coin">
+            <div>
+              <div>{{ coin.type }}</div>
+              <div>
+                {{ coin.amount }}
+                <i class="el-icon-link"></i>
+              </div>
+              <div>
+                <el-button type="primary" size="small" plain>转账</el-button>
+                <el-button type="primary" size="small" plain>预授权</el-button>
+              </div>
+              <el-divider width="80%"></el-divider>
+            </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="我的委托" name="delegation"></el-tab-pane>
+        <el-tab-pane label="我的委托" name="delegation">
+          <div v-for="delegation in delegations" :key="delegation">
+            <div>
+              <div style="float:left;width:100px;">
+                <el-image style="width: 100px; height: 100px" :src="delegation.url"></el-image>
+              </div>
+              <div style="float:right;width:200px;">
+                <div style="text-align:left;">
+                  <span>
+                    <br />
+                    {{ delegation.name }}
+                  </span>
+                  <i class="el-icon-link"></i>
+                </div>
+                <div style="text-align:left;">
+                  <span>
+                    <br />
+                    {{ delegation.valaddress }}
+                  </span>
+                  <i class="el-icon-link"></i>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="text-align:left;float:left;"><span>委托金额：{{ delegation.amount }}</span></div>
+              <div style="float:right;">
+                <el-button type="primary" size="mini" plain>追加</el-button>
+                <el-button type="primary" size="mini" plain>撤回</el-button>
+              </div>
+            </div>
+            <div>
+              <div
+                style="vertical-align:middle;text-align:left;float:left;"
+              ><span>复投方式：{{ delegation.isCompound ? "已复投" : "未复投" }}</span></div>
+              <div style="float:right;">
+                <el-button type="primary" size="mini" plain>更改</el-button>
+              </div>
+            </div>
+            <el-divider width="80%"></el-divider>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="我的预授权" name="approve">该功能暂未开发！</el-tab-pane>
       </el-tabs>
     </div>
@@ -56,8 +86,50 @@ export default {
   data() {
     return {
       activeName: "balance",
-      userName: "数字钱包",
-      address: "qwertyuiopasdfghjklzxcvbnmmnbvcxzasdfghjklpovbhgtrew"
+      userName: "wangkuan",
+      address: "qwertyuiopasdfghjklzxcvbnmmnbvcxzasdfghjklpovbhgtrew",
+
+      coins: [
+        {
+          type: "QOS",
+          amount: "23456.765"
+        },
+        {
+          type: "STAR",
+          amount: "23456.765"
+        },
+        {
+          type: "ZZU",
+          amount: "23456.765"
+        }
+      ],
+
+      delegations: [
+        {
+          url:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+          name: "Compass1",
+          valaddress: "ertyuikfcvbhtfdcvbhgvbgjnvgcrcsxcvh",
+          amount: "4567.76",
+          isCompound: true
+        },
+        {
+          url:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+          name: "Compass2",
+          valaddress: "ertyuiknbvcrtyhertyuiknbvcrtyhbvhbvcsxcvhbvhbvcsxcvh",
+          amount: "8765456.87",
+          isCompound: false
+        },
+        {
+          url:
+            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+          name: "Compass3",
+          valaddress: "ertyuiknbvcrtertyuiknbvcrtyhbvhbvcsxcvhyhbvcdccvh",
+          amount: "654345.87",
+          isCompound: true
+        }
+      ]
     };
   },
   methods: {
@@ -77,10 +149,19 @@ export default {
 .homepage-wrap {
   @include common-container;
   width: 308px;
-  height: 400px;
+  height: 500px;
   padding: 30px 20px;
-  .b_div {
-    text-align: center;
-  }
+}
+div {
+  text-align: center;
+  overflow: hidden;
+  overflow-y: auto;
+  margin-bottom: 2%;
+  margin-top: 1%;
+  vertical-align:middle;
+}
+span {
+  word-break: break-all;
+  word-wrap: break-word;
 }
 </style>

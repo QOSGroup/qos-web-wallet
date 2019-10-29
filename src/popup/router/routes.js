@@ -6,6 +6,8 @@ import NewWallet from './pages/NewWallet'
 import NewWalletResult from './pages/NewWalletResult'
 import ImportWalletWithSeed from './pages/ImportWalletWithSeed'
 import HomePage from './pages/HomePage'
+import DelegateOrUnbond from './pages/DelegateOrUnbond'
+import TxResult from './pages/TxResult'
 
 export default [
   {
@@ -44,5 +46,15 @@ export default [
     path: '/homepage',
     name: 'homepage',
     component: HomePage
+  },
+  {
+    path: '/delegateorunbond',
+    name: 'delegateorunbond',
+    component: DelegateOrUnbond
+  },
+  {
+    path: '/txresult',
+    name: 'txresult',
+    component: TxResult
   }
 ]

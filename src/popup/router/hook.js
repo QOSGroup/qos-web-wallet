@@ -7,7 +7,7 @@ import clone from 'clone'
 // import { isNotEmpty } from '../../utils'
 const extension = require('extensionizer')
 
-const whiteListPage = ['/login', '/register', '/transfer', '/newwallet', '/newwalletresult', '/importwalletwithseed', '/homepage']
+const whiteListPage = ['/login', '/register', '/transfer', '/newwallet', '/newwalletresult', '/importwalletwithseed', '/homepage', '/delegateorunbond', '/txresult']
 
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
@@ -42,7 +42,7 @@ export async function beforeEach (to, from, next) {
     if (!accList || accList.length === 0) {
       // 临时注释，不进行页面测试后放开注释
       // next('/register')
-      next('homepage')
+      next('txresult')
       return
     }
     next('/login')

@@ -16,7 +16,11 @@ import {
   TabPane,
   Tabs,
   Table,
-  TableColumn
+  TableColumn,
+  Slider,
+  Radio,
+  RadioButton,
+  RadioGroup
 } from 'element-ui'
 
 global.browser = require('webextension-polyfill')
@@ -34,6 +38,10 @@ Vue.use(TabPane)
 Vue.use(Tabs)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Slider)
+Vue.use(Radio)
+Vue.use(RadioButton)
+Vue.use(RadioGroup)
 
 /* eslint-disable no-new */
 new Vue({
