@@ -29,7 +29,7 @@ window.addEventListener('message', function (event) {
       // new InputParams('qosToPage', event.data.params, event.data.callbackIndex),
       event.data,
       function (response) {
-        console.log('response', response)
+        console.log('callback in contents', response)
         return response
         // window.postMessage({
         //   type: 'qosProcessCallback',
