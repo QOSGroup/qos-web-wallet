@@ -6,7 +6,7 @@
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')">立即登录</el-button>
+        <el-button class="btn btn-login" type="primary" @click="submitLogin('ruleForm')">立即登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -26,6 +26,9 @@ export default {
         ]
       }
     }
+  },
+  submitLogin () {
+    console.log('login')
   }
 }
 </script>

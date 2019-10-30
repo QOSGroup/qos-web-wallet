@@ -8,10 +8,10 @@
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
       </el-form-item>-->
       <el-form-item>
-        <el-button class="btn btn-register" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button class="btn btn-register" type="primary" @click="submitRegister('ruleForm')">立即创建</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-register" type="primary" @click="submitForm('ruleForm')">立即导入</el-button>
+        <el-button class="btn btn-import" type="primary" @click="submitImport('ruleForm')">立即导入</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -40,6 +40,12 @@ export default {
   },
   mounted () {
     console.log(this.$store.state.toPage.pageName)
+  },
+  submitRegister () {
+    console.log('register', this.data())
+  },
+  submitImport () {
+    console.log('import', this.data())
   }
 }
 </script>
