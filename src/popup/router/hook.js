@@ -14,7 +14,7 @@ const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 store.commit(types.SET_MSG_QUEQUE, clone(bgState.msgQueue))
 // store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage(bgState.toPage))
-console.log('bgState.msgQueue', bgState.msgQueue)
+console.log('bgState.msgQueue in popup hook', bgState.msgQueue)
 
 export async function beforeEach (to, from, next) {
   // const first = await bg.getFirstMsg()

@@ -39,6 +39,14 @@ window.getBgState = function () {
   return Object.assign({}, store.state)
 }
 
+window.getAccountList = async function () {
+  return store.getters.accountList
+}
+
+window.getCurrentAccount = async function () {
+  return store.getters.currentAccount
+}
+
 window.getFirstMsg = async function () {
   return store.getters.firstMsg
 }

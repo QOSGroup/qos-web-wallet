@@ -5,6 +5,16 @@ export const setFoo = ({ commit }, payload) => {
   commit(types.UPDATE_FOO, payload)
 }
 
+export const setAccountList = ({ commit }, payload) => {
+  console.log('accountlist', payload)
+  commit(types.ACCOUNT_LIST, payload)
+}
+
+export const setCurrentAccount = ({ commit }, payload) => {
+  console.log('currentAccount', payload)
+  commit(types.CURRENT_ACCOUNT, payload)
+}
+
 export const getToPage = ({ commit, state, getters }, payload) => {
   console.log('state.toPage', JSON.stringify(state.toPage), getters.toPage)
   const obj = Object.assign({}, state.toPage)

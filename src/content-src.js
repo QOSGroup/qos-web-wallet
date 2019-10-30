@@ -30,6 +30,7 @@ window.addEventListener('message', function (event) {
       event.data,
       function (response) {
         console.log('response', response)
+        return response
         // window.postMessage({
         //   type: 'qosProcessCallback',
         //   callbackIndex: response.callbackIndex,
