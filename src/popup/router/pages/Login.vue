@@ -6,10 +6,20 @@
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')">立即登录</el-button>
+        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')"> 进入我的钱包</el-button>
       </el-form-item>
     </el-form>
+
+    <div>
+      <el-link target="_blank">忘记密码？</el-link>
+    </div>
+    <div>
+      <el-link target="_blank">没有钱包？</el-link>
+    </div>
+
   </div>
+
+
 </template>
 
 <script>
