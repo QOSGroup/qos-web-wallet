@@ -3,9 +3,9 @@
     <el-page-header @back="goBack" content="交易结果"></el-page-header>
     <el-divider></el-divider>
     <div>
-      <div>交易已提交，上链中...</div>
+      <div><span>交易已提交，上链中...</span></div>
       <div>
-        交易hash：{{ txhash }}
+        <span>交易hash：{{ txhash }}</span>
         <i class="el-icon-link"></i>
       </div>
     </div>
@@ -13,7 +13,7 @@
       <el-button type="primary" size="small" plain>在浏览器中查看</el-button>
     </div>
     <div>
-      <el-button type="primary" size="mini" plain>返回</el-button>
+      <el-button type="primary" size="mini" plain @click="goBack">返回</el-button>
     </div>
   </div>
 </template>
@@ -22,12 +22,13 @@
 export default {
   data() {
     return {
-      txhash: "nbvfrtyujnbvcdthjuytfvbnbvfjnhgfcvb"
+      txhash: "nbvfrtyujnbvcdthjuytfiuytfvbnjytfvbvbnbvfjnhgfcvb"
     };
   },
   methods: {
     goBack() {
       console.log("goBack !");
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/homepage')
     }
   },
   computed: {},

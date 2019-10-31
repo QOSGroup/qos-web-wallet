@@ -1,6 +1,6 @@
 <template>
   <div class="homepage-wrap">
-    <div style="background:rgba(87, 163, 241, 0.79);height:30%;">
+    <div style="background:#409EFF;height:30%;">
       <div>
         <br />
         <div style="float:left;">
@@ -87,7 +87,7 @@ export default {
     return {
       activeName: "balance",
       userName: "wangkuan",
-      address: "qwertyuiopasdfghjklzxcvbnmmnbvcxzasdfghjklpovbhgtrew",
+      address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
 
       coins: [
         {
@@ -109,7 +109,7 @@ export default {
           url:
             "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
           name: "Compass1",
-          valaddress: "ertyuikfcvbhtfdcvbhgvbgjnvgcrcsxcvh",
+          valaddress: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
           amount: "4567.76",
           isCompound: true
         },
@@ -117,7 +117,7 @@ export default {
           url:
             "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
           name: "Compass2",
-          valaddress: "ertyuiknbvcrtyhertyuiknbvcrtyhbvhbvcsxcvhbvhbvcsxcvh",
+          valaddress: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
           amount: "8765456.87",
           isCompound: false
         },
@@ -125,7 +125,7 @@ export default {
           url:
             "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
           name: "Compass3",
-          valaddress: "ertyuiknbvcrtertyuiknbvcrtyhbvhbvcsxcvhyhbvcdccvh",
+          valaddress: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
           amount: "654345.87",
           isCompound: true
         }

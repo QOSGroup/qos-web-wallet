@@ -20,7 +20,10 @@ import {
   Slider,
   Radio,
   RadioButton,
-  RadioGroup
+  RadioGroup,
+  Select,
+  Option,
+  Upload
 } from 'element-ui'
 
 global.browser = require('webextension-polyfill')
@@ -42,6 +45,9 @@ Vue.use(Slider)
 Vue.use(Radio)
 Vue.use(RadioButton)
 Vue.use(RadioGroup)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Upload)
 
 /* eslint-disable no-new */
 new Vue({
