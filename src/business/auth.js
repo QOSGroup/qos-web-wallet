@@ -49,4 +49,5 @@ export function setCurrentAccount(accountName){
       return db.set(CURRENTACCOUNT, acc)
     }
     return null
+  }
 }

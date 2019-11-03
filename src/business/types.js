@@ -1,3 +1,6 @@
+// import {IKeyPair} from './qosWeb/core/types'
+// import Account from './qosWeb/core'
+
 export class ToPage {
   constructor (params) {
     this.pageName = params.pageName
@@ -12,10 +15,19 @@ export class Asset {
   }
 }
 
+export class encrypedKeyPair {
+  constructor(pub, priv, bech32pub) {
+    this.publicKey = pub
+    this.encrypedPrivateKey = priv
+    this.bech32pub = bech32pub
+  }
+}
+
 export class Account {
-  constructor (name, address) {
+  constructor (name, address, encrypedKeyPair) {
     this.name = name
     this.adress = address
+    this.encrypedKeyPair = encrypedKeyPair
     this.qos = new Asset('QOS', 0)
     this.qscs = {}
   }

@@ -2,6 +2,8 @@ import PageIndex from './pages/Index'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Transfer from './pages/Transfer'
+import CreateAccount from './pages/CreateAccount'
+import ImportAccount from './pages/ImportAccount'
 
 export default [
   {
@@ -20,5 +22,13 @@ export default [
     path: '/transfer',
     name: 'transfer',
     component: Transfer
+  }, {
+    path: '/create',
+    name: 'create',
+    component: CreateAccount
+  }, {
+    path: '/import',
+    name: 'import',
+    component: ImportAccount
   }
 ]

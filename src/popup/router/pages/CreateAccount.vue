@@ -43,21 +43,9 @@ export default {
   },
   submitRegister () {
     console.log('register', this.data())
-    this.$router.push({
-          name: 'create'
-          // params: {
-          //   ticker: this.tokenName.toUpperCase()
-          // }
-     });
   },
   submitImport () {
     console.log('import', this.data())
-    this.$router.push({
-          name: 'import'
-          // params: {
-          //   ticker: this.tokenName.toUpperCase()
-          // }
-     });
   }
 }
 </script>

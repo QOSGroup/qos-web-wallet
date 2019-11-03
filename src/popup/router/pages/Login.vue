@@ -13,11 +13,14 @@
 </template>
 
 <script>
+
+// import QOSRpc from 'js-for-qos-httprpc/build/main/core';
 export default {
   data () {
     return {
       ruleForm: {
-        pwd: ''
+        pwd: '',
+        defaultAccount:  {}
       },
       rules: {
         name: [
@@ -28,6 +31,8 @@ export default {
     }
   },
   submitLogin () {
+    var password = this.data.pwd;
+
     console.log('login')
   }
 }
