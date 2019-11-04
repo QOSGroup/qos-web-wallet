@@ -31,9 +31,10 @@ export default {
   methods: {
     exportMemwd() {
       console.log("exportMemwd!");
+
     },
     goBack() {
-      console.log("goBack!");
+       this.$router.push('/')
     }
   }
 };

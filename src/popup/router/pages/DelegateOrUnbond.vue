@@ -49,7 +49,9 @@
       <el-slider v-model="form.gas" max="100"></el-slider>
     </div>
 
-    <div style="text-align:center;"><el-button type="primary" size="small" plain @click="commitTx">确定</el-button></div>
+    <div style="text-align:center;">
+      <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
+    </div>
   </div>
 </template>
 
@@ -62,7 +64,7 @@ export default {
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
       amount: 1234.56,
       //用户选择的操作：委托deleagte / 解除委托unbond web页面传递
-      operation: "unbond",
+      operation: 'unbond',
       //用户所选的validator信息
       validator: {
         url:
@@ -77,24 +79,26 @@ export default {
         isCompound: false
       },
       form: {
-        tokens: "数量",  //追加或撤回的token数量
-        gas: 10,  //支付的gas费用
+        tokens: "数量", //追加或撤回的token数量
+        gas: 10, //支付的gas费用
         compound: "0" //页面选择是否复投
       }
     };
   },
   methods: {
     goBack() {
-      console.log("goBack !");
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
-    setMax(){
-      console.log(amount)
+    setMax() {
+      console.log(amount);
     },
-    commitTx(){
-      this.$router.push('/txresult')
+    commitTx() {
+      this.$router.push("/txresult");
     }
   },
-  computed: {}
+  computed: {
+    // operation: ''
+  }
 };
 </script>
 
