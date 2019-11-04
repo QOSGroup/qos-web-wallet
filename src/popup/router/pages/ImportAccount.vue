@@ -1,67 +1,136 @@
 <template>
-  <div class="register-wrap">
-    <img class="logo" src="/icons/qos.png" alt="qos logo" />
-    <div>111{{testName}}</div>
-
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
-      <!-- <el-form-item label prop="name">
-        <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
-      </el-form-item>-->
-      <el-form-item>
-        <el-button class="btn btn-register" type="primary" @click="submitRegister('ruleForm')">立即创建</el-button>
+  <div class="importaccount-wrap">
+    <el-page-header @back="goBack" content="导入账户"></el-page-header>
+    <el-divider></el-divider>
+    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px">
+      <el-form-item label="导入类型" prop="type">
+        <el-select
+          v-model="ruleForm.value"
+          placeholder="请选择"
+          autocomplete="off"
+          size="mini"
+          @change="setImportTypes"
+        >
+          <el-option
+            v-for="its in ruleForm.importtypes"
+            :key="its.value"
+            :label="its.label"
+            :value="its.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
+      <el-form-item label="输入私钥" prop="pri" v-if="flag_pri">
+        <el-input v-model="ruleForm.pri" autocomplete="off" size="mini"></el-input>
+      </el-form-item>
+
+      <el-form-item label="导入JSON文件" prop="jsonFile" v-if="flag_json">
+        <el-upload
+          class="upload-demo"
+          action
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :before-remove="beforeRemove"
+          multiple
+          :limit="1"
+          :on-exceed="handleExceed"
+          :file-list="ruleForm.fileList"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传文本文件，且不超过500kb</div>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="验证钱包密码" prop="walletPass" v-if="flag_json">
+        <el-input v-model="ruleForm.walletPass" autocomplete="off" size="mini"></el-input>
+      </el-form-item>
+
       <el-form-item>
-        <el-button class="btn btn-import" type="primary" @click="submitImport('ruleForm')">立即导入</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">导入</el-button>
+        <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-
 export default {
-  data () {
+  data() {
+    var checkPri = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("私钥不能为空"));
+      }
+    };
+    var checkImportType = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("导入类型不能为空"));
+      }
+    };
     return {
       ruleForm: {
-        pwd: ''
+        pri: "",
+        value: "",
+        importtypes: [
+          {
+            value: "0",
+            label: "私钥"
+          },
+          {
+            value: "1",
+            label: "JSON文件"
+          }
+        ],
+        fileList: "",
+        flag_pri: false,
+        flag_json: false
       },
       rules: {
-        name: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' },
-          { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' }
-        ]
+        pri: [{ validator: checkPri, trigger: "blur" }],
+        type: [{ validator: checkImportType, trigger: "blur" }]
+      },
+      
+    };
+  },
+  computed: {},
+  mounted() {},
+  methods: {
+    goBack() {
+      window.history.length > 1
+        ? this.$router.go(-1)
+        : this.$router.push("/homepage");
+    },
+    setImportTypes() {
+      console.log("设置页面显示隐藏");
+      const type = this.ruleForm.value;
+      if (type == "0") {
+        this.flag_pri= true
+        this.flag_json= false
+      } else {
+        this.flag_pri= false
+        this.flag_json= true
       }
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      );
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
     }
-  },
-  computed: {
-    testName () {
-      return this.$store.state.toPage.pageName
-    }
-  },
-  mounted () {
-    console.log(this.$store.state.toPage.pageName)
-  },
-  submitRegister () {
-    console.log('register', this.data())
-  },
-  submitImport () {
-    console.log('import', this.data())
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 @import "~style/common.scss";
-.register-wrap {
+.importaccount-wrap {
   @include common-container;
-  .logo {
-    width: 20%;
-    display: block;
-    margin: 0 auto;
-    margin-bottom: 50px;
-  }
-  .btn-register {
-    width: 100%;
-  }
 }
 </style>

@@ -24,7 +24,7 @@
     "clone": "^2.1.2",
     "element-ui": "^2.12.0",
     "extensionizer": "^1.0.1",
-    "js-for-qos-httprpc": "https://github.com/QOSGroup/js-for-qos-httprpc.git",
+    "qosWeb": "https://github.com/QOSGroup/js-for-qos-httprpc.git",
     "qosKeys": "https://github.com/QOSGroup/js-keys",
     "vue": "^2.6.10",
     "vue-router": "^3.0.1",
