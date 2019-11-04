@@ -163,7 +163,7 @@ export default {
       this.$router.push("/delegateorunbond?flag="+flag);
     },
     modifyCompound(isCompound) {
-      this.$router.push("/accountlist?isCompound=" + isCompound);
+      this.$router.push("/modifycompound?isCompound=" + isCompound);
     }
   },
   computed: {}

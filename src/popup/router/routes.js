@@ -10,6 +10,7 @@ import TxResult from './pages/TxResult'
 import AccountList from './pages/AccountList'
 import NewAccount from './pages/NewAccount'
 import ImportAccount from './pages/ImportAccount'
+import ModifyCompound from './pages/ModifyCompound'
 
 export default [
   {
@@ -51,6 +52,11 @@ export default [
     path: '/delegateorunbond',
     name: 'delegateorunbond',
     component: DelegateOrUnbond
+  },
+  {
+    path: '/modifycompound',
+    name: 'modifycompound',
+    component: ModifyCompound
   },
   {
     path: '/txresult',

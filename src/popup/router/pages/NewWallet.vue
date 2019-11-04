@@ -58,12 +58,13 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // 数据合法,创建账户
+          // 数据合法,创建账户 todo
 
           // 设置登陆token
-          setToken("token111");
+          setToken("wangkuan");
+          // 添加账户至存储accountlist中
           // setAccountList();
-          // 跳转home主页
+          // 账户新建后,默认跳转newwalletresult页面
           this.$router.push("/newwalletresult");
         } else {
           console.log("error newwallet!!");

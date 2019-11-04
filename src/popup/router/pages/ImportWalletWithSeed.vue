@@ -4,7 +4,12 @@
     <el-divider></el-divider>
     <el-form ref="form" :model="form" label-width="80px" v-bind:rules="rules" class="demo-ruleForm">
       <el-form-item label="助记词" prop="memwd">
-        <el-input placeholder="请输入12个单词的助记词" type="textarea" v-model="form.memwd" auto-complete="off"></el-input>
+        <el-input
+          placeholder="请输入12个单词的助记词"
+          type="textarea"
+          v-model="form.memwd"
+          auto-complete="off"
+        ></el-input>
       </el-form-item>
       <el-form-item label="新密码" prop="password">
         <el-input placeholder="请输入密码" v-model="form.password" show-password auto-complete="off"></el-input>
@@ -21,7 +26,7 @@
 </template>
 
 <script>
-import { setToken, setAccountList } from '@/business/auth'
+import { setToken, setAccountList } from "@/business/auth";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -52,7 +57,7 @@ export default {
       rules: {
         memwd: [
           { required: true, message: "请输入助记词", trigger: "blur" },
-          { min: 12, max: 120, message: "长度为 12 个单词", trigger: "blur" }
+          { min: 12, message: "长度为 12 个单词", trigger: "blur" }
         ],
         password: [{ validator: validatePass, trigger: "blur" }],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
@@ -63,13 +68,14 @@ export default {
     recoverWallet(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // 数据合法,创建账户
+          // 数据合法,创建账户 todo
 
           // 设置登陆token
-          setToken('token111');
+          setToken("wangkuan");
+          // 添加账户至存储accountlist中
           // setAccountList();
           // 跳转home主页
-          this.$router.push('/');
+          this.$router.push("/");
           //alert("recoverWallet!");
         } else {
           console.log("error recoverWallet!!");
@@ -78,9 +84,7 @@ export default {
       });
     },
     goBack() {
-      window.history.length > 1
-        ? this.$router.go(-1)
-        : this.$router.push("/");
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     }
   }
 };

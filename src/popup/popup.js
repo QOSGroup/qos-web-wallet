@@ -23,7 +23,8 @@ import {
   RadioGroup,
   Select,
   Option,
-  Upload
+  Upload,
+  Link
 } from 'element-ui'
 
 global.browser = require('webextension-polyfill')
@@ -48,6 +49,7 @@ Vue.use(RadioGroup)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Upload)
+Vue.use(Link)
 
 /* eslint-disable no-new */
 new Vue({
