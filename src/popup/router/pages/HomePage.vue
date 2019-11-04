@@ -3,11 +3,11 @@
     <div style="background:#409EFF;height:25%;">
       <div>
         <br />
-        <div style="float:left;">
+        <div style="float:left;width:90%;text-align:left;">
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
-        <div style="float:right;">
-          <i @click="showAccountList" class="el-icon-more" style="font-size:24px;"></i>
+        <div style="float:right;width:10%;" @click="showAccountList" >
+          <i class="el-icon-more" style="font-size:24px;"></i>
         </div>
       </div>
       <div>
@@ -92,6 +92,9 @@
 export default {
   data() {
     return {
+      stu: {
+        name: 'test'
+      },
       activeName: "balance",
       userName: "wangkuan",
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
@@ -159,11 +162,11 @@ export default {
       }
       alert("该功能暂未开发!");
     },
-    delegateorunbond(flag) {
-      this.$router.push("/delegateorunbond?flag="+flag);
+    delegateorunbond(operation) {
+      this.$router.push({name:'delegateorunbond', params:{operation:operation}});
     },
     modifyCompound(isCompound) {
-      this.$router.push("/modifycompound?isCompound=" + isCompound);
+      this.$router.push({name:'modifycompound', params:{isCompound:isCompound}});
     }
   },
   computed: {}

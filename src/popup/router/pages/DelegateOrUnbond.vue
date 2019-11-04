@@ -64,7 +64,7 @@ export default {
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
       amount: 1234.56,
       //用户选择的操作：委托deleagte / 解除委托unbond web页面传递
-      operation: 'unbond',
+      operation: this.$route.params.operation,
       //用户所选的validator信息
       validator: {
         url:

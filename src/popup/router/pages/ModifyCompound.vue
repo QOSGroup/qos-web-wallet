@@ -28,7 +28,7 @@
     <div>
       <span>当前委托：{{ delegation.amount }} QOS</span>
     </div>
-    <div v-if="delegation.isCompound">
+    <div v-if="this.$route.params.isCompound == 'true'">
       <div class="div_modify" >复投</div>
       <div class="div_modify">
         <i class="el-icon-right"></i>
@@ -36,7 +36,7 @@
       <div class="div_modify" >不复投</div>
     </div>
     <div v-else>
-      <div class="div_modify">>不复投</div>
+      <div class="div_modify">不复投</div>
       <div class="div_modify">
         <i class="el-icon-right"></i>
       </div>
@@ -85,15 +85,11 @@ export default {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
-    setMax() {
-      console.log(amount);
-    },
     commitTx() {
       this.$router.push("/txresult");
     }
   },
   computed: {
-    // operation: ''
   }
 };
 </script>
