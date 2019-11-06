@@ -2,42 +2,46 @@
   <div class="login-wrap">
     <img class="logo" src="/icons/qos.png" alt="qos logo" />
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
-      <el-form-item label prop="name">
+      <el-form-item label prop="pwd">
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')"> 进入我的钱包</el-button>
+        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')">进入我的钱包</el-button>
       </el-form-item>
     </el-form>
-
-    <div>
-      <el-link target="_blank">忘记密码？</el-link>
+    <div style="text-align:left;height:30px;">
+      <el-link target="_blank" @click="forgetPassword">忘记密码？</el-link>
     </div>
-    <div>
-      <el-link target="_blank">没有钱包？</el-link>
+    <div style="text-align:left;height:30px;">
+      <el-link target="_blank" @click="noWallet">没有钱包？</el-link>
     </div>
-
   </div>
-
-
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       ruleForm: {
-        pwd: ''
+        pwd: ""
       },
       rules: {
-        name: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' },
-          { min: 6, max: 30, message: '长度在 6 到 30 个字符', trigger: 'blur' }
+        pwd: [
+          { required: true, message: "请输入登录密码", trigger: "blur" },
+          { min: 6, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur" }
         ]
       }
+    };
+  },
+  methods: {
+    forgetPassword() {
+      this.$router.push("/importwalletwithseed");
+    },
+    noWallet() {
+      this.$router.push("/newwallet");
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

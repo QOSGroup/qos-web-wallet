@@ -28,7 +28,7 @@ export default {
   methods: {
     goBack() {
       console.log("goBack !");
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/homepage')
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
     }
   },
   computed: {},
