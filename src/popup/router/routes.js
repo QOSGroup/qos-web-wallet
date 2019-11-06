@@ -1,4 +1,3 @@
-import PageIndex from './pages/Index'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Transfer from './pages/Transfer'
@@ -12,13 +11,9 @@ import TxResult from './pages/TxResult'
 import AccountList from './pages/AccountList'
 import NewAccount from './pages/NewAccount'
 import ImportAccount from './pages/ImportAccount'
+import ModifyCompound from './pages/ModifyCompound'
 
 export default [
-  {
-    path: '/',
-    name: 'home',
-    component: PageIndex
-  },
   {
     path: '/login',
     name: 'login',
@@ -55,7 +50,7 @@ export default [
     component: ImportWalletWithSeed
   },
   {
-    path: '/homepage',
+    path: '/',
     name: 'homepage',
     component: HomePage
   },
@@ -63,6 +58,11 @@ export default [
     path: '/delegateorunbond',
     name: 'delegateorunbond',
     component: DelegateOrUnbond
+  },
+  {
+    path: '/modifycompound',
+    name: 'modifycompound',
+    component: ModifyCompound
   },
   {
     path: '/txresult',

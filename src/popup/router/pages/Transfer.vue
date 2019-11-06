@@ -41,7 +41,7 @@
       <span>最大手续费：{{ form.gas }}</span>
     </div>
     <div class="block">
-      <el-slider v-model="form.gas" max="100"></el-slider>
+      <el-slider v-model="form.gas"></el-slider>
     </div>
 
     <div style="text-align:center;">
@@ -79,7 +79,7 @@ export default {
       balance: 0,
       form: {
         address: "gyukjcuejbdjsiuwenjxudksuhudrtdeduycxunjusfdsfdkjbcuw",
-        tokens: 1238678,
+        tokens: 100,
         gas: 10
       }
     };

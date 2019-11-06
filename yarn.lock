@@ -3796,20 +3796,6 @@ js-base64@^2.1.8:
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.5.1.tgz#1efa39ef2c5f7980bb1784ade4a8af2de3291121"
   integrity sha512-M7kLczedRMYX4L8Mdh4MzyAMM9O5osx+4FcOQuTvr3A9F2D9S5JXheN0ewNbrvK2UatkTRhL5ejGmGSjNMiZuw==
 
-"js-for-qos-httprpc@https://github.com/QOSGroup/js-for-qos-httprpc.git":
-  version "1.0.0"
-  resolved "https://github.com/QOSGroup/js-for-qos-httprpc.git#3c06ad56ec7b1daf0bf956e46f98198ad39c6469"
-  dependencies:
-    axios "^0.19.0"
-    bip39 "^3.0.2"
-    create-hmac "^1.1.7"
-    js-nacl "^1.3.2"
-    js-sha256 "^0.9.0"
-    module-alias "^2.2.2"
-    qosKeys "https://github.com/QOSGroup/js-keys"
-    sha.js "^2.4.11"
-    tweetnacl-util "^0.15.0"
-
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
@@ -5290,6 +5276,20 @@ punycode@^2.1.0:
   version "1.0.2"
   resolved "https://github.com/QOSGroup/js-keys#6e42a0d9719fc6aefd128bfe1074627b6670bb76"
 
+"qosWeb@https://github.com/QOSGroup/js-for-qos-httprpc.git":
+  version "1.0.0"
+  resolved "https://github.com/QOSGroup/js-for-qos-httprpc.git#3c06ad56ec7b1daf0bf956e46f98198ad39c6469"
+  dependencies:
+    axios "^0.19.0"
+    bip39 "^3.0.2"
+    create-hmac "^1.1.7"
+    js-nacl "^1.3.2"
+    js-sha256 "^0.9.0"
+    module-alias "^2.2.2"
+    qosKeys "https://github.com/QOSGroup/js-keys"
+    sha.js "^2.4.11"
+    tweetnacl-util "^0.15.0"
+
 qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
@@ -6617,6 +6617,11 @@ value-or-function@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/value-or-function/-/value-or-function-3.0.0.tgz#1c243a50b595c1be54a754bfece8563b9ff8d813"
   integrity sha1-HCQ6ULWVwb5Up1S/7OhWO5/42BM=
+
+vee-validate@^2.1.7:
+  version "2.2.15"
+  resolved "https://registry.yarnpkg.com/vee-validate/-/vee-validate-2.2.15.tgz#dc6c925d21e57288d3308fe5a39a0941036c575a"
+  integrity sha512-4TOsI8XwVkKVLkg8Nhmy+jyoJrR6XcTRDyxBarzcCvYzU61zamipS1WsB6FlDze8eJQpgglS4NXAS6o4NDPs1g==
 
 verror@1.10.0:
   version "1.10.0"

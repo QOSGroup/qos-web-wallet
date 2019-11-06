@@ -1,13 +1,13 @@
 <template>
   <div class="homepage-wrap">
-    <div style="background:#409EFF;height:30%;">
+    <div style="background:#409EFF;height:25%;">
       <div>
         <br />
-        <div style="float:left;">
+        <div style="float:left;width:90%;text-align:left;">
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
-        <div style="float:right;">
-          <i @click="showAccountList" class="el-icon-more" style="font-size:24px;"></i>
+        <div style="float:right;width:10%;" @click="showAccountList" >
+          <i class="el-icon-more" style="font-size:24px;"></i>
         </div>
       </div>
       <div>
@@ -27,8 +27,8 @@
                 <i class="el-icon-link"></i>
               </div>
               <div>
-                <el-button type="primary" size="small" plain>转账</el-button>
-                <el-button type="primary" size="small" plain>预授权</el-button>
+                <el-button type="primary" size="small" plain @click="transfer([coin.type])">转账</el-button>
+                <el-button type="primary" size="small" plain @click="approve([coin.type])">预授权</el-button>
               </div>
               <el-divider width="80%"></el-divider>
             </div>
@@ -58,18 +58,25 @@
               </div>
             </div>
             <div>
-              <div style="text-align:left;float:left;"><span>委托金额：{{ delegation.amount }}</span></div>
+              <div style="text-align:left;float:left;">
+                <span>委托金额：{{ delegation.amount }}</span>
+              </div>
               <div style="float:right;">
-                <el-button type="primary" size="mini" plain>追加</el-button>
-                <el-button type="primary" size="mini" plain>撤回</el-button>
+                <el-button type="primary" size="mini" plain @click="delegateorunbond('delegate')">追加</el-button>
+                <el-button type="primary" size="mini" plain @click="delegateorunbond('unbond')">撤回</el-button>
               </div>
             </div>
             <div>
-              <div
-                style="vertical-align:middle;text-align:left;float:left;"
-              ><span>复投方式：{{ delegation.isCompound ? "已复投" : "未复投" }}</span></div>
+              <div style="vertical-align:middle;text-align:left;float:left;">
+                <span>复投方式：{{ delegation.isCompound ? "已复投" : "未复投" }}</span>
+              </div>
               <div style="float:right;">
-                <el-button type="primary" size="mini" plain>更改</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  plain
+                  @click="modifyCompound([ delegation.isCompound ])"
+                >更改</el-button>
               </div>
             </div>
             <el-divider width="80%"></el-divider>
@@ -85,6 +92,9 @@
 export default {
   data() {
     return {
+      stu: {
+        name: 'test'
+      },
       activeName: "balance",
       userName: "wangkuan",
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
@@ -137,7 +147,26 @@ export default {
       console.log(tag, event);
     },
     showAccountList() {
-      console.log("showAccountList!");
+      //console.log("showAccountList!");
+      this.$router.push("/accountlist");
+    },
+    transfer(coinType) {
+      if (!coinType) {
+        coinType = "QOS";
+      }
+      this.$router.push("/transfer?coinTYpe=" + coinType);
+    },
+    approve(coinType) {
+      if (!coinType) {
+        coinType = "QOS";
+      }
+      alert("该功能暂未开发!");
+    },
+    delegateorunbond(operation) {
+      this.$router.push({name:'delegateorunbond', params:{operation:operation}});
+    },
+    modifyCompound(isCompound) {
+      this.$router.push({name:'modifycompound', params:{isCompound:isCompound}});
     }
   },
   computed: {}
@@ -158,7 +187,7 @@ div {
   overflow-y: auto;
   margin-bottom: 2%;
   margin-top: 1%;
-  vertical-align:middle;
+  vertical-align: middle;
 }
 span {
   word-break: break-all;
