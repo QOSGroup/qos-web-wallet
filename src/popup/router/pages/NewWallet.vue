@@ -10,7 +10,7 @@
         <el-input placeholder="请再次输入密码" v-model="form.repassword" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
+        <el-button type="primary" @click="onSubmitNewWallet('form')">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -18,7 +18,10 @@
 </template>
 
 <script>
-import { setToken } from "@/business/auth";
+import { setToken, getCurrentAcount, setCurrentAccount, getAccountList, setAccountList } from "@/business/auth";
+import Account from 'qosWeb/build/main/core/Account';
+import {encrypt, decrypt} from '@/utils/encrypt'
+import QOSRpc from 'qosWeb/build/main/core/QOSRpc';
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -55,13 +58,19 @@ export default {
     };
   },
   methods: {
-    onSubmit(formName) {
+    onSubmitNewWallet(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // 数据合法,创建账户 todo
+          const rpc = new QOSRpc({ baseUrl: 'http://47.100.168.251:9876' })
+          const Mn = rpc.generateMnemonic()
+          logger.debug('Mn', Mn)
+          const currentAccount = rpc.importAccount(Mn)
+          const encryptedAccount = encrypt(currentAccount, this.form.password)
+          setCurrentAccount(encryptedAccount)
+          console.log('account created:', decrypt(getCurrentAcount(), this.form.password))
 
-          // 设置登陆token
           setToken("wangkuan");
+
           // 添加账户至存储accountlist中
           // setAccountList();
           // 账户新建后,默认跳转newwalletresult页面

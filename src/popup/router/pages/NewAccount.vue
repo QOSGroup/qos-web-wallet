@@ -25,8 +25,8 @@
 
 <script>
 import {getAccountList} from '../../../business/auth';
-import Account from 'js-for-qos-httprpc/build/main/core/Account';
-import { isNotEmpty } from 'js-for-qos-httprpc/build/main/core/utils';
+import Account from 'qosWeb/build/main/core/Account';
+import { isNotEmpty } from 'qosWeb/build/main/core/utils';
 import { Validator } from 'vee-validate';
 const isValidateAccountName = (value) => {
   if (!value || value === '') {
