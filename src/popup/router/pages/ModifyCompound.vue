@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+      window.history.length > 1 ? this.$router.push({name:'homepage', params:{activeName:"delegation"}}) : this.$router.push("/");
     },
     commitTx() {
       this.$router.push("/txresult");
