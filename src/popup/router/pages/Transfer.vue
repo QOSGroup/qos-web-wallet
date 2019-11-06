@@ -95,7 +95,7 @@ export default {
   methods: {
     goBack() {
       window.history.length > 1
-        ? this.$router.go(-1)
+        ? this.$router.push({name:'homepage', params:{activeName:"balance"}})
         : this.$router.push("/homepage");
     },
     commitTx() {

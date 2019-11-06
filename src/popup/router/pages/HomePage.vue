@@ -95,7 +95,7 @@ export default {
       stu: {
         name: 'test'
       },
-      activeName: "balance",
+      activeName: this.$route.params.activeName == null ? "balance" : this.$route.params.activeName,
       userName: "wangkuan",
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
 
