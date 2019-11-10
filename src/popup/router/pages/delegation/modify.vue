@@ -88,10 +88,10 @@ export default {
             name: "homepage",
             params: { activeName: "delegation" }
           })
-        : this.$router.push({name: "homepage"});
+        : this.$router.push({ name: "homepage" });
     },
     commitTx() {
-      this.$router.push({name: "txresult"});
+      this.$router.push({ name: "txresult" });
     }
   },
   computed: {}

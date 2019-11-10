@@ -87,13 +87,18 @@ export default {
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.push({name:'homepage', params:{activeName:"delegation"}}) : this.$router.push({name: "homepage"});
+      window.history.length > 1
+        ? this.$router.push({
+            name: "homepage",
+            params: { activeName: "delegation" }
+          })
+        : this.$router.push({ name: "homepage" });
     },
     setMax() {
       this.$data.form.tokens = this.$data.amount;
     },
     commitTx() {
-      this.$router.push({name: "txresult"});
+      this.$router.push({ name: "txresult" });
     }
   },
   computed: {
