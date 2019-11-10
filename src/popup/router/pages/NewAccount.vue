@@ -7,14 +7,38 @@
     </div>
     <div>
       <el-input type="input" v-model="form.name" clearable style="width:80%;"></el-input>
+      <el-input
+            type="text"
+            name="accountName"
+            v-model="accountName"
+            placeholder="Name for new Account"
+            v-validate="isValidateAccountName"
+            ref="accountName"
+            @blur="onBlur"
+          >
     </div>
     <div>
-      <el-button type="primary" plain @click="createAccount">新建</el-button>
+      <el-button type="primary" plain @click="onCreateAccount">新建</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import {getAccountList} from '../../../business/auth';
+import Account from 'qosWeb/build/main/core/Account';
+import { isNotEmpty } from 'qosWeb/build/main/core/utils';
+import { Validator } from 'vee-validate';
+const isValidateAccountName = (value) => {
+  if (!value || value === '') {
+    return false;
+  }
+};
+
+Validator.extend('isValidateAccountName', {
+  getMessage: (field) => `请输入新建账户名称`,
+  validate: (value) => isValidateAccountName(value)
+});
+
 export default {
   data() {
     return {
@@ -31,7 +55,22 @@ export default {
         ? this.$router.go(-1)
         : this.$router.push("/homepage");
     },
-    createAccount() {
+    onCreateAccount() {
+      if (!isNotEmpty(accountName)) {
+        console.log('account name empty');
+        return
+      }
+      const accountList = getAccountList();
+      console.log(accountList);
+      if (accountList && len(accountList) > 0) { 
+        accountList.forEach(acc => {
+          if (Account(acc).name ===accountName){
+            console.log('dup account name');
+            return 
+          }
+          console.log(acc)
+        }); 
+      }
       console.log("新建账户...");
     }
   }

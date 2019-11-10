@@ -1,6 +1,7 @@
 import * as types from './mutation-types'
 import { isNotEmpty } from '../utils'
 import extensionizer from 'extensionizer'
+import { Account } from '../business/types'
 
 export default {
   [types.UPDATE_FOO] (state, payload) {
@@ -45,5 +46,16 @@ export default {
       msgs[0].sendResponse(payload.msg)
     }
     state.msgQueue = msgQueue
+  },
+  [types.ADD_TO_ACCOUNT_LIST] (state, payload) {
+    const accountList = state.accountList
+    accountList[Account(payload).name] = Account(payload)
+    state.accountList = accountList
+  },
+  [types.DEL_FROM_ACCOUNT_LIST] (state, payload) {
+    const accountList = state.accountList
+    delete accountList[Account(payload).name]
+    state.accountList = accountList
   }
+
 }

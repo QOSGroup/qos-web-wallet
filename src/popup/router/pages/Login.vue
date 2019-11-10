@@ -6,7 +6,7 @@
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')">进入我的钱包</el-button>
+        <el-button class="btn btn-login" type="primary" @click="submitLogin('ruleForm')">进入我的钱包</el-button>
       </el-form-item>
     </el-form>
     <div style="text-align:left;height:30px;">
@@ -19,11 +19,16 @@
 </template>
 
 <script>
+
+import {getCurrentAcount} from '../../../business/auth';
+import Account from 'qosWeb/build/main/core/Account';
+
 export default {
   data() {
     return {
       ruleForm: {
-        pwd: ""
+        pwd: '',
+        defaultAccount:  {}
       },
       rules: {
         pwd: [
@@ -40,8 +45,28 @@ export default {
     noWallet() {
       this.$router.push("/newwallet");
     }
+  },
+  submitLogin () {
+    if (!isNotEmpty(this.data.pwd)) {
+        console.log('pwd is empty');
+        return
+      }
+    var password = this.data.pwd;
+      const currentAccount = getCurrentAcount();
+      console.log(currentAccount);
+      if (currentAccount)  { 
+        accountList.forEach(acc => {
+          if (Account(acc).name ===accountName){
+            console.log('dup account name');
+            return 
+          }
+          console.log(acc)
+        }); 
+
+    console.log('login')
   }
-};
+}
+}
 </script>
 
 <style lang="scss" scoped>

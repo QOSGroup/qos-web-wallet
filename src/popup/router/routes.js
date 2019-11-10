@@ -1,6 +1,7 @@
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Transfer from './pages/Transfer'
+import CreateAccount from './pages/CreateAccount'
 import NewWallet from './pages/NewWallet'
 import NewWalletResult from './pages/NewWalletResult'
 import ImportWalletWithSeed from './pages/ImportWalletWithSeed'
@@ -27,6 +28,11 @@ export default [
     path: '/transfer',
     name: 'transfer',
     component: Transfer
+  },
+  {
+    path: '/createaccount',
+    name: 'createaccount',
+    component: CreateAccount
   },
   {
     path: '/newwallet',
