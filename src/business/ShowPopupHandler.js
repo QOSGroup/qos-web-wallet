@@ -1,5 +1,5 @@
 import NotificationManager from '../utils/NotificationManager'
-import BaseMsgHandler, { Res } from './BaseMsgHandler'
+import BaseMsgHandler from './BaseMsgHandler'
 import store from '@/store'
 import * as types from '@/store/mutation-types.js'
 import { ToPage } from './types'
@@ -17,7 +17,7 @@ export class ShowPopupHandler extends BaseMsgHandler {
     setTimeout(() => {
       const noti = new NotificationManager()
       noti.showPopup()
-      this.callback(new Res(true, {}))
+      // this.callback(new Res(true, {}))
     }, 0)
   }
 }

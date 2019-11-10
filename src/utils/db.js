@@ -1,4 +1,5 @@
 import { getJSON } from '.'
+const extension = require('extensionizer')
 
 const db = {
   get (key) {
@@ -14,6 +15,25 @@ const db = {
       value = JSON.stringify(value)
     }
     return localStorage.setItem(key, value)
+  },
+  /**
+   * 插件存储
+   * @param {*}} key key
+   * @param {*} value value
+   */
+  setLocal (key, value) {
+    return new Promise((resolve) => {
+      extension.storage.sync.set({ key: value }, function () {
+        resolve()
+      })
+    })
+  },
+  getLocal (key) {
+    return new Promise((resolve) => {
+      extension.storage.local.get([key], function (result) {
+        resolve(result.key)
+      })
+    })
   }
 }
 
