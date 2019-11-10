@@ -27,6 +27,9 @@ export async function beforeEach (to, from, next) {
   // const first = await bg.getFirstMsg()
   const first = store.getters.firstMsg
   console.log('store.getters.firstMsg', store.getters.firstMsg)
+
+  // 请增加登录校验
+
   if (isNotEmpty(first)) {
     const data = first.params
     if (isNotEmpty(data.pageName) && !first.hasDirect) {
