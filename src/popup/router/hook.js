@@ -42,14 +42,14 @@ export async function beforeEach (to, from, next) {
   //   next({ name: toPage.pageName })
   //   return
   // }
+  // alert(getToken())
   if (!getToken() && whiteListPage.indexOf(to.path) === -1) {
     console.log('real to page name', to.name)
     // 判断是否有token
     const accList = getAccountList()
 
     if (!accList || accList.length === 0) {
-      // next('/register')
-      next('/login')
+      next('/register')
       return
     }
     next('/login')

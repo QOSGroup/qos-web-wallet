@@ -6,7 +6,7 @@
         <div style="float:left;width:90%;text-align:left;">
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
-        <div style="float:right;width:10%;" @click="showAccountList" >
+        <div style="float:right;width:10%;" @click="showAccountList">
           <i class="el-icon-more" style="font-size:24px;"></i>
         </div>
       </div>
@@ -19,16 +19,31 @@
     <div>
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="我的资产" name="balance">
-          <div v-for="coin in coins" :key="coin">
+          <div>
             <div>
-              <div>{{ coin.type }}</div>
+              <div>QOS</div>
               <div>
-                {{ coin.amount }}
+                {{ qos }}
                 <i class="el-icon-link"></i>
               </div>
               <div>
-                <el-button type="primary" size="small" plain @click="transfer([coin.type])">转账</el-button>
-                <el-button type="primary" size="small" plain @click="approve([coin.type])">预授权</el-button>
+                <el-button type="primary" size="small" plain @click="transfer('QOS')">转账</el-button>
+                <el-button type="primary" size="small" plain @click="approve('QOS')">预授权</el-button>
+              </div>
+              <el-divider width="80%"></el-divider>
+            </div>
+          </div>
+
+          <div v-for="qcp in qcps" :key="qcp">
+            <div>
+              <div>{{ qcp.coin_name }}</div>
+              <div>
+                {{ qcp.amount }}
+                <i class="el-icon-link"></i>
+              </div>
+              <div>
+                <el-button type="primary" size="small" plain @click="transfer([qcp.coin_name])">转账</el-button>
+                <el-button type="primary" size="small" plain @click="approve([qcp.coin_name])">预授权</el-button>
               </div>
               <el-divider width="80%"></el-divider>
             </div>
@@ -38,20 +53,20 @@
           <div v-for="delegation in delegations" :key="delegation">
             <div>
               <div style="float:left;width:100px;">
-                <el-image style="width: 100px; height: 100px" :src="delegation.url"></el-image>
+                <el-image style="width: 100px; height: 100px" :src="delegation.logo"></el-image>
               </div>
               <div style="float:right;width:200px;">
                 <div style="text-align:left;">
                   <span>
                     <br />
-                    {{ delegation.name }}
+                    {{ delegation.moniker }}
                   </span>
                   <i class="el-icon-link"></i>
                 </div>
                 <div style="text-align:left;">
                   <span>
                     <br />
-                    {{ delegation.valaddress }}
+                    {{ delegation.validator_address }}
                   </span>
                   <i class="el-icon-link"></i>
                 </div>
@@ -59,7 +74,7 @@
             </div>
             <div>
               <div style="text-align:left;float:left;">
-                <span>委托金额：{{ delegation.amount }}</span>
+                <span>委托金额：{{ delegation.delegate_amount }}</span>
               </div>
               <div style="float:right;">
                 <el-button type="primary" size="mini" plain @click="delegateorunbond('delegate')">追加</el-button>
@@ -68,14 +83,14 @@
             </div>
             <div>
               <div style="vertical-align:middle;text-align:left;float:left;">
-                <span>复投方式：{{ delegation.isCompound ? "已复投" : "未复投" }}</span>
+                <span>复投方式：{{ delegation.is_compound ? "已复投" : "未复投" }}</span>
               </div>
               <div style="float:right;">
                 <el-button
                   type="primary"
                   size="mini"
                   plain
-                  @click="modifyCompound([ delegation.isCompound ])"
+                  @click="modifyCompound([ delegation.is_compound ])"
                 >更改</el-button>
               </div>
             </div>
@@ -89,60 +104,87 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      stu: {
-        name: 'test'
-      },
-      activeName: this.$route.params.activeName == null ? "balance" : this.$route.params.activeName,
+      activeName:
+        this.$route.params.activeName == null
+          ? "balance"
+          : this.$route.params.activeName,
       userName: "wangkuan",
-      address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
-
-      coins: [
-        {
-          type: "QOS",
-          amount: "23456.765"
-        },
-        {
-          type: "STAR",
-          amount: "23456.765"
-        },
-        {
-          type: "ZZU",
-          amount: "23456.765"
-        }
-      ],
-
-      delegations: [
-        {
-          url:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-          name: "Compass1",
-          valaddress: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-          amount: "4567.76",
-          isCompound: true
-        },
-        {
-          url:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-          name: "Compass2",
-          valaddress: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-          amount: "8765456.87",
-          isCompound: false
-        },
-        {
-          url:
-            "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-          name: "Compass3",
-          valaddress: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-          amount: "654345.87",
-          isCompound: true
-        }
-      ]
+      address: "qosacc1e5tahz33c576cwqm3t22er22mtrj7a8jhxqzfe",
+      qos: "",
+      qcps: [],
+      delegations: []
     };
   },
+  created() {
+    this.getAccount(this.$data.address);
+    this.getDelegations();
+  },
   methods: {
+    getAccount(address) {
+      axios
+        .get(
+          "http://www.baidu.com/"+address
+        )
+        .then(res => {
+          // this.$data.qos = res.data.value.qos;
+          this.$data.qos = "999999";
+
+          this.$data.qcps.push({
+            coin_name: "ZZU",
+            amount: "10000000000"
+          });
+          this.$data.qcps.push({
+            coin_name: "STAR",
+            amount: "10000000000"
+          });
+
+        })
+        .catch(error => {
+          alert(error);
+        });
+    },
+    getDelegations() {
+      axios
+        .get("http://www.baidu.com")
+        .then(res => {
+          // 获取到委托信息后进行循环:拆分出其中字段:validator_address,delegate_amount,is_compound
+          // 每次循环中,根据validator_address查询出该validator的详细信息,拆分字段:description.moniker  description.logo
+          for (var i = 0; i < 2; i++) {
+            
+            // get
+            this.delegations.push({
+              logo:
+                "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
+              moniker: "Compass1",
+              validator_address:
+                "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
+              delegate_amount: "4567.76",
+              is_compound: true
+            });
+
+            this.delegations.push({
+              logo:
+                "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
+              moniker: "Compass2",
+              validator_address:
+                "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
+              delegate_amount: "8765456.87",
+              is_compound: false
+            });
+          }
+        })
+        .catch(error => {
+          alert(error);
+        });
+    },
+    getValidator(validator_address) {
+      return null
+    },
     handleClick(tab, event) {
       console.log(tag, event);
     },
@@ -150,11 +192,11 @@ export default {
       //console.log("showAccountList!");
       this.$router.push("/accountlist");
     },
-    transfer(coinType) {
-      if (!coinType) {
-        coinType = "QOS";
+    transfer(coin_name) {
+      if (!coin_name) {
+        coin_name = "QOS";
       }
-      this.$router.push("/transfer?coinTYpe=" + coinType);
+      this.$router.push("/transfer");
     },
     approve(coinType) {
       if (!coinType) {
@@ -163,10 +205,16 @@ export default {
       alert("该功能暂未开发!");
     },
     delegateorunbond(operation) {
-      this.$router.push({name:'delegateorunbond', params:{operation:operation}});
+      this.$router.push({
+        name: "delegateorunbond",
+        params: { operation: operation }
+      });
     },
-    modifyCompound(isCompound) {
-      this.$router.push({name:'modifycompound', params:{isCompound:isCompound}});
+    modifyCompound(is_compound) {
+      this.$router.push({
+        name: "modifycompound",
+        params: { is_compound: is_compound }
+      });
     }
   },
   computed: {}

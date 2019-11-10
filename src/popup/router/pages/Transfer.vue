@@ -12,7 +12,7 @@
         资产类型：
         <el-select v-model="value" placeholder="请选择" size="mini" @change="setCoinBalance">
           <el-option
-            v-for="coin in cointypes"
+            v-for="coin in coins"
             :key="coin.value"
             :label="coin.label"
             :value="coin.value"
@@ -58,21 +58,11 @@ export default {
   data() {
     return {
       // 根据用户地址链上查询的数据
-      cointypes: [
+      coins: [
         {
           value: "QOS",
           label: "QOS",
           balance: 10000
-        },
-        {
-          value: "STAR",
-          label: "STAR",
-          balance: 20000
-        },
-        {
-          value: "ZZU",
-          label: "ZZU",
-          balance: 30000
         }
       ],
       value: "",
@@ -103,10 +93,10 @@ export default {
     },
     setCoinBalance() {
       const choose = this.$data.value;
-      const cointypes = this.$data.cointypes;
-      for (let index = 0; index < cointypes.length; index++) {
-        if (choose == cointypes[index].value) {
-          this.$data.balance = cointypes[index].balance;
+      const coins = this.$data.coins;
+      for (let index = 0; index < coins.length; index++) {
+        if (choose == coins[index].value) {
+          this.$data.balance = coins[index].balance;
         }
       }
     },

@@ -5,13 +5,13 @@
 
     <div>
       <div style="float:left;width:100px;">
-        <el-image style="width: 100px; height: 100px" :src="validator.url"></el-image>
+        <el-image style="width: 100px; height: 100px" :src="validator.logo"></el-image>
       </div>
       <div style="float:right;width:200px;">
         <div style="text-align:left;">
           <span>
             <br />
-            {{ validator.name }}
+            {{ validator.moniker }}
           </span>
           <i class="el-icon-link"></i>
         </div>
@@ -38,7 +38,7 @@
     <div>
       <span>账户余额：{{ amount }}QOS</span>
     </div>
-    <div v-if="delegation.amount == '0'">
+    <div v-if="delegation.delegate_amount == 0">
       <el-radio v-model="form.compound" label="0">不复投</el-radio>
       <el-radio v-model="form.compound" label="1">复投</el-radio>
     </div>
@@ -67,16 +67,16 @@ export default {
       operation: this.$route.params.operation,
       //用户所选的validator信息
       validator: {
-        url:
-          "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        name: "Compass1",
+        logo:
+          "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
+        moniker: "Compass1",
         address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc"
       },
       //用户在当前validator的委托信息
       delegation: {
-        address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-        amount: 100,
-        isCompound: false
+        delegator_address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
+        delegate_amount: 100,
+        is_compound: false
       },
       form: {
         tokens: "数量", //追加或撤回的token数量
