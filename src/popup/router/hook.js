@@ -12,6 +12,7 @@ import clone from 'clone'
 // import { isNotEmpty } from '../../utils'
 const extension = require('extensionizer')
 
+// 非登录权限下使用
 const whiteListPage = ['/login', '/register', '/newwallet', '/newwalletresult', '/importwalletwithseed']
 // const whiteListPage = ['/login', '/register', '/transfer', '/newwallet', '/newwalletresult', '/importwalletwithseed', '/homepage', '/delegateorunbond', '/txresult', '/accountlist', '/newaccount', '/importaccount']
 
