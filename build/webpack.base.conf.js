@@ -82,6 +82,7 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
+      { from: '../node_modules/element-ui/lib/theme-chalk/fonts', to: 'fonts' },
       { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
       { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
       {
