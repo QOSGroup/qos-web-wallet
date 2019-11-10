@@ -91,8 +91,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~style/common.scss";
 .importwalletwithseed-wrap {
-  width: 308px;
-  padding: 30px 20px;
+  @include common-container;
 }
 </style>

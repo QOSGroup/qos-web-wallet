@@ -1,5 +1,5 @@
 <template>
-  <div class="delegateorunbond-wrap">
+  <div class="modify-wrap">
     <el-page-header @back="goBack" content="变更委托方式"></el-page-header>
     <el-divider></el-divider>
 
@@ -100,11 +100,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "~style/common.scss";
-.delegateorunbond-wrap {
+.modify-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
 }
 div {
   text-align: left;

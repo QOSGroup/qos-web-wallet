@@ -80,8 +80,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~style/common.scss";
 .newwallet-wrap {
-  width: 308px;
-  padding: 30px 20px;
+  @include common-container;
 }
 </style>

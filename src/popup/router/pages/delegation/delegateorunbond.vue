@@ -1,6 +1,6 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" content="变更委托数量"></el-page-header>
+    <el-page-header @back="goBack" :content=title></el-page-header>
     <el-divider></el-divider>
 
     <div>
@@ -59,6 +59,7 @@
 export default {
   data() {
     return {
+      title: this.$route.params.operation == "delegate" ? "追加委托" : "撤回委托",
       //用户信息
       userName: "wangkuan",
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
@@ -111,9 +112,6 @@ export default {
 @import "~style/common.scss";
 .delegateorunbond-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
 }
 div {
   text-align: left;

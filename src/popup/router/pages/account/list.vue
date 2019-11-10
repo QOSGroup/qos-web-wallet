@@ -105,9 +105,6 @@ export default {
 @import "~style/common.scss";
 .accountlist-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
   div {
     text-align: left;
     overflow: hidden;

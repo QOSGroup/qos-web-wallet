@@ -24,25 +24,24 @@ export default {
   data() {
     return {
       form: {
-        memwd: "zhujici",
+        memwd: "zhujici"
       }
     };
   },
   methods: {
     exportMemwd() {
       console.log("exportMemwd!");
-
     },
     goBack() {
-       this.$router.push({name: "homepage"})
+      this.$router.push({ name: "homepage" });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import "~style/common.scss";
 .newwalletresult-wrap {
-  width: 308px;
-  padding: 30px 20px;
+  @include common-container;
 }
 </style>

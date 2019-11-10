@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       form: {
-        name: "新账户名"
+        name: ""
       }
     };
   },
@@ -29,7 +29,7 @@ export default {
     goBack() {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push({name: "homepage"});
+        : this.$router.push({ name: "homepage" });
     },
     createAccount() {
       console.log("新建账户...");
@@ -42,21 +42,18 @@ export default {
 @import "~style/common.scss";
 .newaccount-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
-  div {
-    text-align: left;
-    overflow: hidden;
-    overflow-y: auto;
-    margin-bottom: 2%;
-    margin-top: 3%;
-    vertical-align: middle;
-  }
-  span {
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 14px;
-  }
+}
+div {
+  text-align: left;
+  overflow: hidden;
+  overflow-y: auto;
+  margin-bottom: 2%;
+  margin-top: 3%;
+  vertical-align: middle;
+}
+span {
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 14px;
 }
 </style>

@@ -70,9 +70,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "~style/common.scss";
 .login-wrap {
-  width: 308px;
-  padding: 30px 20px;
+  @include common-container;
   .logo {
     width: 20%;
     display: block;
