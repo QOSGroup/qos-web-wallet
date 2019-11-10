@@ -4,7 +4,7 @@
       <el-page-header @back="goBack" content="账户列表"></el-page-header>
     </div>
     <div style="float:right">
-      <el-button type="primary" icon="el-icon-switch-button" size="mini">注销</el-button>
+      <el-button type="primary" icon="el-icon-switch-button" size="mini" @click="exit">注销</el-button>
     </div>
     <el-divider></el-divider>
     <div>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { setToken } from "@/business/auth";
 export default {
   data() {
     return {
@@ -91,6 +92,10 @@ export default {
     },
     importAccount() {
       this.$router.push("./importaccount");
+    },
+    exit() {
+      setToken("");
+      this.$router.push("./login");
     }
   }
 };
