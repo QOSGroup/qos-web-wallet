@@ -34,7 +34,7 @@ export default {
 
     },
     goBack() {
-       this.$router.push('/')
+       this.$router.push({name: "homepage"})
     }
   }
 };

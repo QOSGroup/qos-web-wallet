@@ -1,16 +1,24 @@
 <template>
-  <div class="newwallet-wrap">
-    <el-page-header @back="goBack" content="创建钱包"></el-page-header>
+  <div class="importwalletwithseed-wrap">
+    <el-page-header @back="goBack" content="使用助记词恢复钱包"></el-page-header>
     <el-divider></el-divider>
-    <el-form ref="form" :model="form" label-width="80px" v-bind:rules="rules">
-      <el-form-item label="输入密码" prop="password">
+    <el-form ref="form" :model="form" label-width="80px" v-bind:rules="rules" class="demo-ruleForm">
+      <el-form-item label="助记词" prop="memwd">
+        <el-input
+          placeholder="请输入12个单词的助记词"
+          type="textarea"
+          v-model="form.memwd"
+          auto-complete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="新密码" prop="password">
         <el-input placeholder="请输入密码" v-model="form.password" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="重复密码" prop="repassword">
         <el-input placeholder="请再次输入密码" v-model="form.repassword" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
+        <el-button type="primary" @click="recoverWallet('form')">恢复</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -18,7 +26,7 @@
 </template>
 
 <script>
-import { setToken } from "@/business/auth";
+import { setToken, setAccountList } from "@/business/auth";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -42,20 +50,22 @@ export default {
     };
     return {
       form: {
+        memwd: "",
         password: "",
         repassword: ""
       },
       rules: {
-        password: [
-          { validator: validatePass, trigger: "blur" },
-          { min: 6, max: 12, message: "密码位数6~12位!" }
+        memwd: [
+          { required: true, message: "请输入助记词", trigger: "blur" },
+          { min: 12, message: "长度为 12 个单词", trigger: "blur" }
         ],
+        password: [{ validator: validatePass, trigger: "blur" }],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
       }
     };
   },
   methods: {
-    onSubmit(formName) {
+    recoverWallet(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 数据合法,创建账户 todo
@@ -64,23 +74,24 @@ export default {
           setToken("wangkuan");
           // 添加账户至存储accountlist中
           // setAccountList();
-          // 账户新建后,默认跳转newwalletresult页面
-          this.$router.push("/newwalletresult");
+          // 跳转home主页
+          this.$router.push({name: "homepage"});
+          //alert("recoverWallet!");
         } else {
-          console.log("error newwallet!!");
+          console.log("error recoverWallet!!");
           return false;
         }
       });
     },
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push({name: "homepage"});
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.newwallet-wrap {
+.importwalletwithseed-wrap {
   width: 308px;
   padding: 30px 20px;
 }

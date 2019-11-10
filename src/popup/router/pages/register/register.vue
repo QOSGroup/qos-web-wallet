@@ -35,10 +35,10 @@ export default {
   },
   methods: {
     newWallet(){
-      this.$router.push('./newwallet')
+      this.$router.push({name: "walletcreate"})
     },
     importWallet(){
-      this.$router.push('./importwalletwithseed')
+      this.$router.push({name: "walletimport"})
     }
   }
 }

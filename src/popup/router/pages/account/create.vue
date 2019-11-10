@@ -29,7 +29,7 @@ export default {
     goBack() {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push("/homepage");
+        : this.$router.push({name: "homepage"});
     },
     createAccount() {
       console.log("新建账户...");

@@ -1,6 +1,6 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" content="委托与解除委托"></el-page-header>
+    <el-page-header @back="goBack" content="变更委托方式"></el-page-header>
     <el-divider></el-divider>
 
     <div>
@@ -26,27 +26,27 @@
     </div>
 
     <div>
-      <span>当前委托：{{ delegation.amount }} QOS</span>
+      <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
-    <div>
-      <span>{{operation == "delegate" ? "追加" : "撤回"}}数量：</span>
+    <div v-if="this.$route.params.is_compound == 'true'">
+      <div class="div_modify">复投</div>
+      <div class="div_modify">
+        <i class="el-icon-right"></i>
+      </div>
+      <div class="div_modify">不复投</div>
     </div>
-    <div>
-      <el-input type="input" v-model="form.tokens" clearable size="small" style="width:75%;"></el-input>
-      <el-button size="mini" style="float:right;height:38px;" @click="setMax">最大值</el-button>
-    </div>
-    <div>
-      <span>账户余额：{{ amount }}QOS</span>
-    </div>
-    <div v-if="delegation.delegate_amount == 0">
-      <el-radio v-model="form.compound" label="0">不复投</el-radio>
-      <el-radio v-model="form.compound" label="1">复投</el-radio>
+    <div v-else>
+      <div class="div_modify">不复投</div>
+      <div class="div_modify">
+        <i class="el-icon-right"></i>
+      </div>
+      <div class="div_modify">复投</div>
     </div>
     <div>
       <span>最大手续费：{{ form.gas }}</span>
     </div>
     <div class="block">
-      <el-slider v-model="form.gas"></el-slider>
+      <el-slider v-model="form.gas" max="100"></el-slider>
     </div>
 
     <div style="text-align:center;">
@@ -63,8 +63,6 @@ export default {
       userName: "wangkuan",
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
       amount: 1234.56,
-      //用户选择的操作：委托deleagte / 解除委托unbond web页面传递
-      operation: this.$route.params.operation,
       //用户所选的validator信息
       validator: {
         logo:
@@ -75,30 +73,28 @@ export default {
       //用户在当前validator的委托信息
       delegation: {
         delegator_address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-        delegate_amount: 100,
-        is_compound: false
+        delegate_amount: 1000,
+        is_compound: true
       },
       form: {
-        tokens: "数量", //追加或撤回的token数量
-        gas: 10, //支付的gas费用
-        compound: "0" //页面选择是否复投
+        gas: 10 //支付的gas费用
       }
     };
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.push({name:'homepage', params:{activeName:"delegation"}}) : this.$router.push("/");
-    },
-    setMax() {
-      this.$data.form.tokens = this.$data.amount;
+      window.history.length > 1
+        ? this.$router.push({
+            name: "homepage",
+            params: { activeName: "delegation" }
+          })
+        : this.$router.push({name: "homepage"});
     },
     commitTx() {
-      this.$router.push("/txresult");
+      this.$router.push({name: "txresult"});
     }
   },
-  computed: {
-    // operation: ''
-  }
+  computed: {}
 };
 </script>
 
@@ -121,5 +117,13 @@ span {
   word-break: break-all;
   word-wrap: break-word;
   font-size: 14px;
+}
+.div_modify {
+  height: 50px;
+  font-size: x-large;
+  margin-top: 20px;
+  float: left;
+  width: 33.33%;
+  text-align: center;
 }
 </style>

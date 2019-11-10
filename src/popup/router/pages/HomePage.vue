@@ -190,13 +190,13 @@ export default {
     },
     showAccountList() {
       //console.log("showAccountList!");
-      this.$router.push("/accountlist");
+      this.$router.push({name: "accountlist"});
     },
     transfer(coin_name) {
       if (!coin_name) {
         coin_name = "QOS";
       }
-      this.$router.push("/transfer");
+      this.$router.push({name: "transfer"});
     },
     approve(coinType) {
       if (!coinType) {

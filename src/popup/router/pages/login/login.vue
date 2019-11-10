@@ -35,10 +35,10 @@ export default {
   },
   methods: {
     forgetPassword() {
-      this.$router.push("/importwalletwithseed");
+      this.$router.push({name: "walletimport"});
     },
     noWallet() {
-      this.$router.push("/newwallet");
+      this.$router.push({name: "walletcreate"});
     }
   }
 };
