@@ -75,7 +75,7 @@ export default {
           // 添加账户至存储accountlist中
           // setAccountList();
           // 跳转home主页
-          this.$router.push("/");
+          this.$router.push({name: "homepage"});
           //alert("recoverWallet!");
         } else {
           console.log("error recoverWallet!!");
@@ -84,15 +84,15 @@ export default {
       });
     },
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push({name: "homepage"});
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import "~style/common.scss";
 .importwalletwithseed-wrap {
-  width: 308px;
-  padding: 30px 20px;
+  @include common-container;
 }
 </style>

@@ -95,7 +95,7 @@ export default {
     goBack() {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push("/homepage");
+        : this.$router.push({name: "homepage"});
     },
     setImportTypes() {
       console.log("设置页面显示隐藏");

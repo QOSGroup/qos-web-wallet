@@ -1,47 +1,32 @@
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Transfer from './pages/Transfer'
-import NewWallet from './pages/NewWallet'
-import NewWalletResult from './pages/NewWalletResult'
-import ImportWalletWithSeed from './pages/ImportWalletWithSeed'
+import Login from './pages/login/login'
+import Register from './pages/register/register'
 import HomePage from './pages/HomePage'
-import DelegateOrUnbond from './pages/DelegateOrUnbond'
-import TxResult from './pages/TxResult'
-import AccountList from './pages/AccountList'
-import NewAccount from './pages/NewAccount'
-import ImportAccount from './pages/ImportAccount'
-import ModifyCompound from './pages/ModifyCompound'
+
+import AccountList from './pages/account/list'
+import AccountCreate from './pages/account/create'
+import AccountImport from './pages/account/import'
+
+import Transfer from './pages/transfer/transfer'
+
+import WalletCreate from './pages/wallet/create'
+import WalletResult from './pages/wallet/result'
+import WalletImport from './pages/wallet/import'
+
+import DelegateOrUnbond from './pages/delegation/delegateorunbond'
+import ModifyCompound from './pages/delegation/modify'
+
+import TxResult from './pages/result/result'
 
 export default [
   {
-    path: '/login',
+    path: '/login/login',
     name: 'login',
     component: Login
   },
   {
-    path: '/register',
+    path: '/register/register',
     name: 'register',
     component: Register
-  },
-  {
-    path: '/transfer',
-    name: 'transfer',
-    component: Transfer
-  },
-  {
-    path: '/newwallet',
-    name: 'newwallet',
-    component: NewWallet
-  },
-  {
-    path: '/newwalletresult',
-    name: 'newwalletresult',
-    component: NewWalletResult
-  },
-  {
-    path: '/importwalletwithseed',
-    name: 'importwalletwithseed',
-    component: ImportWalletWithSeed
   },
   {
     path: '/',
@@ -49,33 +34,53 @@ export default [
     component: HomePage
   },
   {
-    path: '/delegateorunbond',
+    path: '/transfer/transfer',
+    name: 'transfer',
+    component: Transfer
+  },
+  {
+    path: '/wallet/create',
+    name: 'walletcreate',
+    component: WalletCreate
+  },
+  {
+    path: '/wallet/result',
+    name: 'walletresult',
+    component: WalletResult
+  },
+  {
+    path: '/wallet/import',
+    name: 'walletimport',
+    component: WalletImport
+  },
+  {
+    path: '/delegation/deleagteorunbond',
     name: 'delegateorunbond',
     component: DelegateOrUnbond
   },
   {
-    path: '/modifycompound',
+    path: '/delegation/modify',
     name: 'modifycompound',
     component: ModifyCompound
   },
   {
-    path: '/txresult',
+    path: '/result/result',
     name: 'txresult',
     component: TxResult
   },
   {
-    path: '/accountlist',
+    path: '/account/list',
     name: 'accountlist',
     component: AccountList
   },
   {
-    path: '/newaccount',
-    name: 'newaccount',
-    component: NewAccount
+    path: '/account/create',
+    name: 'accountcreate',
+    component: AccountCreate
   },
   {
-    path: '/importaccount',
-    name: 'importaccount',
-    component: ImportAccount
+    path: '/account/import',
+    name: 'accountimport',
+    component: AccountImport
   }
 ]

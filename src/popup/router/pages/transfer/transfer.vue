@@ -52,7 +52,7 @@
 
 <script>
 // import QOSRpc from 'js-for-qos-httprpc'
-import { processMsg } from "../../common/bgcontact";
+import { processMsg } from "../../../common/bgcontact";
 
 export default {
   data() {
@@ -86,10 +86,10 @@ export default {
     goBack() {
       window.history.length > 1
         ? this.$router.push({name:'homepage', params:{activeName:"balance"}})
-        : this.$router.push("/homepage");
+        : this.$router.push({name:'homepage'});
     },
     commitTx() {
-      this.$router.push("/txresult");
+      this.$router.push({name: "txresult"});
     },
     setCoinBalance() {
       const choose = this.$data.value;
@@ -128,9 +128,6 @@ export default {
 @import "~style/common.scss";
 .transfer-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
   div {
     text-align: left;
     overflow: hidden;

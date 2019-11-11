@@ -1,6 +1,6 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" content="委托与解除委托"></el-page-header>
+    <el-page-header @back="goBack" :content=title></el-page-header>
     <el-divider></el-divider>
 
     <div>
@@ -26,7 +26,7 @@
     </div>
 
     <div>
-      <span>当前委托：{{ delegation.amount }} QOS</span>
+      <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
     <div>
       <span>{{operation == "delegate" ? "追加" : "撤回"}}数量：</span>
@@ -59,6 +59,7 @@
 export default {
   data() {
     return {
+      title: this.$route.params.operation == "delegate" ? "追加委托" : "撤回委托",
       //用户信息
       userName: "wangkuan",
       address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
@@ -87,13 +88,18 @@ export default {
   },
   methods: {
     goBack() {
-      window.history.length > 1 ? this.$router.push({name:'homepage', params:{activeName:"delegation"}}) : this.$router.push("/");
+      window.history.length > 1
+        ? this.$router.push({
+            name: "homepage",
+            params: { activeName: "delegation" }
+          })
+        : this.$router.push({ name: "homepage" });
     },
     setMax() {
       this.$data.form.tokens = this.$data.amount;
     },
     commitTx() {
-      this.$router.push("/txresult");
+      this.$router.push({ name: "txresult" });
     }
   },
   computed: {
@@ -106,9 +112,6 @@ export default {
 @import "~style/common.scss";
 .delegateorunbond-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
 }
 div {
   text-align: left;

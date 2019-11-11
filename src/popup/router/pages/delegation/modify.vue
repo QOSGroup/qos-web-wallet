@@ -1,5 +1,5 @@
 <template>
-  <div class="delegateorunbond-wrap">
+  <div class="modify-wrap">
     <el-page-header @back="goBack" content="变更委托方式"></el-page-header>
     <el-divider></el-divider>
 
@@ -73,7 +73,7 @@ export default {
       //用户在当前validator的委托信息
       delegation: {
         delegator_address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-        delegate_amount: "1000",
+        delegate_amount: 1000,
         is_compound: true
       },
       form: {
@@ -88,10 +88,10 @@ export default {
             name: "homepage",
             params: { activeName: "delegation" }
           })
-        : this.$router.push("/");
+        : this.$router.push({ name: "homepage" });
     },
     commitTx() {
-      this.$router.push("/txresult");
+      this.$router.push({ name: "txresult" });
     }
   },
   computed: {}
@@ -100,11 +100,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "~style/common.scss";
-.delegateorunbond-wrap {
+.modify-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
 }
 div {
   text-align: left;

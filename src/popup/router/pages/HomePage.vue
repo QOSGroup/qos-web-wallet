@@ -190,13 +190,13 @@ export default {
     },
     showAccountList() {
       //console.log("showAccountList!");
-      this.$router.push("/accountlist");
+      this.$router.push({name: "accountlist"});
     },
     transfer(coin_name) {
       if (!coin_name) {
         coin_name = "QOS";
       }
-      this.$router.push("/transfer");
+      this.$router.push({name: "transfer"});
     },
     approve(coinType) {
       if (!coinType) {
@@ -225,9 +225,6 @@ export default {
 @import "~style/common.scss";
 .homepage-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
 }
 div {
   text-align: center;

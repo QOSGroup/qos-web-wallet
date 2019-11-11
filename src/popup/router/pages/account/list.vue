@@ -85,17 +85,17 @@ export default {
     goBack() {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push("/homepage");
+        : this.$router.push({name: homepage});
     },
     addAccount() {
-      this.$router.push("./newaccount");
+      this.$router.push({name: "accountcreate"});
     },
     importAccount() {
-      this.$router.push("./importaccount");
+      this.$router.push({name: "accountimport"});
     },
     exit() {
       setToken("");
-      this.$router.push("./login");
+      this.$router.push({name: "login"});
     }
   }
 };
@@ -105,9 +105,6 @@ export default {
 @import "~style/common.scss";
 .accountlist-wrap {
   @include common-container;
-  width: 308px;
-  height: 500px;
-  padding: 30px 20px;
   div {
     text-align: left;
     overflow: hidden;
