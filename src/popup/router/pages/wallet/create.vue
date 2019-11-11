@@ -18,7 +18,11 @@
 </template>
 
 <script>
-import { setToken } from "@/business/auth";
+import {
+  setToken,
+
+} from "@/business/auth";
+
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -60,12 +64,13 @@ export default {
         if (valid) {
           // 数据合法,创建账户 todo
 
+
           // 设置登陆token
           setToken("wangkuan");
           // 添加账户至存储accountlist中
           // setAccountList();
           // 账户新建后,默认跳转newwalletresult页面
-          this.$router.push({name: "walletresult"});
+          this.$router.push({ name: "walletresult" });
         } else {
           console.log("error newwallet!!");
           return false;
@@ -73,7 +78,9 @@ export default {
       });
     },
     goBack() {
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push({name: "homepage"});
+      window.history.length > 1
+        ? this.$router.go(-1)
+        : this.$router.push({ name: "homepage" });
     }
   }
 };

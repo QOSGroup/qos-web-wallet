@@ -1,4 +1,6 @@
-import { Res } from '../../business/BaseMsgHandler'
+import {
+  Res
+} from '../../business/BaseMsgHandler'
 
 const extensioner = require('extensionizer')
 
@@ -11,6 +13,8 @@ export function getBackground () {
 export function processMsg (msgIndex, res) {
   const bg = getBackground()
   msgIndex = msgIndex || 0
-  const msg = res || new Res(true, { message: 'ok' })
+  const msg = res || new Res(true, {
+    message: 'ok'
+  })
   bg.msgProcessed(msgIndex, msg)
 }

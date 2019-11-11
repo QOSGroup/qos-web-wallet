@@ -105,6 +105,7 @@
 
 <script>
 import axios from "axios";
+// import QOSRpc from "qosWeb/build/main/core/QOSRpc";
 
 export default {
   data() {
@@ -114,89 +115,96 @@ export default {
           ? "balance"
           : this.$route.params.activeName,
       userName: "wangkuan",
-      address: "qosacc1e5tahz33c576cwqm3t22er22mtrj7a8jhxqzfe",
+      address: "qosacc1x6d58mx3hssq6ksaftfwvdskaz35pumrd4hywk",
       qos: "",
       qcps: [],
       delegations: []
     };
   },
   created() {
+    //打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address);
-    this.getDelegations();
+    this.getDelegations(this.$data.address);
   },
   methods: {
     getAccount(address) {
+      //  todo 调用js-for-qos-httprpc的方法,根据用户地址获取用户信息
+      // const rpc = new QOSRpc({ baseUrl: "http://47.100.168.251:9876" });
+
       axios
-        .get(
-          "http://www.baidu.com/"+address
-        )
+        .get("http://47.98.253.9:9876/accounts/" + address)
         .then(res => {
-          // this.$data.qos = res.data.value.qos;
-          this.$data.qos = "999999";
-
-          this.$data.qcps.push({
-            coin_name: "ZZU",
-            amount: "10000000000"
-          });
-          this.$data.qcps.push({
-            coin_name: "STAR",
-            amount: "10000000000"
-          });
-
+          this.$data.qos = res.data.value.qos;
+          this.$data.qcps = [];
+          //联盟链和联盟币为假数据,因为现在不支持
+          // this.$data.qcps.push({
+          //   coin_name: "ZZU",
+          //   amount: "10000000000"
+          // });
+          // this.$data.qcps.push({
+          //   coin_name: "STAR",
+          //   amount: "10000000000"
+          // });
         })
         .catch(error => {
-          alert(error);
+          console.log(error);
         });
     },
-    getDelegations() {
+    getDelegations(address) {
       axios
-        .get("http://www.baidu.com")
+        .get(
+          "http://47.98.253.9:9876/stake/delegators/" + address + "/delegations"
+        )
         .then(res => {
           // 获取到委托信息后进行循环:拆分出其中字段:validator_address,delegate_amount,is_compound
           // 每次循环中,根据validator_address查询出该validator的详细信息,拆分字段:description.moniker  description.logo
-          for (var i = 0; i < 2; i++) {
-            
-            // get
-            this.delegations.push({
-              logo:
-                "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
-              moniker: "Compass1",
-              validator_address:
-                "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-              delegate_amount: "4567.76",
-              is_compound: true
-            });
-
-            this.delegations.push({
-              logo:
-                "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
-              moniker: "Compass2",
-              validator_address:
-                "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-              delegate_amount: "8765456.87",
-              is_compound: false
-            });
+          this.delegations = [];
+          for (var i = 0; i <= res.data.length; i++) {
+            this.getValidator(res.data, i);
           }
         })
         .catch(error => {
-          alert(error);
+          console.log(error);
         });
     },
-    getValidator(validator_address) {
-      return null
+    getValidator(delegation, i) {
+      axios
+        .get(
+          "http://47.98.253.9:9876/stake/validators/" +
+            delegation[i].validator_address
+        )
+        .then(res => {
+          this.delegations.push({
+            logo: res.data.description.logo,
+            moniker: res.data.description.moniker,
+            validator_address: delegation[i].validator_address,
+            delegate_amount: delegation[i].delegate_amount,
+            is_compound: delegation[i].is_compound
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     handleClick(tab, event) {
-      console.log(tag, event);
+      // console.log(tab, event);
+      if (tab.name == "delegation") {
+        this.getDelegations(this.$data.address);
+      } else if (tab.name == "balance") {
+        this.getAccount(this.$data.address);
+      } else {
+        console.log("other tab !");
+      }
     },
     showAccountList() {
       //console.log("showAccountList!");
-      this.$router.push({name: "accountlist"});
+      this.$router.push({ name: "accountlist" });
     },
     transfer(coin_name) {
       if (!coin_name) {
         coin_name = "QOS";
       }
-      this.$router.push({name: "transfer"});
+      this.$router.push({ name: "transfer" });
     },
     approve(coinType) {
       if (!coinType) {

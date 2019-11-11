@@ -52,7 +52,8 @@
 
 <script>
 // import QOSRpc from 'js-for-qos-httprpc'
-import { processMsg } from "../../../common/bgcontact";
+import { processMsg, broadcastTX} from "../../../common/bgcontact";
+import axios from "axios";
 
 export default {
   data() {
@@ -68,7 +69,7 @@ export default {
       value: "",
       balance: 0,
       form: {
-        address: "gyukjcuejbdjsiuwenjxudksuhudrtdeduycxunjusfdsfdkjbcuw",
+        address: "qosacc163sy2vhsjjzwy7xfm5zkdchpvzpcqc68wf8fpy",
         tokens: 100,
         gas: 10
       }
@@ -85,11 +86,47 @@ export default {
   methods: {
     goBack() {
       window.history.length > 1
-        ? this.$router.push({name:'homepage', params:{activeName:"balance"}})
-        : this.$router.push({name:'homepage'});
+        ? this.$router.push({
+            name: "homepage",
+            params: { activeName: "balance" }
+          })
+        : this.$router.push({ name: "homepage" });
     },
-    commitTx() {
-      this.$router.push({name: "txresult"});
+    async commitTx() {
+      //alert(this.form.address + "==" + this.form.tokens + "==" + this.form.gas);
+      var flag = false;
+      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+      await axios
+        .post(
+          "http://47.98.253.9:9876/bank/accounts/" +
+            this.form.address +
+            "/transfers",
+          {
+            base: {
+              from: "qosacc1x6d58mx3hssq6ksaftfwvdskaz35pumrd4hywk",
+              chain_id: "qos-test",
+              max_gas: this.form.gas.toString()
+            },
+            qos: this.form.tokens.toString(),
+            qscs: null
+          }
+        )
+        .then(function(res) {
+          //console.log(res); //处理成功的函数 相当于success
+          //得到返回的json字符串后,使用本地的私钥进行签名,而后将签名后的字符串调用广播上链接口,等待交易上线.
+          alert("交易组装成功已经返回.等待本地私钥签名后,进行上链操作.");
+          // todo 调用交易广播接口,进行上链操作
+          flag = true;
+        })
+        .catch(function(error) {
+          console.log(error); //错误处理 相当于error
+        });
+
+      if (flag) {
+        this.$router.push({ name: "txresult" });
+      } else {
+        alert("转账失败! ");
+      }
     },
     setCoinBalance() {
       const choose = this.$data.value;
@@ -100,8 +137,8 @@ export default {
         }
       }
     },
-    setMax(){
-      this.$data.form.tokens=this.$data.balance
+    setMax() {
+      this.$data.form.tokens = this.$data.balance;
     },
     onProcess() {
       processMsg();

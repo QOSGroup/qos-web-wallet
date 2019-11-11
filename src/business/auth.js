@@ -2,6 +2,7 @@ import db from '../utils/db'
 
 const TOKEN_KEY = 'qos-web-wallet-token'
 const ACCOUNTLIST = 'qos-account-list'
+const CURRENTACCOUNT = 'qos-current-account'
 
 export function setToken (token) {
   return db.set(TOKEN_KEY, token)
@@ -27,4 +28,15 @@ export function setAccount (account) {
 /** 获取账户列表 */
 export function getAccountList () {
   return db.get(ACCOUNTLIST)
+}
+export function setAccountList (list) {
+  return db.set(ACCOUNTLIST, list)
+}
+
+export function setCurrentAccount (account) {
+  return db.set(CURRENTACCOUNT, account)
+}
+
+export function getCurrentAcount () {
+  return db.get(CURRENTACCOUNT)
 }
