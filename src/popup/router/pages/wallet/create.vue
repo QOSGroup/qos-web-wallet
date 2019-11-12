@@ -52,7 +52,7 @@ export default {
       rules: {
         password: [
           { validator: validatePass, trigger: "blur" },
-          { min: 6, max: 12, message: "密码位数6~12位!" }
+          { min: 6, max: 12, message: "密码位数6~12位!", trigger: "blur" }
         ],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
       }

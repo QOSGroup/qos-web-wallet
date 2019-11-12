@@ -105,7 +105,8 @@
 
 <script>
 import axios from "axios";
-// import QOSRpc from "qosWeb/build/main/core/QOSRpc";
+import QOSRpc from "qosWeb/build/main/core/QOSRpc";
+import SecretKey from "qosWeb/build/main/core/SecretKey"
 
 export default {
   data() {
@@ -129,8 +130,11 @@ export default {
   methods: {
     getAccount(address) {
       //  todo 调用js-for-qos-httprpc的方法,根据用户地址获取用户信息
-      // const rpc = new QOSRpc({ baseUrl: "http://47.100.168.251:9876" });
-
+      const rpc = new QOSRpc({ baseUrl: "http://47.100.168.251:9876" });
+      const skey = new SecretKey();
+      const Mn = skey.generateMnemonic()
+      alert("rpc.config.baseUrl=="+rpc.config.baseUrl+"\nMn=="+Mn);
+      
       axios
         .get("http://47.98.253.9:9876/accounts/" + address)
         .then(res => {
