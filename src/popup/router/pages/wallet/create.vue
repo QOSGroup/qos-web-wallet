@@ -20,8 +20,13 @@
 <script>
 import {
   setToken,
-
+  setCurrentAccount,
+  setCurrentAccountCipher,
+  setAccountName,
+  setPrivateKey
 } from "@/business/auth";
+import QOSHttpRpc from "qosRpc";
+import Account from 'qosRpc/build/main/core/Account';
 
 export default {
   data() {
@@ -55,7 +60,8 @@ export default {
           { min: 6, max: 12, message: "密码位数6~12位!", trigger: "blur" }
         ],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
-      }
+      },
+      rpc: new QOSHttpRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   methods: {
@@ -63,12 +69,28 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 数据合法,创建账户 todo
+          // 随机创建地址
+          // const mn = this.rpc.key.generateMnemonic();
+          // const account = this.rpc.importAccount(mn);
+          // 私钥方式得到account对象
+          const prikey = "UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==";
+          const account = this.rpc.recoveryAccountByPrivateKey(prikey);
 
+          // 设置accountName
+          setAccountName("创世账户名");
 
-          // 设置登陆token
-          setToken("wangkuan");
-          // 添加账户至存储accountlist中
-          // setAccountList();
+          // 设置setCurrentAccount
+          setCurrentAccount(account.address);
+          setCurrentAccountCipher(account.address+this.form.password);
+          
+          // 设置登陆token,使用密码(this.form.password)加密address,暂时存储成明文.
+          // todo 加密操作
+          setToken(account.address+this.form.password);
+
+          // 存储私钥密文=使用特殊加密方式加密私钥,暂时存储成明文.
+          // todo 加密操作
+          setPrivateKey(account.privateKey)
+
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({ name: "walletresult" });
         } else {

@@ -1,6 +1,6 @@
 import {
   getToken,
-  getAccountList
+  getCurrentAccount
 } from '../../business/auth'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
@@ -31,10 +31,10 @@ export async function beforeEach (to, from, next) {
   // 请增加登录校验
   if (!getToken() && whiteListPage.indexOf(to.path) === -1) {
     console.log('real to page name', to.name)
-    // 判断是否有token
-    const accList = getAccountList()
-
-    if (!accList || accList.length === 0) {
+    // const accList = getAccountList()
+    const acc = getCurrentAccount()
+    // if (!accList || accList.length === 0) {
+    if (!acc) {
       next('/register/register')
       return
     }

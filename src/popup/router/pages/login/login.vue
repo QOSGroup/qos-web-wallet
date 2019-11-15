@@ -19,17 +19,28 @@
 </template>
 
 <script>
-import { setToken } from "@/business/auth";
+import {
+  setToken,
+  getCurrentAccount,
+  getCurrentAccountCipher
+} from "@/business/auth";
+import { constants } from "crypto";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      // todo 验证密码是否正确
-      if (value === "password") {
-        // 设置登陆token
-        setToken("wangkuan");
-        this.$router.push({ name: "homepage" });
+      if (value === "") {
+        callback(new Error("请输入密码"));
       } else {
-        callback(alert("密码不匹配,请重新输入!"));
+        const pwd = value;
+        const accaddress = getCurrentAccount();
+        const accaddresscipher = getCurrentAccountCipher();
+        if (accaddress + pwd == accaddresscipher) {
+          setToken(accaddresscipher);
+          this.$router.push({ name: "homepage" });
+        } else {
+          alert("密码不匹配,请重新输入!");
+        }
+        callback();
       }
     };
     return {
@@ -60,7 +71,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          console.log("error submit!!");
+          console.log("error password!!");
           return false;
         }
       });
