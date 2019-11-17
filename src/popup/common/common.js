@@ -17,7 +17,9 @@ export function setLoaclStorage (account, password) {
   setCurrentAccountCipher(encrypt(account.address, password))
   // 设置登陆token,使用密码(this.form.password)加密address,暂时存储成明文.
   // todo 加密操作
-  setToken(encrypt(account.address, password))
+  // setToken(encrypt(account.address, password))
+  console.log(account)
+  setToken(account)
 
   // 存储私钥密文=使用特殊加密方式加密私钥,暂时存储成明文.
   // todo 加密操作

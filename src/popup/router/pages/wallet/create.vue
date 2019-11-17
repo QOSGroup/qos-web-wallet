@@ -19,7 +19,7 @@
 
 <script>
 import { setLoaclStorage } from "../../../common/common";
-import QOSHttpRpc from "qosRpc";
+import QOSHttpRpc from "qosHttpRpc";
 
 export default {
   data() {
@@ -63,7 +63,7 @@ export default {
         if (valid) {
           // 数据合法,创建账户 todo
           // 随机创建地址
-          const mn = this.rpc.key.generateMnemonic();
+          const mn = this.rpc.generateMnemonic();
           const account = this.rpc.importAccount(mn);
           // 私钥方式得到account对象
           // const prikey = "UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==";

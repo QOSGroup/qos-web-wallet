@@ -54,7 +54,7 @@
 
 <script>
 import { setLoaclStorage } from "../../../common/common";
-import QOSHttpRpc from "qosRpc";
+import QOSHttpRpc from "qosHttpRpc";
 export default {
   data() {
     var checkImportType = (rule, value, callback) => {

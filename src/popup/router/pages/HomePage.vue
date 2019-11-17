@@ -105,7 +105,7 @@
 
 <script>
 import axios from "axios";
-import qosRpc from "qosRpc";
+import QOSHttpRpc from "qosHttpRpc";
 import { getToken, getCurrentAccount, getAccountName } from "@/business/auth";
 
 export default {
@@ -120,7 +120,7 @@ export default {
       qos: 0,
       qcps: [],
       delegations: [],
-      rpc: new qosRpc({ baseUrl: "http://47.98.253.9:9876" })
+      rpc: new QOSHttpRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   created() {
@@ -130,8 +130,9 @@ export default {
   },
   methods: {
     getAccount(address) {
+      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
       // 拿到account对象,调用业务方法
-      const res = this.rpc.account.queryAccount(address);
+      const res = account.queryAccount(address);
       res.then(result => {
         if (result.status === 200) {
           this.$data.qos = result.data.value.qos;
@@ -144,8 +145,9 @@ export default {
     getDelegations(address) {
       //刷新委托信息
       this.delegations = [];
+      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
       // 拿到account对象,调用业务方法
-      const res = this.rpc.account.queryDelagationAll(address);
+      const res = account.queryDelagationAll(address);
       res.then(result => {
         if (result.status == 200) {
           for (var i = 0; i <= result.data.length; i++) {
@@ -157,8 +159,9 @@ export default {
       });
     },
     getValidator(delegation, i) {
+      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
       // 拿到account对象,调用业务方法
-      const res = this.rpc.account.queryValidatorOne(
+      const res = account.queryValidatorOne(
         delegation[i].validator_address
       );
       res.then(result => {
