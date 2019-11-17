@@ -1,7 +1,8 @@
 import { Res, InputParams } from './Common'
+import { createRandomId } from '../utils'
 
 // 存储回调函数数组
-export const ArrayCallBack = []
+export const CallBackMap = new Map()
 
 // 抽象类
 class MsgHandler {
@@ -38,6 +39,12 @@ class MsgHandler {
       }
       return callback.apply(this, args)
     }
+  }
+
+  addCallBack (cb) {
+    const id = createRandomId()
+    CallBackMap.set(id, cb)
+    return id
   }
 }
 

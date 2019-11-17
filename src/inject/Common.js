@@ -8,10 +8,10 @@ export class Res {
 
 // 输入类型
 export class InputParams {
-  constructor (type, params, callbackIndex) {
+  constructor (type, params, callbackId) {
     this.flag = 'qos_msg'
     this.type = type
     this.params = params
-    this.callbackIndex = callbackIndex
+    this.callbackId = callbackId
   }
 }

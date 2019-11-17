@@ -1,10 +1,7 @@
 import TransferHandler from './inject/TransferHandler'
-import {
-  InputParams
-} from './inject/Common'
-import {
-  ArrayCallBack
-} from './inject/BaseHandler'
+import { InputParams } from './inject/Common'
+import { CallBackMap } from './inject/BaseHandler'
+import EnableHandler from './inject/EnableHandler'
 
 class QOSWallet {
   constructor () {
@@ -13,11 +10,22 @@ class QOSWallet {
         return
       }
       if (event && event.data.type === 'qosProcessCallback') {
-        console.log(ArrayCallBack, event.data.callbackIndex)
-        const cb = ArrayCallBack[event.data.callbackIndex]
+        console.log(CallBackMap, event.data.callbackId)
+        const cb = CallBackMap.get(event.data.callbackId)
         cb && cb(event.data.res)
+        CallBackMap.delete(event.data.callbackId)
       }
     }, false)
+  }
+
+  enable () {
+    return new Promise(resolve => {
+      const hanler = new EnableHandler(new InputParams())
+      hanler.handler(function (res) {
+        console.log('handler.handler', res)
+        resolve(res)
+      })
+    })
   }
 
   process (msg) {

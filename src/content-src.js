@@ -23,18 +23,18 @@ window.addEventListener('message', function (event) {
   if (event.source !== window) {
     return
   }
-  if (event && event.data.type === 'qosToPage') {
-    console.log(event.data)
+
+  if (event && event.data.type && event.data.type.startsWith('qos')) {
     extension.runtime.sendMessage(
-      // new InputParams('qosToPage', event.data.params, event.data.callbackIndex),
       event.data,
       function (response) {
-        console.log('response', response)
-        // window.postMessage({
-        //   type: 'qosProcessCallback',
-        //   callbackIndex: response.callbackIndex,
-        //   res: response
-        // }, '*')
+        // console.log('response', response)
+        // 回调
+        window.postMessage({
+          type: 'qosProcessCallback',
+          callbackId: response.callbackId,
+          res: response
+        }, '*')
       })
   }
 }, false)

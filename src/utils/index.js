@@ -26,3 +26,10 @@ export function isNotEmpty (value) {
   }
   return false
 }
+
+/**
+ * 生成随机字符串
+ */
+export function createRandomId () {
+  return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + (new Date()).getTime() + '-' + Math.random().toString().substr(2, 5)
+}

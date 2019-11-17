@@ -1,4 +1,4 @@
-import MsgHandler, { ArrayCallBack } from './BaseHandler'
+import MsgHandler from './BaseHandler'
 import { InputParams } from './Common'
 
 class TransferHandler extends MsgHandler {
@@ -11,7 +11,7 @@ class TransferHandler extends MsgHandler {
     console.log('handler TransferHandler')
     console.log(this.params)
     const params = this.params
-    const length = ArrayCallBack.push(callback)
+    const id = this.addCallBack(callback)
     window.postMessage(
       new InputParams(
         'qosToPage',
@@ -19,7 +19,7 @@ class TransferHandler extends MsgHandler {
           pageName: 'transfer',
           params: params.params
         },
-        length - 1
+        id
       ), '*')
   }
 }
