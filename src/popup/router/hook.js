@@ -1,7 +1,4 @@
-import {
-  getToken,
-  getCurrentAccount
-} from '../../business/auth'
+import { getCurrentAccount } from '../../business/auth'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 // import { ToPage } from '../../business/types'
@@ -21,11 +18,11 @@ store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
 export async function beforeEach (to, from, next) {
   // const first = await bg.getFirstMsg()
-  const first = store.getters.firstMsg
+  const first = store.getters.getFirstMsg
   console.log('store.getters.firstMsg', store.getters.firstMsg)
-
+  const accounts = store.getters.getAccounts
   // 请增加登录校验
-  if (!getToken() && whiteListPage.indexOf(to.path) === -1) {
+  if (!accounts.length === 0 && whiteListPage.indexOf(to.path) === -1) {
     console.log('real to page name', to.name)
     // const accList = getAccountList()
     const acc = getCurrentAccount()
