@@ -1,13 +1,7 @@
-
-export class Res {
-  constructor (isSuccess, data) {
-    this.isSuccess = isSuccess
-    this.data = data
-  }
-}
+import { Res } from '../common/Common'
 
 class BaseMsgHandler {
-  constructor (params, callback) {
+  constructor (oMsg) {
     if (new.target === BaseMsgHandler) {
       throw new Error('MsgHandler class can`t instantiate')
     }
@@ -16,8 +10,7 @@ class BaseMsgHandler {
         throw new Error('please overwrite handler method')
       }
     }
-    this.params = params
-    this.callback = this.callbackProcess(callback)
+    this.oMsg = oMsg
   }
 
   handler () { }

@@ -1,5 +1,4 @@
 import TransferHandler from './inject/TransferHandler'
-import { InputParams } from './inject/Common'
 import { CallBackMap } from './inject/BaseHandler'
 import EnableHandler from './inject/EnableHandler'
 
@@ -9,36 +8,37 @@ class QOSWallet {
       if (event.source !== window) {
         return
       }
-      if (event && event.data.type === 'qosProcessCallback') {
-        console.log(CallBackMap, event.data.callbackId)
+      // console.log('event.data', event.data)
+      if (event && event.data.type === 'qosProcessCallback' && event.data.flag === 'qos_res') {
+        console.log(CallBackMap, '这里==========qosProcessCallback')
         const cb = CallBackMap.get(event.data.callbackId)
-        cb && cb(event.data.res)
+        cb && cb(event.data)
         CallBackMap.delete(event.data.callbackId)
       }
     }, false)
   }
 
   enable () {
-    return new Promise(resolve => {
+    const promise = new Promise((resolve) => {
       const hanler = new EnableHandler()
       hanler.handler(function (res) {
-        console.log('enable.handler', res)
+        // console.log('enable.handler', res)
         resolve(res)
       })
     })
+    return promise
   }
 
   process (msg) {
-    console.log(msg)
-    // window.postMessage({ type: msg.type || 'qosToPage', params: msg.data }, '*')
-    const promise = new Promise((resolve, reject) => {
+    console.log('process', msg)
+    const promise = new Promise((resolve) => {
       let handler
       if (msg.type === 'transfer') {
         handler = new TransferHandler(msg.data)
       }
       if (handler) {
         handler.handler(function (res) {
-          console.log('process.handler', res)
+          // console.log('process.handler', res)
           resolve(res)
         })
       }

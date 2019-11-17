@@ -1,5 +1,5 @@
 import MsgHandler from './BaseHandler'
-import { InputParams } from './Common'
+import { InputParams } from '../common/Common'
 
 class TransferHandler extends MsgHandler {
   constructor (oMsg, callback) {
@@ -7,7 +7,7 @@ class TransferHandler extends MsgHandler {
   }
 
   // 重写抽象类方法
-  async handler (callback) {
+  handler (callback) {
     console.log('handler TransferHandler')
     console.log(this.params)
     const id = this.addCallBack(callback)

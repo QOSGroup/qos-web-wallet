@@ -1,5 +1,5 @@
 import MsgHandler from './BaseHandler'
-import { InputParams } from './Common'
+import { InputParams } from '../common/Common'
 
 class EnableHandler extends MsgHandler {
   constructor (callback) {
@@ -7,7 +7,7 @@ class EnableHandler extends MsgHandler {
   }
 
   // 重写抽象类方法
-  async handler (callback) {
+  handler (callback) {
     const id = this.addCallBack(callback)
     window.postMessage(new InputParams('qosEnable', {}, id), '*')
   }

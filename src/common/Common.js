@@ -1,8 +1,9 @@
 // 输出类型
 export class Res {
-  constructor (isSuccess, msg) {
+  constructor (isSuccess, data, callbackId) {
     this.isSuccess = isSuccess
-    this.msg = msg
+    this.data = data
+    this.callbackId = callbackId
   }
 }
 

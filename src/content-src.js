@@ -24,17 +24,20 @@ window.addEventListener('message', function (event) {
     return
   }
 
-  if (event && event.data.type && event.data.type.startsWith('qos')) {
+  if (event && event.data.type && event.data.type.startsWith('qos') && event.data.type !== 'qosProcessCallback') {
     extension.runtime.sendMessage(
-      event.data,
+      event.data, // InputParams
       function (response) {
-        // console.log('response', response)
-        // 回调
-        window.postMessage({
-          type: 'qosProcessCallback',
-          callbackId: response.callbackId,
-          res: response
-        }, '*')
+        if (response) {
+          // console.log('这里次数----', response)
+          // 回调
+          window.postMessage({
+            type: 'qosProcessCallback',
+            callbackId: response.callbackId,
+            res: response,
+            flag: 'qos_res'
+          }, '*')
+        }
       })
   }
 }, false)
