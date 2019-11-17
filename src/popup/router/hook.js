@@ -17,8 +17,6 @@ const bgState = bg.getBgState()
 store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
 export async function beforeEach (to, next) {
-  const first = store.getters.getFirstMsg
-  console.log('store.getters.firstMsg', store.getters.firstMsg)
   const accounts = store.getters.getAccounts
   // 是否已登录校验
   if (!accounts.length === 0 && whiteListPage.indexOf(to.path) === -1) {
@@ -31,6 +29,7 @@ export async function beforeEach (to, next) {
     return
   }
 
+  const first = store.getters.getFirstMsg
   if (isNotEmpty(first)) {
     const data = first.params
     if (isNotEmpty(data.pageName) && !first.hasDirect) {
@@ -42,12 +41,5 @@ export async function beforeEach (to, next) {
       return
     }
   }
-  // const toPage = await store.dispatch('getToPage')
-  // if (isNotEmpty(toPage.pageName)) {
-  //   next({ name: toPage.pageName })
-  //   return
-  // }
-  // alert(getToken())
-
   next()
 }

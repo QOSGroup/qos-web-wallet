@@ -12,12 +12,8 @@ export function registerGloablFunction (global) {
     setTimeout(() => {
       store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: {} }))
     }, 0)
-    return Object.assign({}, store.state)
+    return store.state
   }
-
-  //   global.getFirstMsg = async function () {
-  //     return store.getters.firstMsg
-  //   }
 
   global.msgProcessed = function (msgIndex, msg) {
     msgIndex = msgIndex || 0
