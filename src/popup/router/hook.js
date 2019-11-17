@@ -1,4 +1,4 @@
-import { getCurrentAccount } from '../../business/auth'
+import { getAccountList } from '../../business/auth'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 // import { ToPage } from '../../business/types'
@@ -16,18 +16,14 @@ const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
-export async function beforeEach (to, from, next) {
-  // const first = await bg.getFirstMsg()
+export async function beforeEach (to, next) {
   const first = store.getters.getFirstMsg
   console.log('store.getters.firstMsg', store.getters.firstMsg)
   const accounts = store.getters.getAccounts
-  // 请增加登录校验
+  // 是否已登录校验
   if (!accounts.length === 0 && whiteListPage.indexOf(to.path) === -1) {
-    console.log('real to page name', to.name)
-    // const accList = getAccountList()
-    const acc = getCurrentAccount()
-    // if (!accList || accList.length === 0) {
-    if (!acc) {
+    const accs = await getAccountList()
+    if (!accs || accs.length === 0) {
       next('/register/register')
       return
     }

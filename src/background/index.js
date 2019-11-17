@@ -15,9 +15,9 @@ export function registerGloablFunction (global) {
     return Object.assign({}, store.state)
   }
 
-  global.getFirstMsg = async function () {
-    return store.getters.firstMsg
-  }
+  //   global.getFirstMsg = async function () {
+  //     return store.getters.firstMsg
+  //   }
 
   global.msgProcessed = function (msgIndex, msg) {
     msgIndex = msgIndex || 0
