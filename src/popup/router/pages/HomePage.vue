@@ -105,7 +105,7 @@
 
 <script>
 import axios from "axios";
-import QOSHttpRpc from "qosHttpRpc";
+import QOSRpc from "js-for-qos-httprpc";
 import { getToken, getCurrentAccount, getAccountName } from "@/business/auth";
 
 export default {
@@ -120,7 +120,7 @@ export default {
       qos: 0,
       qcps: [],
       delegations: [],
-      rpc: new QOSHttpRpc({ baseUrl: "http://47.98.253.9:9876" })
+      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   created() {
@@ -241,7 +241,7 @@ span {
 .span_account {
   font-size: 16px;
   width: 280px;
-  display: inline-block;
+  display: block;
   text-overflow: ellipsis !important;
   overflow: hidden !important;
   white-space: nowrap;
