@@ -29,7 +29,6 @@ window.addEventListener('message', function (event) {
       event.data, // InputParams
       function (response) {
         if (response) {
-          // console.log('这里次数----', response)
           // 回调
           window.postMessage({
             type: 'qosProcessCallback',

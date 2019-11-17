@@ -14,7 +14,6 @@ export class EnableHandler extends BaseMsgHandler {
     let acclist = await getAccountList()
     // 本地无账户信息
     if (!acclist || acclist.length === 0) {
-      console.log(this.oMsg, 'handler---------------------')
       this.oMsg.sendResponse(new Res(true, undefined, this.oMsg.callbackId))
     }
     // 判断store中是否已有登录账户

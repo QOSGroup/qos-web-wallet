@@ -17,10 +17,8 @@ extension.runtime.onMessage.addListener(async function (request, sender, sendRes
     store.commit(types.ADD_MSG_QUEUE, request)
   }
   let msgHandler
-  console.log(request.type)
   if (request.type === 'qosToPage') {
     msgHandler = new ShowPopupHandler(request)
-    // sendResponse({ farewell: 'goodbye' })
   } else if (request.type === 'qosEnable') {
     msgHandler = new EnableHandler(request)
   }
