@@ -15,7 +15,3 @@ export const getToPage = ({ commit, state, getters }, payload) => {
 export const getFirstMsg = ({ commit, state }, payload) => {
   return state.msgQueue[0]
 }
-
-export const getAccounts = ({ state }) => {
-  return state.accounts
-}

@@ -16,38 +16,40 @@ const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
-export async function beforeEach (to, next) {
-  const first = store.getters.getFirstMsg
-  console.log('store.getters.firstMsg', store.getters.firstMsg)
-  const accounts = store.getters.getAccounts
-  // 是否已登录校验
-  if (!accounts.length === 0 && whiteListPage.indexOf(to.path) === -1) {
+export async function beforeEach (to, from, next) {
+  const accounts = store.getters.accounts
+  console.log(`(!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1`,
+    (!accounts || accounts.length === 0), whiteListPage.indexOf(to.path) === -1)
+  // 是否未登录
+  if ((!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1) {
     const accs = await getAccountList()
+    console.log('.....', from.name, to.name)
+    // if (from.name === to.name) {
+    //   return next()
+    // }
     if (!accs || accs.length === 0) {
-      next('/register/register')
+      next({ name: 'register' })
       return
     }
     next('/login/login')
     return
   }
 
+  const first = store.getters.firstMsg
+  console.log('first:', first)
   if (isNotEmpty(first)) {
     const data = first.params
+    // console.log('from.params---', from, from.params)
+    // console.log('to.params---', to, to.params)
     if (isNotEmpty(data.pageName) && !first.hasDirect) {
       // 更新当前first data 为已跳转页面状态
       store.commit(types.HAS_DIRECT_PAGE)
       next({
-        name: data.pageName
+        name: data.pageName,
+        params: { hasDirect: true }
       })
       return
     }
   }
-  // const toPage = await store.dispatch('getToPage')
-  // if (isNotEmpty(toPage.pageName)) {
-  //   next({ name: toPage.pageName })
-  //   return
-  // }
-  // alert(getToken())
-
   next()
 }
