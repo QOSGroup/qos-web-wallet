@@ -5,17 +5,13 @@ export const setFoo = ({ commit }, payload) => {
   commit(types.UPDATE_FOO, payload)
 }
 
-export const getToPage = ({ commit, state, getters }) => {
+export const getToPage = ({ commit, state, getters }, payload) => {
   console.log('state.toPage', JSON.stringify(state.toPage), getters.toPage)
   const obj = Object.assign({}, state.toPage)
   commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: obj.params }))
   return obj
 }
 
-export const getFirstMsg = ({ state }) => {
+export const getFirstMsg = ({ commit, state }, payload) => {
   return state.msgQueue[0]
-}
-
-export const getAccounts = ({ state }) => {
-  return state.accounts
 }

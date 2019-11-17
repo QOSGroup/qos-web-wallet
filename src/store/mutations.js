@@ -33,7 +33,7 @@ export default {
     const keyArr = payload.keyArr
     const bgState = payload.bgState
     for (const item of keyArr) {
-      state[item] = clone(bgState['item'])
+      state[item] = clone(bgState[item])
     }
   },
   [types.HAS_DIRECT_PAGE] (state, payload) {

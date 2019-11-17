@@ -1,6 +1,6 @@
 import store from '../store'
-import { ToPage } from './business/types'
-import * as types from './store/mutation-types'
+import { ToPage } from '../business/types'
+import * as types from '../store/mutation-types'
 import QOSRpc from 'js-for-qos-httprpc'
 import { decrypt } from '../utils/crypt'
 import { setAccount, getAccountList } from '../business/auth'
