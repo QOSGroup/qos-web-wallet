@@ -20,9 +20,9 @@ class QOSWallet {
 
   enable () {
     return new Promise(resolve => {
-      const hanler = new EnableHandler(new InputParams())
+      const hanler = new EnableHandler()
       hanler.handler(function (res) {
-        console.log('handler.handler', res)
+        console.log('enable.handler', res)
         resolve(res)
       })
     })
@@ -34,11 +34,11 @@ class QOSWallet {
     const promise = new Promise((resolve, reject) => {
       let handler
       if (msg.type === 'transfer') {
-        handler = new TransferHandler(new InputParams(msg.type, msg.data))
+        handler = new TransferHandler(msg.data)
       }
       if (handler) {
         handler.handler(function (res) {
-          console.log('handler.handler', res)
+          console.log('process.handler', res)
           resolve(res)
         })
       }
