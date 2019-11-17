@@ -22,7 +22,7 @@ extension.runtime.onMessage.addListener(async function (request, sender, sendRes
   } else if (request.type === 'qosEnable') {
     msgHandler = new EnableHandler(request)
   }
-  if (!msgHandler) { sendResponse(null); return false }
+  if (!msgHandler) { sendResponse('qos wallet connected'); return false }
   await msgHandler.handler()
   return true
 })
