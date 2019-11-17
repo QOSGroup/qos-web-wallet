@@ -3,7 +3,7 @@ import Register from './pages/register/register'
 import HomePage from './pages/HomePage'
 
 import AccountList from './pages/account/list'
-import AccountCreate from './pages/account/create'
+// import AccountCreate from './pages/account/create'
 import AccountImport from './pages/account/import'
 
 import Transfer from './pages/transfer/transfer'
@@ -73,11 +73,11 @@ export default [
     name: 'accountlist',
     component: AccountList
   },
-  {
-    path: '/account/create',
-    name: 'accountcreate',
-    component: AccountCreate
-  },
+  // {
+  //   path: '/account/create',
+  //   name: 'accountcreate',
+  //   component: AccountCreate
+  // },
   {
     path: '/account/import',
     name: 'accountimport',

@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       form: {
-        memwd: "zhujici"
+        memwd: this.$route.params.mnemonic
       }
     };
   },

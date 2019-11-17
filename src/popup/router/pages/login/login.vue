@@ -3,10 +3,10 @@
     <img class="logo" src="/icons/qos.png" alt="qos logo" />
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <el-form-item label prop="pwd">
-        <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
+        <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码" show-password></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')">进入我的钱包</el-button>
+        <el-button class="btn btn-login" type="primary" @click="enterWallet">进入我的钱包</el-button>
       </el-form-item>
     </el-form>
     <div style="text-align:left;height:30px;">
@@ -24,25 +24,9 @@ import {
   getCurrentAccount,
   getCurrentAccountCipher
 } from "@/business/auth";
-import { constants } from "crypto";
+import { encrypt, decrypt } from "@/utils/crypt";
 export default {
   data() {
-    var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        const pwd = value;
-        const accaddress = getCurrentAccount();
-        const accaddresscipher = getCurrentAccountCipher();
-        if (accaddress + pwd == accaddresscipher) {
-          setToken(accaddresscipher);
-          this.$router.push({ name: "homepage" });
-        } else {
-          alert("密码不匹配,请重新输入!");
-        }
-        callback();
-      }
-    };
     return {
       ruleForm: {
         pwd: ""
@@ -51,12 +35,11 @@ export default {
         pwd: [
           { required: true, message: "请输入登录密码", trigger: "blur" },
           {
-            min: 6,
-            max: 30,
-            message: "长度在 6 到 30 个字符",
+            min: 8,
+            max: 8,
+            message: "长度8个字符",
             trigger: "blur"
-          },
-          { validator: validatePass, trigger: "blur" }
+          }
         ]
       }
     };
@@ -68,13 +51,15 @@ export default {
     noWallet() {
       this.$router.push({ name: "walletcreate" });
     },
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (!valid) {
-          console.log("error password!!");
-          return false;
-        }
-      });
+    enterWallet() {
+      const accaddress = getCurrentAccount();
+      const accaddresscipher = getCurrentAccountCipher();
+      if (accaddress === decrypt(accaddresscipher, this.ruleForm.pwd)) {
+        setToken(accaddresscipher);
+        this.$router.push({ name: "homepage" });
+      } else {
+        alert("密码不匹配,请重新输入!");
+      }
     }
   }
 };

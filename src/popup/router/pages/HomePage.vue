@@ -142,11 +142,12 @@ export default {
       });
     },
     getDelegations(address) {
+      //刷新委托信息
+      this.delegations = [];
       // 拿到account对象,调用业务方法
       const res = this.rpc.account.queryDelagationAll(address);
       res.then(result => {
         if (result.status == 200) {
-          this.delegations = [];
           for (var i = 0; i <= result.data.length; i++) {
             this.getValidator(result.data, i);
           }
