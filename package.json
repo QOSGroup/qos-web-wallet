@@ -25,7 +25,7 @@
     "crypto-js": "^3.1.9-1",
     "element-ui": "^2.12.0",
     "extensionizer": "^1.0.1",
-    "qosHttpRpc": "https://github.com/wangkuanzzu/js-for-qos-httprpc.git",
+    "js-for-qos-httprpc": "https://github.com/wangkuanzzu/js-for-qos-httprpc.git",
     "qosKeys": "https://github.com/QOSGroup/js-keys",
     "vue": "^2.6.10",
     "vue-router": "^3.0.1",

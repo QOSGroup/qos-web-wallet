@@ -54,7 +54,7 @@
 
 <script>
 import { setLoaclStorage } from "../../../common/common";
-import QOSHttpRpc from "qosHttpRpc";
+import QOSRpc from "js-for-qos-httprpc";
 export default {
   data() {
     var checkImportType = (rule, value, callback) => {
@@ -128,7 +128,7 @@ export default {
         ],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
       },
-      rpc: new QOSHttpRpc({ baseUrl: "http://47.98.253.9:9876" })
+      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   computed: {},

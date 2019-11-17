@@ -1,6 +1,7 @@
 import * as types from './mutation-types'
 import { isNotEmpty } from '../utils'
 import extensionizer from 'extensionizer'
+import clone from 'clone'
 
 export default {
   [types.UPDATE_FOO] (state, payload) {
@@ -28,8 +29,12 @@ export default {
     console.log('types.ADD_MSG_QUEUE', payload)
     state.msgQueue.push(payload)
   },
-  [types.SET_MSG_QUEQUE] (state, payload) {
-    state.msgQueue = payload
+  [types.CLONE_STATE] (state, payload) {
+    const keyArr = payload.keyArr
+    const bgState = payload.bgState
+    for (const item of keyArr) {
+      state[item] = clone(bgState['item'])
+    }
   },
   [types.HAS_DIRECT_PAGE] (state, payload) {
     state.msgQueue[0].hasDirect = true
@@ -45,5 +50,14 @@ export default {
       msgs[0].sendResponse(payload.msg)
     }
     state.msgQueue = msgQueue
+  },
+  [types.SET_ACCOUNT] (state, payload) {
+    const accs = state.accounts
+    let acc = accs.find(x => x.address === payload.address)
+    if (acc) {
+      acc = payload
+      return
+    }
+    state.accounts.push(payload)
   }
 }

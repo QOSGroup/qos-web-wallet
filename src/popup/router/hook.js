@@ -1,15 +1,10 @@
-import {
-  getToken,
-  getCurrentAccount
-} from '../../business/auth'
+import { getAccountList } from '../../business/auth'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 // import { ToPage } from '../../business/types'
 import {
   isNotEmpty
 } from '../../utils'
-import clone from 'clone'
-// import { isNotEmpty } from '../../utils'
 const extension = require('extensionizer')
 
 // 非登录权限下使用
@@ -19,22 +14,16 @@ const whiteListPage = ['/login/login', '/register/register', '/wallet/create', '
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
-store.commit(types.SET_MSG_QUEQUE, clone(bgState.msgQueue))
-// store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage(bgState.toPage))
-console.log('bgState.msgQueue', bgState.msgQueue)
+store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
-export async function beforeEach (to, from, next) {
-  // const first = await bg.getFirstMsg()
-  const first = store.getters.firstMsg
+export async function beforeEach (to, next) {
+  const first = store.getters.getFirstMsg
   console.log('store.getters.firstMsg', store.getters.firstMsg)
-
-  // 请增加登录校验
-  if (!getToken() && whiteListPage.indexOf(to.path) === -1) {
-    console.log('real to page name', to.name)
-    // const accList = getAccountList()
-    const acc = getCurrentAccount()
-    // if (!accList || accList.length === 0) {
-    if (!acc) {
+  const accounts = store.getters.getAccounts
+  // 是否已登录校验
+  if (!accounts.length === 0 && whiteListPage.indexOf(to.path) === -1) {
+    const accs = await getAccountList()
+    if (!accs || accs.length === 0) {
       next('/register/register')
       return
     }

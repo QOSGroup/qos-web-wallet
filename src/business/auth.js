@@ -1,4 +1,5 @@
 import db from '../utils/db'
+import { encrypt } from '../utils/crypt'
 
 const TOKEN_KEY = 'qos-web-wallet-token'
 const ACCOUNTLIST = 'qos-account-list'
@@ -18,26 +19,28 @@ export function getToken () {
 }
 
 /** 设置账户 */
-export function setAccount (account) {
-  const list = getAccountList()
+export async function setAccount (account, pwd) {
+  const list = await getAccountList()
+  // {adddress,privateKey}
   if (list && Array.isArray(list)) {
     let acc = list.find(x => x.address === account.address)
+    const encryptKey = encrypt(account.privateKey, pwd)
     if (acc) {
-      acc = account
-      return
+      acc = { adddress: account.address, encryptKey }
+    } else {
+      list.push({ adddress: account.address, encryptKey })
     }
-    list.push(account)
   }
+  await setAccountList(list)
 }
 
 /** 获取账户列表 */
-export function getAccountList () {
-  // return db.getLocal(ACCOUNTLIST)
-  return db.get(ACCOUNTLIST)
+export async function getAccountList () {
+  const acclist = await db.getLocal(ACCOUNTLIST)
+  return acclist
 }
-export function setAccountList (list) {
-  // return db.setLocal(ACCOUNTLIST, list)
-  return db.set(ACCOUNTLIST, list)
+export async function setAccountList (list) {
+  await db.setLocal(ACCOUNTLIST, list)
 }
 
 export function setCurrentAccount (account) {
