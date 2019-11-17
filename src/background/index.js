@@ -4,6 +4,7 @@ import * as types from './store/mutation-types'
 import QOSRpc from 'js-for-qos-httprpc'
 import { decrypt } from '../utils/crypt'
 import { setAccount, getAccountList } from '../business/auth'
+import { isNotEmpty } from '../utils'
 
 export function registerGloablFunction (global) {
   const qosRpc = new QOSRpc({ baseUrl: '' })
@@ -48,6 +49,10 @@ export function registerGloablFunction (global) {
     const accountList = []
     for (const acc of list) {
       const privateKey = decrypt(acc.encryptKey, pwd)
+      // 解密失败，密码不正确
+      if (!isNotEmpty(privateKey)) {
+        return false
+      }
       accountList.push(qosRpc.recoveryAccountByPrivateKey(privateKey))
     }
     return accountList
