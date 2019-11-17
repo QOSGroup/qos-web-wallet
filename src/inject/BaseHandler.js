@@ -1,4 +1,4 @@
-import { Res, InputParams } from './Common'
+import { Res } from './Common'
 import { createRandomId } from '../utils'
 
 // 存储回调函数数组
