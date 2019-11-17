@@ -13,7 +13,5 @@ export const getToPage = ({ commit, state, getters }, payload) => {
 }
 
 export const getFirstMsg = ({ commit, state }, payload) => {
-  // const first = state.msgQueue.shift()
-  // commit(types.SET_MSG_QUEQUE, state.msgQueue)
   return state.msgQueue[0]
 }

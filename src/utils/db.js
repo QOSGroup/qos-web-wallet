@@ -23,14 +23,21 @@ const db = {
    */
   setLocal (key, value) {
     return new Promise((resolve) => {
-      extension.storage.local.set({ key: value }, function () {
+      if (value instanceof Object) {
+        value = JSON.stringify(value)
+      }
+      extension.storage.local.set({ key, value }, function () {
         resolve()
       })
     })
   },
   getLocal (key) {
     return new Promise((resolve) => {
-      extension.storage.local.get(key, function (result) {
+      extension.storage.local.get([key], function (result) {
+        const ret = getJSON(result.key)
+        if (ret.flag) {
+          return resolve(ret.value)
+        }
         resolve(result.key)
       })
     })

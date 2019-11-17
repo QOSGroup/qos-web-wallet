@@ -1,8 +1,12 @@
 import store from '../store'
 import { ToPage } from './business/types'
 import * as types from './store/mutation-types'
+import QOSRpc from 'js-for-qos-httprpc'
+import { decrypt } from '../utils/crypt'
+import { setAccount, getAccountList } from '../business/auth'
 
 export function registerGloablFunction (global) {
+  const qosRpc = new QOSRpc({ baseUrl: '' })
   global.getBgState = function () {
     setTimeout(() => {
       store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: {} }))
@@ -21,7 +25,31 @@ export function registerGloablFunction (global) {
   }
 
   // 保存账户信息
-  global.saveAccount = function () {
+  global.saveAccount = async function ({ privateKey, mnemonic, pwd }) {
+    return new Promise(async (resolve) => {
+      let account
+      if (privateKey) {
+        account = qosRpc.recoveryAccountByPrivateKey(privateKey)
+        // 账户本地持久化
+        await setAccount(account, pwd)
+        store.commit(types.SET_ACCOUNT, account)
+        return resolve(account)
+      }
+      if (mnemonic) {
+        account = qosRpc.importAccount(mnemonic)
+        store.commit(types.SET_ACCOUNT, account)
+        return resolve(account)
+      }
+    })
+  }
 
+  global.login = async function (pwd) {
+    const list = await getAccountList()
+    const accountList = []
+    for (const acc of list) {
+      const privateKey = decrypt(acc.encryptKey, pwd)
+      accountList.push(qosRpc.recoveryAccountByPrivateKey(privateKey))
+    }
+    return accountList
   }
 }

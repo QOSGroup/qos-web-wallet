@@ -8,8 +8,6 @@ import * as types from '@/store/mutation-types'
 import {
   isNotEmpty
 } from '../../utils'
-import clone from 'clone'
-// import { isNotEmpty } from '../../utils'
 const extension = require('extensionizer')
 
 // 非登录权限下使用
@@ -19,8 +17,7 @@ const whiteListPage = ['/login/login', '/register/register', '/wallet/create', '
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
-store.commit(types.SET_MSG_QUEQUE, clone(bgState.msgQueue))
-console.log('bgState.msgQueue', bgState.msgQueue)
+store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
 export async function beforeEach (to, from, next) {
   // const first = await bg.getFirstMsg()
