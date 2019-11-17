@@ -24,7 +24,8 @@ import {
   Select,
   Option,
   Upload,
-  Link
+  Link,
+  Dialog
 } from 'element-ui'
 
 global.browser = require('webextension-polyfill')
@@ -50,6 +51,7 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Upload)
 Vue.use(Link)
+Vue.use(Dialog)
 
 /* eslint-disable no-new */
 new Vue({

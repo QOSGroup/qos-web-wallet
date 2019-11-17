@@ -15,6 +15,20 @@
     <div style="text-align:left;height:30px;">
       <el-link target="_blank" @click="noWallet">没有钱包？</el-link>
     </div>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      custom-class="qos-dialog"
+    >
+      <span>密码不匹配,请重新输入!</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -36,12 +50,13 @@ export default {
           { required: true, message: "请输入登录密码", trigger: "blur" },
           {
             min: 8,
-            max: 8,
-            message: "长度8个字符",
+            max: 16,
+            message: "长度8-16个字符",
             trigger: "blur"
           }
         ]
-      }
+      },
+      dialogVisible: false
     };
   },
   methods: {
@@ -54,12 +69,20 @@ export default {
     enterWallet() {
       const accaddress = getCurrentAccount();
       const accaddresscipher = getCurrentAccountCipher();
+      // alert(accaddress+"\n"+decrypt(accaddresscipher, this.ruleForm.pwd));
       if (accaddress === decrypt(accaddresscipher, this.ruleForm.pwd)) {
         setToken(accaddresscipher);
         this.$router.push({ name: "homepage" });
       } else {
-        alert("密码不匹配,请重新输入!");
+        this.dialogVisible = true;
       }
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   }
 };
@@ -79,4 +102,11 @@ export default {
     width: 100%;
   }
 }
+</style>
+<style lang="scss">
+  .qos-dialog {
+    .el-dialog__body {
+      padding: 0 30px!important;
+    }
+  }
 </style>

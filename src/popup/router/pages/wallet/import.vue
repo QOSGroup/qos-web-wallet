@@ -124,7 +124,7 @@ export default {
         ],
         password: [
           { validator: validatePass, trigger: "blur" },
-          { min: 8, max: 8, message: "密码位数8位!", trigger: "blur" }
+          { min: 8, max: 16, message: "密码位数8-16位!", trigger: "blur" }
         ],
         repassword: [{ validator: validatePass2, trigger: "blur" }]
       },
