@@ -11,8 +11,8 @@
         </div>
       </div>
       <div>
-        <span style="font-size:18px;">{{ address }}</span>
-        <i class="el-icon-document-copy" style="font-size:18px;"></i>
+        <span class="span_account">{{ address }}</span>
+        <i class="el-icon-document-copy" style="font-size:18px;float:right;"></i>
       </div>
     </div>
     <el-divider></el-divider>
@@ -105,6 +105,8 @@
 
 <script>
 import axios from "axios";
+import QOSHttpRpc from "qosHttpRpc";
+import { getToken, getCurrentAccount, getAccountName } from "@/business/auth";
 
 export default {
   data() {
@@ -113,90 +115,88 @@ export default {
         this.$route.params.activeName == null
           ? "balance"
           : this.$route.params.activeName,
-      userName: "wangkuan",
-      address: "qosacc1e5tahz33c576cwqm3t22er22mtrj7a8jhxqzfe",
-      qos: "",
+      userName: getAccountName(),
+      address: getCurrentAccount(),
+      qos: 0,
       qcps: [],
-      delegations: []
+      delegations: [],
+      rpc: new QOSHttpRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   created() {
+    //打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address);
-    this.getDelegations();
+    this.getDelegations(this.$data.address);
   },
   methods: {
     getAccount(address) {
-      axios
-        .get(
-          "http://www.baidu.com/"+address
-        )
-        .then(res => {
-          // this.$data.qos = res.data.value.qos;
-          this.$data.qos = "999999";
-
-          this.$data.qcps.push({
-            coin_name: "ZZU",
-            amount: "10000000000"
-          });
-          this.$data.qcps.push({
-            coin_name: "STAR",
-            amount: "10000000000"
-          });
-
-        })
-        .catch(error => {
-          alert(error);
-        });
+      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
+      // 拿到account对象,调用业务方法
+      const res = account.queryAccount(address);
+      res.then(result => {
+        if (result.status === 200) {
+          this.$data.qos = result.data.value.qos;
+          this.$data.qcps = result.data.value.qcps;
+        } else {
+          alert(result.statusText);
+        }
+      });
     },
-    getDelegations() {
-      axios
-        .get("http://www.baidu.com")
-        .then(res => {
-          // 获取到委托信息后进行循环:拆分出其中字段:validator_address,delegate_amount,is_compound
-          // 每次循环中,根据validator_address查询出该validator的详细信息,拆分字段:description.moniker  description.logo
-          for (var i = 0; i < 2; i++) {
-            
-            // get
-            this.delegations.push({
-              logo:
-                "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
-              moniker: "Compass1",
-              validator_address:
-                "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-              delegate_amount: "4567.76",
-              is_compound: true
-            });
-
-            this.delegations.push({
-              logo:
-                "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
-              moniker: "Compass2",
-              validator_address:
-                "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-              delegate_amount: "8765456.87",
-              is_compound: false
-            });
+    getDelegations(address) {
+      //刷新委托信息
+      this.delegations = [];
+      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
+      // 拿到account对象,调用业务方法
+      const res = account.queryDelagationAll(address);
+      res.then(result => {
+        if (result.status == 200) {
+          for (var i = 0; i <= result.data.length; i++) {
+            this.getValidator(result.data, i);
           }
-        })
-        .catch(error => {
-          alert(error);
-        });
+        } else {
+          alert(result.statusText);
+        }
+      });
     },
-    getValidator(validator_address) {
-      return null
+    getValidator(delegation, i) {
+      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
+      // 拿到account对象,调用业务方法
+      const res = account.queryValidatorOne(
+        delegation[i].validator_address
+      );
+      res.then(result => {
+        if (result.status == 200) {
+          this.delegations.push({
+            logo: result.data.description.logo,
+            moniker: result.data.description.moniker,
+            validator_address: delegation[i].validator_address,
+            delegate_amount: delegation[i].delegate_amount,
+            is_compound: delegation[i].is_compound
+          });
+        } else {
+          alert(result.statusText);
+        }
+      });
     },
     handleClick(tab, event) {
-      console.log(tag, event);
+      // console.log(tab, event);
+      if (tab.name == "delegation") {
+        this.getDelegations(this.$data.address);
+      } else if (tab.name == "balance") {
+        this.getAccount(this.$data.address);
+      } else {
+        console.log("other tab !");
+      }
     },
     showAccountList() {
       //console.log("showAccountList!");
-      this.$router.push({name: "accountlist"});
+      this.$router.push({ name: "accountlist" });
     },
     transfer(coin_name) {
       if (!coin_name) {
         coin_name = "QOS";
       }
-      this.$router.push({name: "transfer"});
+      this.$router.push({ name: "transfer" });
     },
     approve(coinType) {
       if (!coinType) {
@@ -230,12 +230,21 @@ div {
   text-align: center;
   overflow: hidden;
   overflow-y: auto;
-  margin-bottom: 2%;
+  margin-bottom: 3%;
   margin-top: 1%;
   vertical-align: middle;
 }
 span {
   word-break: break-all;
   word-wrap: break-word;
+}
+.span_account {
+  font-size: 16px;
+  width: 280px;
+  display: inline-block;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  white-space: nowrap;
+  float: left;
 }
 </style>

@@ -8,7 +8,7 @@ export function getJSON (str) {
         ret.value = obj
       }
     } catch (e) {
-      console.log('error：' + str + '!!!' + e)
+      // console.log('error：' + str + '!!!' + e)
     }
     return ret
   }

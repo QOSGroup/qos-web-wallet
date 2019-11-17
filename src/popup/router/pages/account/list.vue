@@ -88,10 +88,10 @@ export default {
         : this.$router.push({name: homepage});
     },
     addAccount() {
-      this.$router.push({name: "accountcreate"});
+      this.$router.push({name: "walletcreate"});
     },
     importAccount() {
-      this.$router.push({name: "accountimport"});
+      this.$router.push({name: "walletimport"});
     },
     exit() {
       setToken("");

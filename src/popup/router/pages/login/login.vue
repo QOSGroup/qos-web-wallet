@@ -3,10 +3,10 @@
     <img class="logo" src="/icons/qos.png" alt="qos logo" />
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <el-form-item label prop="pwd">
-        <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码"></el-input>
+        <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码" show-password></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="submitForm('ruleForm')">进入我的钱包</el-button>
+        <el-button class="btn btn-login" type="primary" @click="enterWallet">进入我的钱包</el-button>
       </el-form-item>
     </el-form>
     <div style="text-align:left;height:30px;">
@@ -19,19 +19,14 @@
 </template>
 
 <script>
-import { setToken } from "@/business/auth";
+import {
+  setToken,
+  getCurrentAccount,
+  getCurrentAccountCipher
+} from "@/business/auth";
+import { encrypt, decrypt } from "@/utils/crypt";
 export default {
   data() {
-    var validatePass = (rule, value, callback) => {
-      // todo 验证密码是否正确
-      if (value === "password") {
-        // 设置登陆token
-        setToken("wangkuan");
-        this.$router.push({ name: "homepage" });
-      } else {
-        callback(alert("密码不匹配,请重新输入!"));
-      }
-    };
     return {
       ruleForm: {
         pwd: ""
@@ -40,12 +35,11 @@ export default {
         pwd: [
           { required: true, message: "请输入登录密码", trigger: "blur" },
           {
-            min: 6,
-            max: 30,
-            message: "长度在 6 到 30 个字符",
+            min: 8,
+            max: 8,
+            message: "长度8个字符",
             trigger: "blur"
-          },
-          { validator: validatePass, trigger: "blur" }
+          }
         ]
       }
     };
@@ -57,13 +51,15 @@ export default {
     noWallet() {
       this.$router.push({ name: "walletcreate" });
     },
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (!valid) {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    enterWallet() {
+      const accaddress = getCurrentAccount();
+      const accaddresscipher = getCurrentAccountCipher();
+      if (accaddress === decrypt(accaddresscipher, this.ruleForm.pwd)) {
+        setToken(accaddresscipher);
+        this.$router.push({ name: "homepage" });
+      } else {
+        alert("密码不匹配,请重新输入!");
+      }
     }
   }
 };
