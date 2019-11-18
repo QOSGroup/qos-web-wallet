@@ -1,26 +1,17 @@
-import MsgHandler, { ArrayCallBack } from './BaseHandler'
-import { InputParams } from './Common'
+import MsgHandler from './BaseHandler'
+import { InputParams } from '../common/Common'
 
 class TransferHandler extends MsgHandler {
-  constructor (params, callback) {
-    super(params, callback)
+  constructor (oMsg, callback) {
+    super(oMsg, callback)
   }
 
   // 重写抽象类方法
-  async handler (callback) {
+  handler (callback) {
     console.log('handler TransferHandler')
     console.log(this.params)
-    const params = this.params
-    const length = ArrayCallBack.push(callback)
-    window.postMessage(
-      new InputParams(
-        'qosToPage',
-        {
-          pageName: 'transfer',
-          params: params.params
-        },
-        length - 1
-      ), '*')
+    const id = this.addCallBack(callback)
+    window.postMessage(new InputParams('qosToPage', { pageName: 'transfer', params: this.oMsg }, id), '*')
   }
 }
 

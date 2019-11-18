@@ -1,11 +1,12 @@
-import { Res, InputParams } from './Common'
+import { Res } from '../common/Common'
+import { createRandomId } from '../utils'
 
 // 存储回调函数数组
-export const ArrayCallBack = []
+export const CallBackMap = new Map()
 
 // 抽象类
 class MsgHandler {
-  constructor (params, callback) {
+  constructor (oMsg, callback) {
     if (new.target === MsgHandler) {
       // 抽象类不可以直接实例化
       throw new Error('MsgHandler class can`t instantiate')
@@ -16,11 +17,11 @@ class MsgHandler {
         throw new Error('please overwrite handler method')
       }
     }
-    if (!(params instanceof InputParams)) {
-      // 限制构造函数第一个参数输入类型为InputParams
-      throw new Error('The type of the first parameter of the constructor is not InputParams')
-    }
-    this.params = params
+    // if (!(params instanceof InputParams)) {
+    //   // 限制构造函数第一个参数输入类型为InputParams
+    //   throw new Error('The type of the first parameter of the constructor is not InputParams')
+    // }
+    this.oMsg = oMsg
     this.callback = this.callbackProcess(callback)
   }
 
@@ -38,6 +39,12 @@ class MsgHandler {
       }
       return callback.apply(this, args)
     }
+  }
+
+  addCallBack (cb) {
+    const id = createRandomId()
+    CallBackMap.set(id, cb)
+    return id
   }
 }
 

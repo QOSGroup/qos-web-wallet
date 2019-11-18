@@ -45,7 +45,7 @@ export default {
     if (msgs.length > 0) {
       // 赋值回调消息索引
       console.log(' 赋值回调消息索引', msgs[0])
-      payload.msg.callbackIndex = msgs[0].callbackIndex
+      payload.msg.callbackId = msgs[0].callbackId
       // 回调消息
       msgs[0].sendResponse(payload.msg)
     }
