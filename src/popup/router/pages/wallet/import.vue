@@ -49,12 +49,26 @@
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      custom-class="qos-dialog"
+    >
+      <span>导入类型有误,请重新选择!</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { setLoaclStorage } from "../../../common/common";
 import QOSRpc from "js-for-qos-httprpc";
+import { getBackground } from "../../../common/bgcontact";
 export default {
   data() {
     var checkImportType = (rule, value, callback) => {
@@ -87,7 +101,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.form.password) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -110,11 +124,12 @@ export default {
             value: "1",
             label: "助记词"
           }
-        ],
-        // 控制显示隐藏
-        flag_pri: false,
-        flag_zjc: false
+        ]
       },
+      // 控制显示隐藏
+      flag_pri: false,
+      flag_zjc: false,
+      dialogVisible: false,
       rules: {
         type: [{ validator: checkImportType, trigger: "blur" }],
         pri: [{ validator: checkPri, trigger: "blur" }],
@@ -150,28 +165,37 @@ export default {
         this.flag_zjc = true;
       }
     },
-    submitForm(formName) {
+    async submitForm(formName) {
+      let mn, prikey;
       // 私钥或助记词方式导入账户 todo
-      var account;
       const select_type = this.ruleForm.value;
       if (select_type == "1") {
-        const mn = this.ruleForm.memwd;
-        account = this.rpc.importAccount(mn);
+        mn = this.ruleForm.memwd;
       } else if (select_type == "0") {
-        // const prikey = "UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==";
-        const prikey = this.ruleForm.pri;
-        account = this.rpc.recoveryAccountByPrivateKey(prikey);
+        prikey = this.ruleForm.pri;
       } else {
-        alert("导入失败!!!");
+        this.dialogVisible = true;
         return;
       }
 
-      setLoaclStorage(account, this.ruleForm.password);
+      const bg = getBackground();
+      const account = await bg.saveAccount({
+        privateKey: prikey,
+        mnemonic: mn,
+        pwd: this.ruleForm.password
+      });
       // 账户导入后,默认跳转homepage页面
       this.$router.push({ name: "homepage" });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   }
 };
@@ -181,5 +205,12 @@ export default {
 @import "~style/common.scss";
 .importaccount-wrap {
   @include common-container;
+}
+</style>
+<style lang="scss">
+.qos-dialog {
+  .el-dialog__body {
+    padding: 0 30px !important;
+  }
 }
 </style>

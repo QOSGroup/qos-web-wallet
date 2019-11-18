@@ -16,10 +16,11 @@ const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
 
+console.log('从background中拷贝store后,popup存储的账户数量==' + store.getters.accounts.length)
 export async function beforeEach (to, from, next) {
   const accounts = store.getters.accounts
   console.log(`(!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1`,
-    (!accounts || accounts.length === 0), whiteListPage.indexOf(to.path) === -1)
+    (!accounts || accounts.length === 0), whiteListPage.indexOf(to.path) === -1, from.path, to.path)
   // 是否未登录
   if ((!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1) {
     const accs = await getAccountList()

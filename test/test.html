@@ -29,17 +29,27 @@
 
       qos.enable()
         .then(function (res) {
-          console.log("test.html", res);
+          console.log("test.html-enable", res);
+          console.log("test.html-enable===",res.res.data);
+          if (res.res.data.flag == "unregister") {
+            alert("您还没有账户,请创建或导入账户后重新操作!");
+          }else {
+            alert("有账户,无关是否登录");
+            // 页面操作类型,传递不同的type和data
+            qos
+              .process({
+                type: "delegate",
+                data: {
+                  validator: "qosval1x6d58mx3hssq6ksaftfwvdskaz35pumr49e8gm"
+                }
+              })
+              .then(function(res) {
+                console.log("test.html-process", res);
+              });
+          }
         });
-      // window.qosApi().then(function (qos) {
-      //   qos.process({
-      //     type: 'transfer',
-      //     data: {
-      //       qos: 100,
-      //       to: 'address11111'
-      //     }
-      //   })
-      // })
+
+
     });
       // window.addEventListener('DOMContentLoaded', function () {
       // })

@@ -15,14 +15,14 @@
         <i class="el-icon-download"></i>导入账户
       </el-button>
     </div>
-    <div>
+    <div v-for="account in accounts" :key="account">
       <el-row>
         <el-col :span="24">
           <div class="grid-content bg-purple-dark">
             <div>
-              <span>{{ userName }}</span>
+              <span>{{ account.address.substr(account.address.length-4,account.address.length-1) }}</span>
               <el-divider direction="vertical"></el-divider>
-              <span>{{ address }}</span>
+              <span>{{ account.address }}</span>
             </div>
             <div>
               <span
@@ -34,35 +34,18 @@
         </el-col>
       </el-row>
     </div>
-    <div>
-      <el-row>
-        <el-col :span="24">
-          <div class="grid-content bg-purple-dark">
-            <div>
-              <span>{{ userName }}</span>
-              <el-divider direction="vertical"></el-divider>
-              <span>{{ address }}</span>
-            </div>
-            <div>
-              <span
-                v-for="coin in coins"
-                :key="coin"
-              >&nbsp;&nbsp;{{ coin.cointype }}: {{ coin.amount }}&nbsp;&nbsp;</span>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+
   </div>
 </template>
 
 <script>
-import { setToken } from "@/business/auth";
+import store from "@/store"
+import * as types from '@/store/mutation-types'
+import { getBackground } from '../../../common/bgcontact';
 export default {
   data() {
     return {
-      userName: "账户名",
-      address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
+      accounts: store.getters.accounts,
       coins: [
         {
           amount: 123,
@@ -94,7 +77,15 @@ export default {
       this.$router.push({name: "walletimport"});
     },
     exit() {
-      setToken("");
+      // 移除background  store中的账户
+      // const bg = getBackground();
+      // bg.accountDelete(store.getters.accounts[0])
+
+      // 移除popup store 中账户
+      console.log("store.getters.accounts.length=00=" + store.getters.accounts.length)
+      store.commit(types.DELETE_ACCOUNT, store.getters.accounts[0])
+      console.log("store.getters.accounts.length=11=" + store.getters.accounts.length)
+      
       this.$router.push({name: "login"});
     }
   }

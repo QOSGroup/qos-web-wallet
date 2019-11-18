@@ -39,6 +39,7 @@ import {
   getCurrentAccountCipher
 } from "@/business/auth";
 import { encrypt, decrypt } from "@/utils/crypt";
+import { getBackground } from '../../../common/bgcontact';
 export default {
   data() {
     return {
@@ -67,11 +68,9 @@ export default {
       this.$router.push({ name: "walletcreate" });
     },
     enterWallet() {
-      const accaddress = getCurrentAccount();
-      const accaddresscipher = getCurrentAccountCipher();
-      // alert(accaddress+"\n"+decrypt(accaddresscipher, this.ruleForm.pwd));
-      if (accaddress === decrypt(accaddresscipher, this.ruleForm.pwd)) {
-        setToken(accaddresscipher);
+      const bg = getBackground();
+      const acclist = bg.login(this.ruleForm.pwd);
+      if (acclist) {
         this.$router.push({ name: "homepage" });
       } else {
         this.dialogVisible = true;
@@ -104,9 +103,9 @@ export default {
 }
 </style>
 <style lang="scss">
-  .qos-dialog {
-    .el-dialog__body {
-      padding: 0 30px!important;
-    }
+.qos-dialog {
+  .el-dialog__body {
+    padding: 0 30px !important;
   }
+}
 </style>

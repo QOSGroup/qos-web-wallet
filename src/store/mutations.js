@@ -59,5 +59,12 @@ export default {
       return
     }
     state.accounts.push(payload)
+  },
+  [types.DELETE_ACCOUNT] (state, payload) {
+    const accs = state.accounts
+    let index = accs.findIndex(x => x.address === payload.address)
+    if (index > -1) {
+      state.accounts.splice(index, 1)
+    }
   }
 }

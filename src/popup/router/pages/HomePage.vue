@@ -105,8 +105,8 @@
 
 <script>
 import axios from "axios";
+import store from "@/store"
 import QOSRpc from "js-for-qos-httprpc";
-import { getToken, getCurrentAccount, getAccountName } from "@/business/auth";
 
 export default {
   data() {
@@ -115,8 +115,9 @@ export default {
         this.$route.params.activeName == null
           ? "balance"
           : this.$route.params.activeName,
-      userName: getAccountName(),
-      address: getCurrentAccount(),
+      currentAccount: store.getters.accounts[0],
+      userName: store.getters.accounts[0].address.substr(store.getters.accounts[0].address.length-4,store.getters.accounts[0].address.length-1),
+      address: store.getters.accounts[0].address,
       qos: 0,
       qcps: [],
       delegations: [],
@@ -130,23 +131,21 @@ export default {
   },
   methods: {
     getAccount(address) {
-      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
-      // 拿到account对象,调用业务方法
+      const account = this.rpc.recoveryAccountByPrivateKey(this.currentAccount.privateKey)
       const res = account.queryAccount(address);
       res.then(result => {
         if (result.status === 200) {
           this.$data.qos = result.data.value.qos;
           this.$data.qcps = result.data.value.qcps;
         } else {
-          alert(result.statusText);
+          // alert(result.statusText);
         }
       });
     },
     getDelegations(address) {
       //刷新委托信息
       this.delegations = [];
-      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
-      // 拿到account对象,调用业务方法
+      const account = this.rpc.recoveryAccountByPrivateKey(this.currentAccount.privateKey)
       const res = account.queryDelagationAll(address);
       res.then(result => {
         if (result.status == 200) {
@@ -154,13 +153,12 @@ export default {
             this.getValidator(result.data, i);
           }
         } else {
-          alert(result.statusText);
+          // alert(result.statusText);
         }
       });
     },
     getValidator(delegation, i) {
-      const account = this.rpc.recoveryAccountByPrivateKey("UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==")
-      // 拿到account对象,调用业务方法
+      const account = this.rpc.recoveryAccountByPrivateKey(this.currentAccount.privateKey)
       const res = account.queryValidatorOne(
         delegation[i].validator_address
       );
@@ -202,7 +200,7 @@ export default {
       if (!coinType) {
         coinType = "QOS";
       }
-      alert("该功能暂未开发!");
+      //alert("该功能暂未开发!");
     },
     delegateorunbond(operation) {
       this.$router.push({

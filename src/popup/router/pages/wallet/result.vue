@@ -14,7 +14,7 @@
     </div>
     <br />
     <div>
-      <el-button type="primary" @click="goBack" plain>返回</el-button>
+      <el-button type="primary" @click="confirm" plain>确定</el-button>
     </div>
   </div>
 </template>
@@ -33,6 +33,9 @@ export default {
       console.log("exportMemwd!");
     },
     goBack() {
+      this.$router.push({ name: "homepage" });
+    },
+    confirm() {
       this.$router.push({ name: "homepage" });
     }
   }

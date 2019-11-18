@@ -18,8 +18,9 @@
 </template>
 
 <script>
-import { setLoaclStorage } from "../../../common/common";
 import QOSRpc from "js-for-qos-httprpc";
+import { getBackground } from "../../../common/bgcontact";
+import store from "@/store";
 
 export default {
   data() {
@@ -59,22 +60,20 @@ export default {
   },
   methods: {
     onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
           // 数据合法,创建账户 todo
           // 随机创建地址
           const mn = this.rpc.generateMnemonic();
-          const account = this.rpc.importAccount(mn);
-          // 私钥方式得到account对象
-          // const prikey = "UEUXfiOwd+dIsqWEdRtE/S5RfLKMmeaFemZIupgENTg4u4yGzEaHNqFPtxzdkQ58duoL5QYv7yBT16Vd/B/o4w==";
-          // const account = this.rpc.recoveryAccountByPrivateKey(prikey);
-          console.log(account.mnemonic);
-          setLoaclStorage(account, this.form.password);
+          // 调用背景页函数
+          const bg = getBackground();
+          const account = await bg.saveAccount({ mnemonic: mn, pwd: this.form.password });
+          console.log("===00===", account, store.getters.accounts);
 
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({
             name: "walletresult",
-            params: { mnemonic: account.mnemonic }
+            params: { mnemonic: mn }
           });
         } else {
           console.log("error newwallet!!");

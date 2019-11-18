@@ -13,7 +13,7 @@
       <el-button type="primary" size="small" plain>在浏览器中查看</el-button>
     </div>
     <div>
-      <el-button type="primary" size="mini" plain @click="goBack">返回</el-button>
+      <el-button type="primary" size="mini" plain @click="confirm">确定</el-button>
     </div>
   </div>
 </template>
@@ -27,8 +27,11 @@ export default {
   },
   methods: {
     goBack() {
-      console.log("goBack !");
+      // console.log("goBack !");
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push({name: "homepage"})
+    },
+    confirm() {
+      this.$router.push({name: "homepage"})
     }
   },
   computed: {},
