@@ -22,7 +22,7 @@
 export default {
   data() {
     return {
-      txhash: "nbvfrtyujnbvcdthjuytfiuytfvbnjytfvbvbnbvfjnhgfcvb"
+      txhash: this.$route.params.hash
     };
   },
   methods: {

@@ -37,42 +37,56 @@
       <el-input type="input" v-model="form.tokens" clearable size="mini" style="width:75%;"></el-input>
       <el-button size="mini" style="float:right;height:38px;" @click="setMax">最大值</el-button>
     </div>
-    <div>
+
+    <div style="display:none;">
       <span>最大手续费：{{ form.gas }}</span>
     </div>
-    <div class="block">
+    <div class="block" style="display:none;">
       <el-slider v-model="form.gas"></el-slider>
     </div>
 
     <div style="text-align:center;">
       <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
     </div>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      custom-class="qos-dialog"
+    >
+      <span>{{ this.error }}</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // import QOSRpc from 'js-for-qos-httprpc'
-import { processMsg, broadcastTX} from "../../../common/bgcontact";
-import axios from "axios";
+import { processMsg, broadcastTX } from "../../../common/bgcontact";
+import store from "@/store";
+import QOSRpc from "js-for-qos-httprpc";
 
 export default {
   data() {
     return {
       // 根据用户地址链上查询的数据
-      coins: [
-        {
-          value: "QOS",
-          label: "QOS",
-          balance: 10000
-        }
-      ],
+      coins: [],
       value: "",
       balance: 0,
       form: {
-        address: "qosacc163sy2vhsjjzwy7xfm5zkdchpvzpcqc68wf8fpy",
-        tokens: 100,
-        gas: 10
-      }
+        address: "",
+        tokens: 0,
+        gas: 0
+      },
+      dialogVisible: false,
+      error: "",
+      currentAccount: store.getters.accounts[0],
+      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   computed: {
@@ -80,8 +94,9 @@ export default {
       return JSON.stringify(this.$store.getters.firstMsg);
     }
   },
-  mounted() {
-    this.getAccount();
+  mounted() {},
+  created() {
+    this.getAccount(this.currentAccount);
   },
   methods: {
     goBack() {
@@ -92,41 +107,39 @@ export default {
           })
         : this.$router.push({ name: "homepage" });
     },
-    async commitTx() {
-      //alert(this.form.address + "==" + this.form.tokens + "==" + this.form.gas);
-      var flag = false;
+    commitTx() {
       //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
-      await axios
-        .post(
-          "http://47.98.253.9:9876/bank/accounts/" +
-            this.form.address +
-            "/transfers",
-          {
-            base: {
-              from: "qosacc1x6d58mx3hssq6ksaftfwvdskaz35pumrd4hywk",
-              chain_id: "qos-test",
-              max_gas: this.form.gas.toString()
-            },
-            qos: this.form.tokens.toString(),
-            qscs: null
-          }
-        )
-        .then(function(res) {
-          //console.log(res); //处理成功的函数 相当于success
-          //得到返回的json字符串后,使用本地的私钥进行签名,而后将签名后的字符串调用广播上链接口,等待交易上线.
-          alert("交易组装成功已经返回.等待本地私钥签名后,进行上链操作.");
-          // todo 调用交易广播接口,进行上链操作
-          flag = true;
-        })
-        .catch(function(error) {
-          console.log(error); //错误处理 相当于error
-        });
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
+      // 创建数据结构
+      const myBase = {
+        from: this.currentAccount.address
+        // chain_id: "qos-test",
+        // max_gas: this.form.gas.toString()
+      };
 
-      if (flag) {
-        this.$router.push({ name: "txresult" });
-      } else {
-        alert("转账失败! ");
-      }
+      const data = {
+        qos: this.form.tokens.toString(),
+        base: myBase
+      };
+      const res = account.sendTransferTx(this.form.address, data);
+      res
+        .then(result => {
+          if (result.status === 200) {
+            this.$router.push({
+              name: "txresult",
+              params: { hash: result.data.hash }
+            });
+          } else {
+            this.error = error;
+            this.dialogVisible = true;
+          }
+        })
+        .catch(error => {
+          this.error = error;
+          this.dialogVisible = true;
+        });
     },
     setCoinBalance() {
       const choose = this.$data.value;
@@ -143,19 +156,42 @@ export default {
     onProcess() {
       processMsg();
     },
-    getAccount() {
-      // Promise((resolve, reject) => {
-      //   const rpc = new QOSRpc({ baseUrl: 'http://192.168.1.37:9876' })
-      //   try {
-      //     const account = rpc.newAccount(
-      //       'fury flavor subway start spare hospital tag chief word start pencil borrow town mandate detect pencil cook bridge right scout remain this differ leader'
-      //     )
-      //     console.log(account)
-      //     resolve()
-      //   } catch (error) {
-      //     console.log(error)
-      //   }
-      // })
+    getAccount(currentAccount) {
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        currentAccount.privateKey
+      );
+      const res = account.queryAccount(currentAccount.address);
+      res.then(result => {
+        if (result.status === 200) {
+          let list = [];
+          list.push({
+            value: "QOS",
+            label: "QOS",
+            balance: result.data.value.qos
+          });
+          // this.$data.qos = result.data.value.qos;
+          const qcps = result.data.value.qcps;
+          if (qcps) {
+            for (let qcp of qcps) {
+              list.push({
+                value: qcp.coin_name,
+                label: qcp.coin_name,
+                balance: qcp.amount
+              });
+            }
+          }
+          this.coins = list;
+        } else {
+          // alert(result.statusText);
+        }
+      });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   }
 };
@@ -179,3 +215,9 @@ export default {
   }
 }
 </style>
+<style lang="scss">
+.qos-dialog {
+  .el-dialog__body {
+    padding: 0 30px !important;
+  }
+}

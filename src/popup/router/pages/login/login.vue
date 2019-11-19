@@ -69,7 +69,6 @@ export default {
       const bg = getBackground();
       const acclist = await bg.login(this.ruleForm.pwd);
       if (acclist) {
-        
         this.$router.push({ name: "homepage" });
       } else {
         this.dialogVisible = true;

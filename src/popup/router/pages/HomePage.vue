@@ -104,7 +104,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import store from "@/store"
 import QOSRpc from "js-for-qos-httprpc";
 
