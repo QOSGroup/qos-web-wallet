@@ -1,5 +1,5 @@
 import BaseMsgHandler from './BaseMsgHandler'
-import { getAccountList } from './auth'
+import { getAccountList2 } from './auth'
 import { Res } from '../common/Common'
 import store from '../store'
 import NotificationManager from '../utils/NotificationManager'
@@ -11,7 +11,7 @@ export class EnableHandler extends BaseMsgHandler {
 
   async handler () {
     // 先判断是否有账户
-    let acclist = await getAccountList()
+    let acclist = await getAccountList2()
     // 本地无账户信息
     if (!acclist || acclist.length === 0) {
       this.oMsg.sendResponse(new Res(true, { flag: 'unregister' }, this.oMsg.callbackId))

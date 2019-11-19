@@ -33,11 +33,7 @@
 </template>
 
 <script>
-import {
-  setToken,
-  getCurrentAccount,
-  getCurrentAccountCipher
-} from "@/business/auth";
+import { getAccountList2 } from "@/business/auth"
 import { encrypt, decrypt } from "@/utils/crypt";
 import { getBackground } from '../../../common/bgcontact';
 export default {
@@ -67,10 +63,13 @@ export default {
     noWallet() {
       this.$router.push({ name: "walletcreate" });
     },
-    enterWallet() {
+    async enterWallet() {
+      const dbacclist = await getAccountList2()
+      
       const bg = getBackground();
-      const acclist = bg.login(this.ruleForm.pwd);
+      const acclist = await bg.login(this.ruleForm.pwd);
       if (acclist) {
+        
         this.$router.push({ name: "homepage" });
       } else {
         this.dialogVisible = true;

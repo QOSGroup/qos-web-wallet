@@ -8,8 +8,8 @@ import {
   decrypt
 } from '../utils/crypt'
 import {
-  setAccount,
-  getAccountList
+  getAccountList2,
+  setAccount2
 } from '../business/auth'
 import {
   isNotEmpty
@@ -40,7 +40,7 @@ export function registerGloablFunction (global) {
 
   // 注销时store移除账户
   global.accountDelete = function (account) {
-    store.commit(types.DELETE_MSG_PROCESSED, account)
+    store.commit(types.DELETE_ACCOUNT, account)
   }
 
   // 保存账户信息
@@ -54,12 +54,16 @@ export function registerGloablFunction (global) {
       if (privateKey) {
         account = qosRpc.recoveryAccountByPrivateKey(privateKey)
         // 账户本地持久化
-        await setAccount(account, pwd)
+        // await setAccount(account, pwd)
+        setAccount2(account, pwd)
         store.commit(types.SET_ACCOUNT, account)
         return resolve(account)
       }
       if (mnemonic) {
         account = qosRpc.importAccount(mnemonic)
+        // 账户本地持久化
+        // await setAccount(account, pwd)
+        setAccount2(account, pwd)
         store.commit(types.SET_ACCOUNT, account)
         return resolve(account)
       }
@@ -67,7 +71,7 @@ export function registerGloablFunction (global) {
   }
 
   global.login = async function (pwd) {
-    const list = await getAccountList()
+    const list = await getAccountList2()
     const accountList = []
     for (const acc of list) {
       const privateKey = decrypt(acc.encryptKey, pwd)

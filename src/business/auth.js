@@ -39,6 +39,35 @@ export async function setAccountList (list) {
   await db.setLocal(ACCOUNTLIST, list)
 }
 
+/** 设置账户--使用localstorage */
+export function setAccount2 (account, pwd) {
+  let list = getAccountList2()
+  if (list == null) {
+    list = []
+  }
+  // {name,adddress,encryptKey}
+  if (list && Array.isArray(list)) {
+    let acc = list.find(x => x.address === account.address)
+    const encryptKey = encrypt(account.privateKey, pwd)
+    const name = account.address.substr(account.address.length - 4, account.address.length - 1)
+    if (acc) {
+      acc = { name: name, adddress: account.address, encryptKey: encryptKey }
+    } else {
+      list.push({ name: name, adddress: account.address, encryptKey: encryptKey })
+    }
+  }
+  setAccountList2(list)
+}
+
+/** 获取账户列表--使用localstorage */
+export function getAccountList2 () {
+  const acclist = db.get(ACCOUNTLIST)
+  return acclist
+}
+export function setAccountList2 (list) {
+  db.set(ACCOUNTLIST, list)
+}
+
 export function setCurrentAccount (account) {
   // return db.setLocal(CURRENTACCOUNT,account)
   return db.set(CURRENTACCOUNT, account)

@@ -78,8 +78,8 @@ export default {
     },
     exit() {
       // 移除background  store中的账户
-      // const bg = getBackground();
-      // bg.accountDelete(store.getters.accounts[0])
+      const bg = getBackground();
+      bg.accountDelete(store.getters.accounts[0])
 
       // 移除popup store 中账户
       console.log("store.getters.accounts.length=00=" + store.getters.accounts.length)

@@ -21,6 +21,7 @@
 import QOSRpc from "js-for-qos-httprpc";
 import { getBackground } from "../../../common/bgcontact";
 import store from "@/store";
+import { getAccountList2 } from "@/business/auth"
 
 export default {
   data() {
@@ -63,13 +64,11 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           // 数据合法,创建账户 todo
-          // 随机创建地址
+          // 随机创建助记词
           const mn = this.rpc.generateMnemonic();
           // 调用背景页函数
           const bg = getBackground();
           const account = await bg.saveAccount({ mnemonic: mn, pwd: this.form.password });
-          console.log("===00===", account, store.getters.accounts);
-
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({
             name: "walletresult",
