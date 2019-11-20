@@ -1,9 +1,9 @@
 <template>
   <div class="transfer-wrap">
-    <div>这是转账页面: {{inputParams}}</div>
+    <!-- <div>这是转账页面: {{inputParams}}</div>
     <div>
       <button @click="onProcess">processMsg</button>
-    </div>
+    </div> -->
 
     <el-page-header @back="goBack" content="转账"></el-page-header>
     <el-divider></el-divider>
@@ -67,9 +67,10 @@
 
 <script>
 // import QOSRpc from 'js-for-qos-httprpc'
-import { processMsg, broadcastTX } from "../../../common/bgcontact";
+import { processMsg } from "../../../common/bgcontact";
 import store from "@/store";
 import QOSRpc from "js-for-qos-httprpc";
+import { getCurrentAccount } from "@/business/auth"
 
 export default {
   data() {
@@ -83,9 +84,10 @@ export default {
         tokens: 0,
         gas: 0
       },
+      // 弹出提示框数据
       dialogVisible: false,
       error: "",
-      currentAccount: store.getters.accounts[0],
+      currentAccount: store.getters.accounts[store.getters.accounts.findIndex(x => x.address === getCurrentAccount().address)],
       rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
@@ -118,7 +120,6 @@ export default {
         // chain_id: "qos-test",
         // max_gas: this.form.gas.toString()
       };
-
       const data = {
         qos: this.form.tokens.toString(),
         base: myBase
@@ -132,7 +133,7 @@ export default {
               params: { hash: result.data.hash }
             });
           } else {
-            this.error = error;
+            this.error = result.statusText;
             this.dialogVisible = true;
           }
         })

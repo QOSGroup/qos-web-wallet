@@ -1,6 +1,6 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" :content=title></el-page-header>
+    <el-page-header @back="goBack" :content="title"></el-page-header>
     <el-divider></el-divider>
 
     <div>
@@ -14,6 +14,7 @@
             {{ validator.moniker }}
           </span>
           <i class="el-icon-link"></i>
+          <!-- <div><el-button type="primary" size="mini" plain @click="selectValidator()">选择委托对象</el-button></div> -->
         </div>
         <div style="text-align:left;">
           <span>
@@ -42,48 +43,74 @@
       <el-radio v-model="form.compound" label="0">不复投</el-radio>
       <el-radio v-model="form.compound" label="1">复投</el-radio>
     </div>
-    <div>
+
+    <!-- <div>
       <span>最大手续费：{{ form.gas }}</span>
     </div>
     <div class="block">
       <el-slider v-model="form.gas"></el-slider>
-    </div>
+    </div>-->
 
     <div style="text-align:center;">
       <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
     </div>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      custom-class="qos-dialog"
+    >
+      <span>{{ this.error }}</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import store from "@/store";
+import QOSRpc from "js-for-qos-httprpc";
+import { getCurrentAccount } from "@/business/auth";
 export default {
   data() {
     return {
-      title: this.$route.params.operation == "delegate" ? "追加委托" : "撤回委托",
+      title:
+        this.$route.params.operation == "delegate" ? "追加委托" : "撤回委托",
       //用户信息
-      userName: "wangkuan",
-      address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
-      amount: 1234.56,
+      amount: this.$route.params.amount,
       //用户选择的操作：委托deleagte / 解除委托unbond web页面传递
       operation: this.$route.params.operation,
       //用户所选的validator信息
       validator: {
-        logo:
-          "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
-        moniker: "Compass1",
-        address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc"
+        logo: this.$route.params.delegation.logo,
+        moniker: this.$route.params.delegation.moniker,
+        address: this.$route.params.delegation.validator_address
       },
       //用户在当前validator的委托信息
       delegation: {
-        delegator_address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-        delegate_amount: 100,
-        is_compound: false
+        delegator_address: this.$route.params.delegation.validator_address,
+        delegate_amount: this.$route.params.delegation.delegate_amount,
+        is_compound: this.$route.params.delegation.is_compound
       },
       form: {
-        tokens: "数量", //追加或撤回的token数量
-        gas: 10, //支付的gas费用
+        tokens: "", //追加或撤回的token数量
+        gas: 0, //支付的gas费用
         compound: "0" //页面选择是否复投
-      }
+      },
+      // 弹出提示框数据
+      dialogVisible: false,
+      error: "",
+      currentAccount:
+        store.getters.accounts[
+          store.getters.accounts.findIndex(
+            x => x.address === getCurrentAccount().address
+          )
+        ],
+      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   methods: {
@@ -99,7 +126,58 @@ export default {
       this.$data.form.tokens = this.$data.amount;
     },
     commitTx() {
-      this.$router.push({ name: "txresult" });
+      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
+      // 创建基础数据结构
+      const myBase = {
+        from: this.currentAccount.address
+        // chain_id: "qos-test",
+        // max_gas: this.form.gas.toString()
+      };
+      // 组装data数据,调用rpc接口,提交交易
+      let data, res;
+      if (this.operation === "delegate") {
+        data = {
+          amount: this.form.tokens.toString(),
+          base: myBase
+        };
+        if (this.delegation.delegate_amount.toString() === "0") {
+          data.is_compound = this.form.compound === "1" ? true : false;
+        }
+        res = account.sendCreateDelegateTx(this.validator.address, data);
+      } else {
+        data = {
+          unbond_amount: this.form.tokens.toString(),
+          base: myBase
+        };
+        res = account.sendUnbondDelegationTx(this.validator.address, data);
+      }
+      // 得到返回值处理
+      res
+        .then(result => {
+          if (result.status === 200) {
+            this.$router.push({
+              name: "txresult",
+              params: { hash: result.data.hash }
+            });
+          } else {
+            this.error = result.statusText;
+            this.dialogVisible = true;
+          }
+        })
+        .catch(error => {
+          this.error = error;
+          this.dialogVisible = true;
+        });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   },
   computed: {
@@ -126,3 +204,9 @@ span {
   font-size: 14px;
 }
 </style>
+<style lang="scss">
+.qos-dialog {
+  .el-dialog__body {
+    padding: 0 30px !important;
+  }
+}

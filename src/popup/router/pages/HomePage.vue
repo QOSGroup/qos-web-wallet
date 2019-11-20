@@ -7,17 +7,17 @@
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
         <div style="float:right;width:10%;" @click="showAccountList">
-          <i class="el-icon-more" style="font-size:24px;"></i>
+          <i class="el-icon-more" style="font-size:24px;" title="更多"></i>
         </div>
       </div>
       <div>
         <span class="span_account">{{ address }}</span>
-        <i class="el-icon-document-copy" style="font-size:18px;float:right;"></i>
+        <i class="el-icon-document-copy" style="font-size:18px;float:right;" title="复制"></i>
       </div>
     </div>
     <el-divider></el-divider>
     <div>
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch>
         <el-tab-pane label="我的资产" name="balance">
           <div>
             <div>
@@ -50,7 +50,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="我的委托" name="delegation">
-          <div v-for="delegation in delegations" :key="delegation">
+          <div v-for="(delegation, index) in delegations" :key="index">
             <div>
               <div style="float:left;width:100px;">
                 <el-image style="width: 100px; height: 100px" :src="delegation.logo"></el-image>
@@ -77,8 +77,18 @@
                 <span>委托金额：{{ delegation.delegate_amount }}</span>
               </div>
               <div style="float:right;">
-                <el-button type="primary" size="mini" plain @click="delegateorunbond('delegate')">追加</el-button>
-                <el-button type="primary" size="mini" plain @click="delegateorunbond('unbond')">撤回</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  plain
+                  @click="delegateorunbond('delegate', qos.toString(), delegation)"
+                >追加</el-button>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  plain
+                  @click="delegateorunbond('unbond', qos.toString(), delegation)"
+                >撤回</el-button>
               </div>
             </div>
             <div>
@@ -90,22 +100,32 @@
                   type="primary"
                   size="mini"
                   plain
-                  @click="modifyCompound([ delegation.is_compound ])"
+                  @click="modifyCompound([ delegation.is_compound ], qos.toString(), delegation)"
                 >更改</el-button>
               </div>
             </div>
             <el-divider width="80%"></el-divider>
           </div>
+
+          <!-- <div>
+            <el-button
+              icon="el-icon-plus"
+              circle
+              @click="delegateorunbond('delegate')"
+              title="新增委托"
+            ></el-button>
+          </div>-->
         </el-tab-pane>
-        <el-tab-pane label="我的预授权" name="approve">该功能暂未开发！</el-tab-pane>
+        <el-tab-pane label="我的授权" name="approve">该功能暂未开发！</el-tab-pane>
       </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-import store from "@/store"
+import store from "@/store";
 import QOSRpc from "js-for-qos-httprpc";
+import { getCurrentAccount } from "@/business/auth";
 
 export default {
   data() {
@@ -114,9 +134,14 @@ export default {
         this.$route.params.activeName == null
           ? "balance"
           : this.$route.params.activeName,
-      currentAccount: store.getters.accounts[0],
-      userName: store.getters.accounts[0].address.substr(store.getters.accounts[0].address.length-4,store.getters.accounts[0].address.length-1),
-      address: store.getters.accounts[0].address,
+      currentAccount:
+        store.getters.accounts[
+          store.getters.accounts.findIndex(
+            x => x.address === getCurrentAccount().address
+          )
+        ],
+      userName: getCurrentAccount().name,
+      address: getCurrentAccount().address,
       qos: 0,
       qcps: [],
       delegations: [],
@@ -130,50 +155,90 @@ export default {
   },
   methods: {
     getAccount(address) {
-      const account = this.rpc.recoveryAccountByPrivateKey(this.currentAccount.privateKey)
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
       const res = account.queryAccount(address);
-      res.then(result => {
-        if (result.status === 200) {
-          this.$data.qos = result.data.value.qos;
-          this.$data.qcps = result.data.value.qcps;
-        } else {
-          // alert(result.statusText);
-        }
-      });
+      res
+        .then(result => {
+          if (result.status === 200) {
+            this.$data.qos = result.data.value.qos;
+            this.$data.qcps = result.data.value.qcps;
+          } else {
+            this.$message({
+              showClose: true,
+              message: result.statusText,
+              type: "warning"
+            });
+          }
+        })
+        .catch(error => {
+          this.$message({
+            showClose: true,
+            message: "该账户在链上的账户信息查询失败!",
+            type: "error"
+          });
+        });
     },
     getDelegations(address) {
       //刷新委托信息
       this.delegations = [];
-      const account = this.rpc.recoveryAccountByPrivateKey(this.currentAccount.privateKey)
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
       const res = account.queryDelagationAll(address);
-      res.then(result => {
-        if (result.status == 200) {
-          for (var i = 0; i <= result.data.length; i++) {
-            this.getValidator(result.data, i);
+      res
+        .then(async result => {
+          if (result.status == 200) {
+            for (var i = 0; i < result.data.length; i++) {
+              await this.getValidator(result.data, i);
+            }
+          } else {
+            this.$message({
+              showClose: true,
+              message: result.statusText,
+              type: "warning"
+            });
           }
-        } else {
-          // alert(result.statusText);
-        }
-      });
+        })
+        .catch(error => {
+          this.$message({
+            showClose: true,
+            message: "该账户在链上的委托信息查询失败!",
+            type: "error"
+          });
+        });
     },
     getValidator(delegation, i) {
-      const account = this.rpc.recoveryAccountByPrivateKey(this.currentAccount.privateKey)
-      const res = account.queryValidatorOne(
-        delegation[i].validator_address
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
       );
-      res.then(result => {
-        if (result.status == 200) {
-          this.delegations.push({
-            logo: result.data.description.logo,
-            moniker: result.data.description.moniker,
-            validator_address: delegation[i].validator_address,
-            delegate_amount: delegation[i].delegate_amount,
-            is_compound: delegation[i].is_compound
+      const res = account.queryValidatorOne(delegation[i].validator_address);
+      res
+        .then(result => {
+          if (result.status == 200) {
+            this.delegations.push({
+              logo: result.data.description.logo,
+              moniker: result.data.description.moniker,
+              validator_address: delegation[i].validator_address,
+              delegate_amount: delegation[i].delegate_amount,
+              is_compound: delegation[i].is_compound
+            });
+          } else {
+            this.$message({
+              showClose: true,
+              message: result.statusText,
+              type: "warning"
+            });
+          }
+        })
+        .catch(error => {
+          this.$message({
+            showClose: true,
+            message: error,
+            type: "error"
           });
-        } else {
-          alert(result.statusText);
-        }
-      });
+        });
     },
     handleClick(tab, event) {
       // console.log(tab, event);
@@ -201,16 +266,21 @@ export default {
       }
       //alert("该功能暂未开发!");
     },
-    delegateorunbond(operation) {
+    delegateorunbond(operation, qos, delegation) {
+      console.log(operation, qos, delegation);
       this.$router.push({
         name: "delegateorunbond",
-        params: { operation: operation }
+        params: { amount: qos, operation: operation, delegation: delegation }
       });
     },
-    modifyCompound(is_compound) {
+    modifyCompound(is_compound, qos, delegation) {
       this.$router.push({
         name: "modifycompound",
-        params: { is_compound: is_compound }
+        params: {
+          amount: qos,
+          is_compound: is_compound,
+          delegation: delegation
+        }
       });
     }
   },
@@ -227,8 +297,8 @@ div {
   text-align: center;
   overflow: hidden;
   overflow-y: auto;
-  margin-bottom: 3%;
-  margin-top: 1%;
+  margin-bottom: 2%;
+  margin-top: 2%;
   vertical-align: middle;
 }
 span {

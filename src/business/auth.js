@@ -51,10 +51,11 @@ export function setAccount2 (account, pwd) {
     const encryptKey = encrypt(account.privateKey, pwd)
     const name = account.address.substr(account.address.length - 4, account.address.length - 1)
     if (acc) {
-      acc = { name: name, adddress: account.address, encryptKey: encryptKey }
+      acc = { name: name, address: account.address, encryptKey: encryptKey }
     } else {
-      list.push({ name: name, adddress: account.address, encryptKey: encryptKey })
+      list.push({ name: name, address: account.address, encryptKey: encryptKey })
     }
+    setCurrentAccount({ name: name, address: account.address, encryptKey: encryptKey })
   }
   setAccountList2(list)
 }

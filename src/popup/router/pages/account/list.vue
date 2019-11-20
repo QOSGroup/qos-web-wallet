@@ -18,75 +18,168 @@
     <div v-for="account in accounts" :key="account">
       <el-row>
         <el-col :span="24">
-          <div class="grid-content bg-purple-dark">
+          <div class="grid-content bg-purple-dark" @click="changeAccount(account.address)">
             <div>
-              <span>{{ account.address.substr(account.address.length-4,account.address.length-1) }}</span>
+              <span>{{ account.name }}&nbsp;&nbsp;</span>
               <el-divider direction="vertical"></el-divider>
-              <span>{{ account.address }}</span>
+              <span>&nbsp;&nbsp;{{ account.address }}</span>
             </div>
             <div>
-              <span
-                v-for="coin in coins"
-                :key="coin"
-              >&nbsp;&nbsp;{{ coin.cointype }}: {{ coin.amount }}&nbsp;&nbsp;</span>
+              <div style="float:left;">
+                <span
+                  v-for="coin in account.coins"
+                  :key="coin"
+                >&nbsp;&nbsp;{{ coin.cointype }}: {{ coin.amount }}&nbsp;&nbsp;</span>
+              </div>
+              <div
+                style="float:right;color:blue;"
+                v-if="currentAccount.address === account.address"
+              >当前账户</div>
             </div>
           </div>
         </el-col>
       </el-row>
     </div>
 
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      custom-class="qos-dialog"
+    >
+      <span>{{ error }}</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import store from "@/store"
-import * as types from '@/store/mutation-types'
-import { getBackground } from '../../../common/bgcontact';
+import store from "@/store";
+import * as types from "@/store/mutation-types";
+import { getBackground } from "../../../common/bgcontact";
+import QOSRpc from "js-for-qos-httprpc";
+import {
+  getCurrentAccount,
+  getAccountList2,
+  setCurrentAccount
+} from "@/business/auth";
 export default {
   data() {
     return {
-      accounts: store.getters.accounts,
-      coins: [
-        {
-          amount: 123,
-          cointype: "QOS"
-        },
-        {
-          amount: 456,
-          cointype: "STAR"
-        },
-        {
-          amount: 789,
-          cointype: "ZZU"
-        }
-      ]
+      accounts: [],
+      currentAccount:
+        store.getters.accounts[
+          store.getters.accounts.findIndex(
+            x => x.address === getCurrentAccount().address
+          )
+        ],
+      // 设置弹出
+      error: "",
+      dialogVisible: false,
+      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
-  computed: {},
+  computed: {
+    hasLogin: function() {
+      return {};
+    }
+  },
   mounted() {},
+  created() {
+    this.getAccountList(store.getters.accounts);
+  },
   methods: {
     goBack() {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push({name: homepage});
+        : this.$router.push({ name: homepage });
     },
     addAccount() {
-      this.$router.push({name: "walletcreate"});
+      this.$router.push({ name: "walletcreate" });
     },
     importAccount() {
-      this.$router.push({name: "walletimport"});
+      this.$router.push({ name: "walletimport" });
     },
     exit() {
       // 移除background  store中的账户
       const bg = getBackground();
-      bg.accountDelete(store.getters.accounts[0])
-
+      bg.accountDelete(store.getters.accounts[0]);
       // 移除popup store 中账户
-      console.log("store.getters.accounts.length=00=" + store.getters.accounts.length)
-      store.commit(types.DELETE_ACCOUNT, store.getters.accounts[0])
-      console.log("store.getters.accounts.length=11=" + store.getters.accounts.length)
-      
-      this.$router.push({name: "login"});
+      store.commit(types.DELETE_ACCOUNT, store.getters.accounts[0]);
+      this.$router.push({ name: "login" });
+    },
+    getAccountList(accountList) {
+      // 刷新页面,将账户列表置空
+      this.accounts = [];
+      let account, res, qcps;
+      for (let acc of accountList) {
+        account = this.rpc.recoveryAccountByPrivateKey(acc.privateKey);
+        res = account.queryAccount(acc.address);
+        res
+          .then(result => {
+            if (result.status === 200) {
+              let address = result.data.value.account_address;
+              let name = address.substr(address.length - 4, address.length - 1);
+
+              let list = [];
+              list.push({
+                cointype: "QOS",
+                amount: result.data.value.qos
+              });
+              qcps = result.data.value.qcps;
+              if (qcps) {
+                for (let qcp of qcps) {
+                  list.push({
+                    cointype: qcp.coin_name,
+                    amount: qcp.amount
+                  });
+                }
+              }
+              this.accounts.push({ name: name, address: address, coins: list });
+            } else {
+              // alert(result.statusText);
+              this.error = result.statusText;
+              this.dialogVisible = true;
+            }
+          })
+          .catch(error => {
+            this.accounts.push({
+              name: acc.address.substr(
+                acc.address.length - 4,
+                acc.address.length - 1
+              ),
+              address: acc.address,
+              coins: [{ cointype: "QOS", amount: 0 }]
+            });
+            this.$message({
+              showClose: true,
+              message:
+                "链上账户信息查询失败!账户地址后4位:" +
+                acc.address.substr(
+                  acc.address.length - 4,
+                  acc.address.length - 1
+                ),
+              type: "warning"
+            });
+          });
+      }
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
+    changeAccount(address) {
+      const accountList = getAccountList2();
+      const changeAcc = accountList.find(x => x.address === address);
+      setCurrentAccount(changeAcc);
+      this.$router.push({ name: "homepage" });
     }
   }
 };
@@ -136,3 +229,9 @@ export default {
   }
 }
 </style>
+<style lang="scss">
+.qos-dialog {
+  .el-dialog__body {
+    padding: 0 30px !important;
+  }
+}
