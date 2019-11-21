@@ -179,8 +179,8 @@ export default {
         .catch(error => {
           this.$message({
             showClose: true,
-            message: "该账户在链上的账户信息查询失败!",
-            type: "error"
+            message: "该账户在链上的‘账户信息’查询失败!",
+            type: "warning"
           });
         });
     },
@@ -208,8 +208,8 @@ export default {
         .catch(error => {
           this.$message({
             showClose: true,
-            message: "该账户在链上的委托信息查询失败!",
-            type: "error"
+            message: "该账户在链上的‘委托信息’查询失败!",
+            type: "warning"
           });
         });
     },
@@ -241,7 +241,7 @@ export default {
           this.$message({
             showClose: true,
             message: error,
-            type: "error"
+            type: "warning"
           });
         });
     },

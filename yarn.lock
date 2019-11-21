@@ -3803,7 +3803,7 @@ js-base64@^2.1.8:
 
 "js-for-qos-httprpc@https://github.com/wangkuanzzu/js-for-qos-httprpc.git":
   version "1.0.0"
-  resolved "https://github.com/wangkuanzzu/js-for-qos-httprpc.git#2f766ee8489f398a2bf72e67a15ce1803f15b6af"
+  resolved "https://github.com/wangkuanzzu/js-for-qos-httprpc.git#706987826378d980f9e7e07869743db1ee42af0e"
   dependencies:
     axios "^0.19.0"
     bip39 "^3.0.2"

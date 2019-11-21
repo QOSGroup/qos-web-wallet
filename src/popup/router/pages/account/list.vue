@@ -158,7 +158,7 @@ export default {
             this.$message({
               showClose: true,
               message:
-                "链上账户信息查询失败!账户地址后4位:" +
+                "链上‘账户信息’查询失败!账户地址后4位:" +
                 acc.address.substr(
                   acc.address.length - 4,
                   acc.address.length - 1

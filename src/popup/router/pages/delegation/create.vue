@@ -9,18 +9,29 @@
       </div>
       <div style="float:right;width:200px;">
         <div style="text-align:left;">
-          <div style="float:left;font-size: medium;">{{ validator.moniker }}</div>
           <div style="float:left;">
+            <el-select
+              v-model="validator.address"
+              placeholder="请选择"
+              size="mini"
+              @change="setValidator"
+            >
+              <el-option
+                v-for="(validator, index) in validators"
+                :key="index"
+                :label="validator.description.moniker"
+                :value="validator.validator"
+              ></el-option>
+            </el-select>
+          </div>
+          <div style="float:left;font-size: xx-large;">
             <el-link :href="validator.validatorUrl" target="_blank">
               <i class="el-icon-link"></i>
             </el-link>
           </div>
         </div>
         <div style="text-align:left;">
-          <span>
-            <br />
-            {{ validator.address }}
-          </span>
+          <span>{{ validator.address }}</span>
         </div>
       </div>
     </div>
@@ -40,8 +51,10 @@
 
     <div>
       <span>委托方式:</span>
-      <el-radio v-model="form.compound" label="0">不复投</el-radio>
-      <el-radio v-model="form.compound" label="1">复投</el-radio>
+      <el-radio-group v-model="form.compound" size="mini">
+        <el-radio label="0" border>不复投</el-radio>
+        <el-radio label="1" border>复投</el-radio>
+      </el-radio-group>
     </div>
 
     <!-- <div>
@@ -80,6 +93,8 @@ export default {
       title: "新建委托",
       //用户信息
       amount: this.$route.params.amount,
+      //所有validators
+      validators: [],
       //用户所选的validator信息
       validator: {
         logo: "",
@@ -109,6 +124,9 @@ export default {
         ],
       rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
+  },
+  created() {
+    this.getValidators();
   },
   methods: {
     goBack() {
@@ -156,6 +174,68 @@ export default {
         .catch(error => {
           this.error = error;
           this.dialogVisible = true;
+        });
+    },
+    setValidator() {
+      const choose = this.$data.validator.address;
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
+      const res = account.queryDelagationOne(
+        this.currentAccount.address,
+        choose
+      );
+      res
+        .then(result => {
+          // this.$data.delegation.delegate_amount = result.data.delegate_amount;
+          // this.$data.delegation.is_compound = result.data.is_compound;
+          this.$data.validator.address = "";
+          this.$message({
+            showClose: true,
+            message: "已有委托,请从‘我的委托’中进行追加或撤回!",
+            type: "warning"
+          });
+        })
+        .catch(error => {
+          this.$message({
+            showClose: true,
+            message: "暂无委托,可以新建."
+          });
+          const validators = this.$data.validators;
+          for (let index = 0; index < validators.length; index++) {
+            if (choose == validators[index].validator) {
+              this.$data.validator.logo = validators[index].description.logo;
+              this.$data.validator.moniker =
+                validators[index].description.moniker;
+              this.$data.validator.address = validators[index].validator;
+              this.$data.validator.validatorUrl = "http://www.baidu.com";
+            }
+          }
+        });
+    },
+    getValidators() {
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
+      const res = account.queryValidatorAll();
+      res
+        .then(result => {
+          if (result.status == 200) {
+            this.validators = result.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: result.statusText,
+              type: "warning"
+            });
+          }
+        })
+        .catch(error => {
+          this.$message({
+            showClose: true,
+            message: error,
+            type: "error"
+          });
         });
     },
     handleClose(done) {
