@@ -1,6 +1,6 @@
 <template>
   <div class="homepage-wrap">
-    <div style="background:#409EFF;height:25%;">
+    <div style="background:rgba(50, 115, 200, 1);height:25%;">
       <div>
         <br />
         <div style="float:left;width:90%;text-align:left;">
@@ -11,8 +11,12 @@
         </div>
       </div>
       <div>
-        <span class="span_account">{{ address }}</span>
-        <i class="el-icon-document-copy" style="font-size:18px;float:right;" title="复制"></i>
+        <div style="width:88%;float:left;font-size:medium;">
+          <span>{{ address }}</span>
+        </div>
+        <div>
+          <i class="el-icon-document-copy" style="font-size:22px;margin-top:6px;" title="复制"></i>
+        </div>
       </div>
     </div>
     <el-divider></el-divider>
@@ -57,18 +61,18 @@
               </div>
               <div style="float:right;width:200px;">
                 <div style="text-align:left;">
-                  <span>
-                    <br />
-                    {{ delegation.moniker }}
-                  </span>
-                  <i class="el-icon-link"></i>
+                  <div style="float:left;font-size: medium;">{{ delegation.moniker }}</div>
+                  <div style="float:left;">
+                    <el-link :href="delegation.validatorUrl" target="_blank">
+                      <i class="el-icon-link"></i>
+                    </el-link>
+                  </div>
                 </div>
                 <div style="text-align:left;">
                   <span>
                     <br />
                     {{ delegation.validator_address }}
                   </span>
-                  <i class="el-icon-link"></i>
                 </div>
               </div>
             </div>
@@ -116,7 +120,7 @@
             ></el-button>
           </div>-->
         </el-tab-pane>
-        <el-tab-pane label="我的授权" name="approve">该功能暂未开发！</el-tab-pane>
+        <el-tab-pane label="我的授权" name="approve">暂不支持该功能！</el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -222,7 +226,8 @@ export default {
               moniker: result.data.description.moniker,
               validator_address: delegation[i].validator_address,
               delegate_amount: delegation[i].delegate_amount,
-              is_compound: delegation[i].is_compound
+              is_compound: delegation[i].is_compound,
+              validatorUrl: "http://www.baidu.com"
             });
           } else {
             this.$message({
@@ -264,7 +269,11 @@ export default {
       if (!coinType) {
         coinType = "QOS";
       }
-      //alert("该功能暂未开发!");
+      this.$message({
+        showClose: true,
+        message: "暂不支持该功能!",
+        type: "warning"
+      });
     },
     delegateorunbond(operation, qos, delegation) {
       console.log(operation, qos, delegation);
@@ -282,6 +291,11 @@ export default {
           delegation: delegation
         }
       });
+    },
+    copy() {
+      var Url2 = document.getElementById("test");
+      Url2.select(); // 选择对象
+      document.execCommand("Copy"); // 执行浏览器复制命令
     }
   },
   computed: {}

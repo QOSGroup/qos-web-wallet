@@ -9,11 +9,12 @@
       </div>
       <div style="float:right;width:200px;">
         <div style="text-align:left;">
-          <span>
-            <br />
-            {{ validator.moniker }}
-          </span>
-          <i class="el-icon-link"></i>
+          <div style="float:left;font-size: medium;">{{ validator.moniker }}</div>
+          <div style="float:left;">
+            <el-link :href="validator.validatorUrl" target="_blank">
+              <i class="el-icon-link"></i>
+            </el-link>
+          </div>
           <!-- <div><el-button type="primary" size="mini" plain @click="selectValidator()">选择委托对象</el-button></div> -->
         </div>
         <div style="text-align:left;">
@@ -21,7 +22,6 @@
             <br />
             {{ validator.address }}
           </span>
-          <i class="el-icon-link"></i>
         </div>
       </div>
     </div>
@@ -88,7 +88,8 @@ export default {
       validator: {
         logo: this.$route.params.delegation.logo,
         moniker: this.$route.params.delegation.moniker,
-        address: this.$route.params.delegation.validator_address
+        address: this.$route.params.delegation.validator_address,
+        validatorUrl: "https://www.baidu.com"
       },
       //用户在当前validator的委托信息
       delegation: {

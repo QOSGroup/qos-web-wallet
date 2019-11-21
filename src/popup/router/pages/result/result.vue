@@ -6,11 +6,10 @@
       <div><span>交易已提交，上链中...</span></div>
       <div>
         <span>交易hash：{{ txhash }}</span>
-        <i class="el-icon-link"></i>
       </div>
     </div>
     <div>
-      <el-button type="primary" size="small" plain>在浏览器中查看</el-button>
+      <el-button type="primary" size="small" plain @click="detailInWeb">在浏览器中查看</el-button>
     </div>
     <div>
       <el-button type="primary" size="mini" plain @click="confirm">确定</el-button>
@@ -32,6 +31,9 @@ export default {
     },
     confirm() {
       this.$router.push({name: "homepage"})
+    },
+    detailInWeb() {
+      window.open("http://www.baidu.com","_blank") 
     }
   },
   computed: {},
