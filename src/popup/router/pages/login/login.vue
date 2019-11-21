@@ -64,7 +64,6 @@ export default {
       this.$router.push({ name: "walletcreate" });
     },
     async enterWallet() {
-      const dbacclist = await getAccountList2()
       const bg = getBackground();
       const acclist = await bg.login(this.ruleForm.pwd);
       if (acclist) {

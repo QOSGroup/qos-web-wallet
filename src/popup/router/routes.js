@@ -14,6 +14,7 @@ import WalletImport from './pages/wallet/import'
 
 import DelegateOrUnbond from './pages/delegation/delegateorunbond'
 import ModifyCompound from './pages/delegation/modify'
+import DelegationCreate from './pages/delegation/create'
 
 import TxResult from './pages/result/result'
 
@@ -62,6 +63,11 @@ export default [
     path: '/delegation/modify',
     name: 'modifycompound',
     component: ModifyCompound
+  },
+  {
+    path: '/delegation/create',
+    name: 'delegationcreate',
+    component: DelegationCreate
   },
   {
     path: '/result/result',

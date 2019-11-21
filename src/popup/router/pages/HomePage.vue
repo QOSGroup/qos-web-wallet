@@ -111,14 +111,14 @@
             <el-divider width="80%"></el-divider>
           </div>
 
-          <!-- <div>
+          <div>
             <el-button
               icon="el-icon-plus"
               circle
-              @click="delegateorunbond('delegate')"
+              @click="createDelegation(qos.toString())"
               title="新增委托"
             ></el-button>
-          </div>-->
+          </div>
         </el-tab-pane>
         <el-tab-pane label="我的授权" name="approve">暂不支持该功能！</el-tab-pane>
       </el-tabs>
@@ -275,8 +275,13 @@ export default {
         type: "warning"
       });
     },
+    createDelegation(qos){
+      this.$router.push({
+        name: "delegationcreate",
+        params: { amount: qos }
+      });
+    },
     delegateorunbond(operation, qos, delegation) {
-      console.log(operation, qos, delegation);
       this.$router.push({
         name: "delegateorunbond",
         params: { amount: qos, operation: operation, delegation: delegation }

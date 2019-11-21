@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App'
 import store from '../store'
 import router from './router'
-import VueClipboard from 'vue-clipboard2'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import {
@@ -55,8 +54,6 @@ Vue.use(Option)
 Vue.use(Upload)
 Vue.use(Link)
 Vue.use(Dialog)
-// Vue.use(Message)
-Vue.use(VueClipboard)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

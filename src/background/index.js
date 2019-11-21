@@ -91,15 +91,16 @@ export function registerGloablFunction (global) {
     // 设置当前登录账户:默认所有登录成功账户中的第一个
     const currentAcc = getCurrentAccount()
     const encryptKey = encrypt(accountList[0].privateKey, pwd)
-    const name = accountList[0].address.substr(accountList[0].address.length - 4, accountList[0].address.length - 1)
+    const address = accountList[0].address
+    const name = address.substr(address.length - 4, address.length - 1)
     // 当前登录账户为空
     if (currentAcc === null || currentAcc === 'undefined') {
-      setCurrentAccount({ name: name, address: accountList[0].address, encryptKey: encryptKey })
+      setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })
     } else {
       // 当前登录的账户存在,判断是否在accountList中,不在其中,重新设置为accountList第一个
       let acc = accountList.find(x => x.address === currentAcc.address)
-      if (acc) {
-        setCurrentAccount({ name: name, address: accountList[0].address, encryptKey: encryptKey })
+      if (!acc) {
+        setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })
       }
     }
     return accountList
