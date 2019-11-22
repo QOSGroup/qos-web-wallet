@@ -1,9 +1,9 @@
 <template>
   <div class="transfer-wrap">
-    <!-- <div>这是转账页面: {{inputParams}}</div>
+    <div>这是转账页面: {{inputParams}}</div>
     <div>
       <button @click="onProcess">processMsg</button>
-    </div> -->
+    </div>
 
     <el-page-header @back="goBack" content="转账"></el-page-header>
     <el-divider></el-divider>
@@ -46,7 +46,7 @@
     </div>
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
+      <el-button type="primary" size="small" plain @click="commitTx" :loading="onloading">确定</el-button>
     </div>
 
     <el-dialog
@@ -84,6 +84,8 @@ export default {
         tokens: 0,
         gas: 0
       },
+      // 确定按钮
+      onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
       error: "",
@@ -110,6 +112,7 @@ export default {
         : this.$router.push({ name: "homepage" });
     },
     commitTx() {
+      this.onloading = true;
       //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
       const account = this.rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey

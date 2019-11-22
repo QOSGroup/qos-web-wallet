@@ -26,7 +26,7 @@ export default {
     state.toPage = payload
   },
   [types.ADD_MSG_QUEUE] (state, payload) {
-    console.log('types.ADD_MSG_QUEUE', payload)
+    console.log('types.ADD_MSG_QUEUE===', payload)
     state.msgQueue.push(payload)
   },
   [types.CLONE_STATE] (state, payload) {

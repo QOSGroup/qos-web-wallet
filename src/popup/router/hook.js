@@ -14,10 +14,11 @@ const whiteListPage = ['/login/login', '/register/register', '/wallet/create', '
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
-store.commit(types.CLONE_STATE, { keyArr: ['msgQueue'], bgState })
+// store.commit(types.CLONE_STATE, { keyArr: ['msgQueue'], bgState })
 
 export async function beforeEach (to, from, next) {
-  store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
+  store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
+  console.log('MsgQueue first----:', store.getters.firstMsg)
   const accounts = store.getters.accounts
   console.log(`(!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1`,
     (!accounts || accounts.length === 0), whiteListPage.indexOf(to.path) === -1, from.path, to.path)

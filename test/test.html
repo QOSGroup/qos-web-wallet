@@ -29,19 +29,13 @@
 
       qos.enable()
         .then(function (res) {
-          console.log("test.html-enable", res);
-          console.log("test.html-enable===",res.res.data);
           if (res.res.data.flag == "unregister") {
             alert("您还没有账户,请创建或导入账户后重新操作!");
+          }else if(res.res.data.flag == "unlogin"){
+            alert("您还没有登录,请登录账户后重新操作!");
           }else {
-            // alert("有账户,无关是否登录");
-            // 页面操作类型,传递不同的type和data
-            qos
-              .process({
-                type: "deleagte",
-                data: {
-                  validator: "qosval1x6d58mx3hssq6ksaftfwvdskaz35pumr49e8gm"
-                }
+            qos.process({
+                type: "transfer"
               })
               .then(function(res) {
                 console.log("test.html-process", res);

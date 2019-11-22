@@ -65,7 +65,7 @@
     </div>-->
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
+      <el-button type="primary" size="small" plain @click="commitTx" :loading="onloading">确定</el-button>
     </div>
 
     <el-dialog
@@ -113,6 +113,7 @@ export default {
         gas: 0, //支付的gas费用
         compound: "0" //页面选择是否复投
       },
+      onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
       error: "",
@@ -141,6 +142,7 @@ export default {
       this.$data.form.tokens = this.$data.amount;
     },
     commitTx() {
+      this.onloading = true; 
       //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
       const account = this.rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
