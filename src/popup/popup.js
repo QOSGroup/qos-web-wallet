@@ -24,7 +24,10 @@ import {
   Select,
   Option,
   Upload,
-  Link
+  Link,
+  Dialog,
+  Message,
+  MessageBox
 } from 'element-ui'
 
 global.browser = require('webextension-polyfill')
@@ -50,6 +53,10 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Upload)
 Vue.use(Link)
+Vue.use(Dialog)
+
+Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
 
 /* eslint-disable no-new */
 new Vue({

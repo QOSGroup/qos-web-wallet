@@ -1,6 +1,4 @@
-import {
-  Res
-} from '../../business/BaseMsgHandler'
+import { Res } from '@/common/Common'
 
 const extensioner = require('extensionizer')
 

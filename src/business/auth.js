@@ -1,22 +1,17 @@
 import db from '../utils/db'
 import { encrypt } from '../utils/crypt'
 
-const TOKEN_KEY = 'qos-web-wallet-token'
+// const TOKEN_KEY = 'qos-web-wallet-token'
 const ACCOUNTLIST = 'qos-account-list'
 const CURRENTACCOUNT = 'qos-current-account'
-const CURRENTACCOUNTCIPHER = 'qos-current-account-cipher'
-const ACCOUNTNAME = 'qos-current-account-name'
-const PRIVATEKEY = 'qos-current-privatekey'
 
-export function setToken (token) {
-  // return db.setLocal(TOKEN_KEY, token)
-  return db.set(TOKEN_KEY, token)
-}
+// export function setToken (token) {
+//   return db.set(TOKEN_KEY, token)
+// }
 
-export function getToken () {
-  // return db.getLocal(TOKEN_KEY)
-  return db.get(TOKEN_KEY)
-}
+// export function getToken () {
+//   return db.get(TOKEN_KEY)
+// }
 
 /** 设置账户 */
 export async function setAccount (account, pwd) {
@@ -25,10 +20,11 @@ export async function setAccount (account, pwd) {
   if (list && Array.isArray(list)) {
     let acc = list.find(x => x.address === account.address)
     const encryptKey = encrypt(account.privateKey, pwd)
+    const name = account.address.substr(account.address.length - 4, account.address.length - 1)
     if (acc) {
-      acc = { adddress: account.address, encryptKey }
+      acc = { name: name, adddress: account.address, encryptKey: encryptKey }
     } else {
-      list.push({ adddress: account.address, encryptKey })
+      list.push({ name: name, adddress: account.address, encryptKey: encryptKey })
     }
   }
   await setAccountList(list)
@@ -43,6 +39,36 @@ export async function setAccountList (list) {
   await db.setLocal(ACCOUNTLIST, list)
 }
 
+/** 设置账户--使用localstorage */
+export function setAccount2 (account, pwd) {
+  let list = getAccountList2()
+  if (list == null) {
+    list = []
+  }
+  // {name,adddress,encryptKey}
+  if (list && Array.isArray(list)) {
+    let acc = list.find(x => x.address === account.address)
+    const encryptKey = encrypt(account.privateKey, pwd)
+    const name = account.address.substr(account.address.length - 4, account.address.length - 1)
+    if (acc) {
+      acc = { name: name, address: account.address, encryptKey: encryptKey }
+    } else {
+      list.push({ name: name, address: account.address, encryptKey: encryptKey })
+    }
+    setCurrentAccount({ name: name, address: account.address, encryptKey: encryptKey })
+  }
+  setAccountList2(list)
+}
+
+/** 获取账户列表--使用localstorage */
+export function getAccountList2 () {
+  const acclist = db.get(ACCOUNTLIST)
+  return acclist
+}
+export function setAccountList2 (list) {
+  db.set(ACCOUNTLIST, list)
+}
+
 export function setCurrentAccount (account) {
   // return db.setLocal(CURRENTACCOUNT,account)
   return db.set(CURRENTACCOUNT, account)
@@ -51,34 +77,4 @@ export function setCurrentAccount (account) {
 export function getCurrentAccount () {
   // return db.getLocal(CURRENTACCOUNT)
   return db.get(CURRENTACCOUNT)
-}
-
-export function setCurrentAccountCipher (accountCipher) {
-  // return db.setLocal(CURRENTACCOUNT,account)
-  return db.set(CURRENTACCOUNTCIPHER, accountCipher)
-}
-
-export function getCurrentAccountCipher () {
-  // return db.getLocal(CURRENTACCOUNT)
-  return db.get(CURRENTACCOUNTCIPHER)
-}
-
-export function setAccountName (name) {
-  // return db.setLocal(CURRENTACCOUNT,account)
-  return db.set(ACCOUNTNAME, name)
-}
-
-export function getAccountName () {
-  // return db.getLocal(CURRENTACCOUNT)
-  return db.get(ACCOUNTNAME)
-}
-
-export function setPrivateKey (name) {
-  // return db.setLocal(CURRENTACCOUNT,account)
-  return db.set(PRIVATEKEY, name)
-}
-
-export function getPrivateKey () {
-  // return db.getLocal(CURRENTACCOUNT)
-  return db.get(PRIVATEKEY)
 }

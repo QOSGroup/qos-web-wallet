@@ -9,18 +9,19 @@
       </div>
       <div style="float:right;width:200px;">
         <div style="text-align:left;">
-          <span>
-            <br />
-            {{ validator.moniker }}
-          </span>
-          <i class="el-icon-link"></i>
+          <div style="float:left;font-size: medium;">{{ validator.moniker }}</div>
+          <div style="float:left;">
+            <el-link :href="validator.validatorUrl" target="_blank">
+              <i class="el-icon-link"></i>
+            </el-link>
+          </div>
+          <!-- <div><el-button type="primary" size="mini" plain @click="selectValidator()">选择委托对象</el-button></div> -->
         </div>
         <div style="text-align:left;">
           <span>
             <br />
             {{ validator.address }}
           </span>
-          <i class="el-icon-link"></i>
         </div>
       </div>
     </div>
@@ -42,43 +43,69 @@
       </div>
       <div class="div_modify">复投</div>
     </div>
-    <div>
+
+    <!-- <div>
       <span>最大手续费：{{ form.gas }}</span>
     </div>
     <div class="block">
       <el-slider v-model="form.gas" max="100"></el-slider>
-    </div>
+    </div>-->
 
     <div style="text-align:center;">
       <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
     </div>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+      custom-class="qos-dialog"
+    >
+      <span>{{ this.error }}</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import store from "@/store";
+import QOSRpc from "js-for-qos-httprpc";
+import { getCurrentAccount } from "@/business/auth";
 export default {
   data() {
     return {
       //用户信息
-      userName: "wangkuan",
-      address: "qosacc1g24jk70w086h88hs0akmum9azkh49pa0gjn7uc",
-      amount: 1234.56,
+      amount: this.$route.params.amount,
       //用户所选的validator信息
       validator: {
-        logo:
-          "http://img2.imgtn.bdimg.com/it/u=3293334768,2684434782&fm=26&gp=0.jpg",
-        moniker: "Compass1",
-        address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc"
+        logo: this.$route.params.delegation.logo,
+        moniker: this.$route.params.delegation.moniker,
+        address: this.$route.params.delegation.validator_address,
+        validatorUrl: "http://www.baidu.com"
       },
       //用户在当前validator的委托信息
       delegation: {
-        delegator_address: "qosval1zvcvwekjamvak4xefnucv6nkrf4age6n7wj7pc",
-        delegate_amount: 1000,
-        is_compound: true
+        delegator_address: this.$route.params.delegation.validator_address,
+        delegate_amount: this.$route.params.delegation.delegate_amount,
+        is_compound: this.$route.params.delegation.is_compound
       },
       form: {
-        gas: 10 //支付的gas费用
-      }
+        gas: 0 //支付的gas费用
+      },
+      // 弹出提示框数据
+      dialogVisible: false,
+      error: "",
+      currentAccount:
+        store.getters.accounts[
+          store.getters.accounts.findIndex(
+            x => x.address === getCurrentAccount().address
+          )
+        ],
+      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
     };
   },
   methods: {
@@ -91,7 +118,47 @@ export default {
         : this.$router.push({ name: "homepage" });
     },
     commitTx() {
-      this.$router.push({ name: "txresult" });
+      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+      const account = this.rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      );
+      // 创建基础数据结构
+      const myBase = {
+        from: this.currentAccount.address
+        // chain_id: "qos-test",
+        // max_gas: this.form.gas.toString()
+      };
+      // 组装data数据,调用rpc接口,提交交易
+      const data = {
+        is_compound: !(this.$route.params.is_compound == 'true'),
+        base: myBase
+      };
+      const res = account.sendModifyDelegationTx(this.validator.address, data);
+      // 得到返回值处理
+      res
+        .then(result => {
+          if (result.status === 200) {
+            this.$router.push({
+              name: "txresult",
+              params: { hash: result.data.hash }
+            });
+          } else {
+            console.log(result);
+            this.error = result;
+            this.dialogVisible = true;
+          }
+        })
+        .catch(error => {
+          this.error = error;
+          this.dialogVisible = true;
+        });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   },
   computed: {}
@@ -124,3 +191,9 @@ span {
   text-align: center;
 }
 </style>
+<style lang="scss">
+.qos-dialog {
+  .el-dialog__body {
+    padding: 0 30px !important;
+  }
+}

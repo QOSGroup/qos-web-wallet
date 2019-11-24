@@ -14,7 +14,9 @@ extension.runtime.onMessage.addListener(async function (request, sender, sendRes
   // typeof request === InputParams
   if (request.flag === 'qos_msg') {
     request.sendResponse = sendResponse
-    store.commit(types.ADD_MSG_QUEUE, request)
+    if (request.type !== 'qosEnable') {
+      store.commit(types.ADD_MSG_QUEUE, request)
+    }
   }
   let msgHandler
   if (request.type === 'qosToPage') {
