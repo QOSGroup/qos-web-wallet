@@ -15,18 +15,22 @@ const CURRENTACCOUNT = 'qos-current-account'
 
 /** 设置账户 */
 export async function setAccount (account, pwd) {
-  const list = await getAccountList()
+  let list = await getAccountList()
   // {adddress,privateKey}
+  let acc
   if (list && Array.isArray(list)) {
-    let acc = list.find(x => x.address === account.address)
-    const encryptKey = encrypt(account.privateKey, pwd)
-    const name = account.address.substr(account.address.length - 4, account.address.length - 1)
-    if (acc) {
-      acc = { name: name, adddress: account.address, encryptKey: encryptKey }
-    } else {
-      list.push({ name: name, adddress: account.address, encryptKey: encryptKey })
-    }
+    acc = list.find(x => x.address === account.address)
+  } else {
+    list = []
   }
+  const encryptKey = encrypt(account.privateKey, pwd)
+  const name = account.address.substr(account.address.length - 4, account.address.length - 1)
+  if (acc) {
+    acc = { name: name, adddress: account.address, encryptKey: encryptKey }
+  } else {
+    list.push({ name: name, adddress: account.address, encryptKey: encryptKey })
+  }
+
   await setAccountList(list)
 }
 
@@ -70,11 +74,11 @@ export function setAccountList2 (list) {
 }
 
 export function setCurrentAccount (account) {
-  // return db.setLocal(CURRENTACCOUNT,account)
-  return db.set(CURRENTACCOUNT, account)
+  return db.setLocal(CURRENTACCOUNT, account)
+  // return db.set(CURRENTACCOUNT, account)
 }
 
 export function getCurrentAccount () {
-  // return db.getLocal(CURRENTACCOUNT)
-  return db.get(CURRENTACCOUNT)
+  return db.getLocal(CURRENTACCOUNT)
+  // return db.get(CURRENTACCOUNT)
 }

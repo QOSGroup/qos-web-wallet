@@ -1,6 +1,6 @@
 import BaseMsgHandler from './BaseMsgHandler'
 import {
-  getAccountList2
+  getAccountList
 } from './auth'
 import {
   Res
@@ -15,7 +15,7 @@ export class EnableHandler extends BaseMsgHandler {
 
   async handler () {
     // 先判断是否有账户
-    let acclist = await getAccountList2()
+    let acclist = await getAccountList()
     // 本地无账户信息
     if (!acclist || acclist.length === 0) {
       this.oMsg.sendResponse(new Res(true, {

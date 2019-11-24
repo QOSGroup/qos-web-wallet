@@ -33,9 +33,11 @@
 </template>
 
 <script>
-import { getAccountList2 } from "@/business/auth"
+import { getAccountList } from "@/business/auth"
 import { encrypt, decrypt } from "@/utils/crypt";
 import { getBackground } from '../../../common/bgcontact';
+import store from '../../../../store'
+import * as types from '@/store/mutation-types'
 export default {
   data() {
     return {
@@ -67,6 +69,9 @@ export default {
       const bg = getBackground();
       const acclist = await bg.login(this.ruleForm.pwd);
       if (acclist) {
+        for (const acc of acclist){
+          store.commit(types.SET_ACCOUNT, acc)
+        }
         this.$router.push({ name: "homepage" });
       } else {
         this.dialogVisible = true;

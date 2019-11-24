@@ -9,8 +9,8 @@ import {
   decrypt
 } from '../utils/crypt'
 import {
-  getAccountList2,
-  setAccount2,
+  getAccountList,
+  setAccount,
   getCurrentAccount,
   setCurrentAccount
 } from '../business/auth'
@@ -57,16 +57,14 @@ export function registerGloablFunction (global) {
       if (privateKey) {
         account = qosRpc.recoveryAccountByPrivateKey(privateKey)
         // 账户本地持久化
-        // await setAccount(account, pwd)
-        setAccount2(account, pwd)
+        await setAccount(account, pwd)
         store.commit(types.SET_ACCOUNT, account)
         return resolve(account)
       }
       if (mnemonic) {
         account = qosRpc.importAccount(mnemonic)
         // 账户本地持久化
-        // await setAccount(account, pwd)
-        setAccount2(account, pwd)
+        await setAccount(account, pwd)
         store.commit(types.SET_ACCOUNT, account)
         return resolve(account)
       }
@@ -74,7 +72,7 @@ export function registerGloablFunction (global) {
   }
 
   global.login = async function (pwd) {
-    const list = await getAccountList2()
+    const list = await getAccountList()
     const accountList = []
     for (const acc of list) {
       let privateKey = decrypt(acc.encryptKey, pwd)
@@ -93,6 +91,7 @@ export function registerGloablFunction (global) {
     const encryptKey = encrypt(accountList[0].privateKey, pwd)
     const address = accountList[0].address
     const name = address.substr(address.length - 4, address.length - 1)
+    console.log('currentAcc==', currentAcc)
     // 当前登录账户为空
     if (currentAcc === null || currentAcc === 'undefined') {
       setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })

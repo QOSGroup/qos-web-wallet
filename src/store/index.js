@@ -15,7 +15,8 @@ export default new Vuex.Store({
       params: {}
     },
     msgQueue: [],
-    accounts: []
+    accounts: [],
+    currentAcount: null
   },
   getters,
   mutations,

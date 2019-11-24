@@ -15,7 +15,7 @@
         <i class="el-icon-download"></i>导入账户
       </el-button>
     </div>
-    <div v-for="account in accounts" :key="account">
+    <div v-for="(account, index) in accounts" :key="index">
       <el-row>
         <el-col :span="24">
           <div class="grid-content bg-purple-dark" @click="changeAccount(account.address)">
@@ -27,8 +27,8 @@
             <div>
               <div style="float:left;">
                 <span
-                  v-for="coin in account.coins"
-                  :key="coin"
+                  v-for="(coin, index) in account.coins"
+                  :key="index"
                 >&nbsp;&nbsp;{{ coin.cointype }}: {{ coin.amount }}&nbsp;&nbsp;</span>
               </div>
               <div
@@ -58,131 +58,134 @@
 </template>
 
 <script>
-import store from "@/store";
-import * as types from "@/store/mutation-types";
-import { getBackground } from "../../../common/bgcontact";
-import QOSRpc from "js-for-qos-httprpc";
+import store from '@/store'
+import * as types from '@/store/mutation-types'
+import { getBackground } from '../../../common/bgcontact'
+import clone from 'clone'
 import {
   getCurrentAccount,
-  getAccountList2,
+  getAccountList,
   setCurrentAccount
-} from "@/business/auth";
+} from '@/business/auth'
+import { rpc } from '@/utils/rpc'
+
 export default {
-  data() {
+  data () {
+    const index = store.getters.accounts.findIndex(
+      x => x.address === getCurrentAccount().address
+    )
     return {
       accounts: [],
-      currentAccount:
-        store.getters.accounts[
-          store.getters.accounts.findIndex(
-            x => x.address === getCurrentAccount().address
-          )
-        ],
+      currentAccount: store.getters.accounts[index],
       // 设置弹出
-      error: "",
-      dialogVisible: false,
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
-  },
-  computed: {
-    hasLogin: function() {
-      return {};
+      error: '',
+      dialogVisible: false
     }
   },
-  mounted() {},
-  created() {
-    this.getAccountList(store.getters.accounts);
+  computed: {
+    hasLogin: function () {
+      return {}
+    }
+  },
+  mounted () {},
+  created () {
+    this.getAccountList(store.getters.accounts)
   },
   methods: {
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push({ name: homepage });
+        : this.$router.push({ name: 'homepage' })
     },
-    addAccount() {
-      this.$router.push({ name: "walletcreate" });
+    addAccount () {
+      this.$router.push({ name: 'walletcreate' })
     },
-    importAccount() {
-      this.$router.push({ name: "walletimport" });
+    importAccount () {
+      this.$router.push({ name: 'walletimport' })
     },
-    exit() {
-      // 移除background  store中的账户
-      const bg = getBackground();
-      bg.accountDelete(store.getters.accounts[0]);
-      // 移除popup store 中账户
-      store.commit(types.DELETE_ACCOUNT, store.getters.accounts[0]);
-      this.$router.push({ name: "login" });
+    exit () {
+      const bg = getBackground()
+      const accountlist = clone(store.getters.accounts)
+      for (var i = 0; i < accountlist.length; i++) {
+        // 移除background  store中的账户
+        bg.accountDelete(accountlist[i])
+        // 移除popup store 中账户
+        store.commit(types.DELETE_ACCOUNT, accountlist[i])
+      }
+      this.$router.push({ name: 'login' })
     },
-    getAccountList(accountList) {
+    getAccountList (accountList) {
       // 刷新页面,将账户列表置空
-      this.accounts = [];
-      let account, res, qcps;
+      this.accounts = []
+      let account, res, qcps
       for (let acc of accountList) {
-        account = this.rpc.recoveryAccountByPrivateKey(acc.privateKey);
-        res = account.queryAccount(acc.address);
+        account = rpc.recoveryAccountByPrivateKey(acc.privateKey)
+        res = account.queryAccount(acc.address)
         res
           .then(result => {
             if (result.status === 200) {
-              let address = result.data.value.account_address;
-              let name = address.substr(address.length - 4, address.length - 1);
+              let address = result.data.value.account_address
+              let name = address.substr(address.length - 4, address.length - 1)
 
-              let list = [];
+              let list = []
               list.push({
-                cointype: "QOS",
+                cointype: 'QOS',
                 amount: result.data.value.qos
-              });
-              qcps = result.data.value.qcps;
+              })
+              qcps = result.data.value.qcps
               if (qcps) {
                 for (let qcp of qcps) {
                   list.push({
                     cointype: qcp.coin_name,
                     amount: qcp.amount
-                  });
+                  })
                 }
               }
-              this.accounts.push({ name: name, address: address, coins: list });
+              this.accounts.push({ name: name, address: address, coins: list })
             } else {
               // alert(result.statusText);
-              this.error = result.statusText;
-              this.dialogVisible = true;
+              this.error = result.statusText
+              this.dialogVisible = true
             }
           })
           .catch(error => {
+            console.log(error.message)
             this.accounts.push({
               name: acc.address.substr(
                 acc.address.length - 4,
                 acc.address.length - 1
               ),
               address: acc.address,
-              coins: [{ cointype: "QOS", amount: 0 }]
-            });
+              coins: [{ cointype: 'QOS', amount: 0 }]
+            })
             this.$message({
               showClose: true,
               message:
-                "链上‘账户信息’查询失败!账户地址后4位:" +
+                '链上‘账户信息’查询失败!账户地址后4位:' +
                 acc.address.substr(
                   acc.address.length - 4,
                   acc.address.length - 1
                 ),
-              type: "warning"
-            });
-          });
+              type: 'warning'
+            })
+          })
       }
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
+    handleClose (done) {
+      this.$confirm('确认关闭？')
         .then(_ => {
-          done();
+          done()
         })
-        .catch(_ => {});
+        .catch(_ => {})
     },
-    changeAccount(address) {
-      const accountList = getAccountList2();
-      const changeAcc = accountList.find(x => x.address === address);
-      setCurrentAccount(changeAcc);
-      this.$router.push({ name: "homepage" });
+    async changeAccount (address) {
+      const accountList = await getAccountList()
+      const changeAcc = accountList.find(x => x.address === address)
+      setCurrentAccount(changeAcc)
+      this.$router.push({ name: 'homepage' })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
