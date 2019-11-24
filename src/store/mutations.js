@@ -37,7 +37,7 @@ export default {
     }
   },
   [types.HAS_DIRECT_PAGE] (state, payload) {
-    state.msgQueue[0].hasDirect = true
+    // state.msgQueue[0].hasDirect = true
   },
   [types.DELETE_MSG_PROCESSED] (state, payload) {
     const msgQueue = state.msgQueue

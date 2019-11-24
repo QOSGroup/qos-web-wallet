@@ -23,12 +23,12 @@ export function registerGloablFunction (global) {
     baseUrl: ''
   })
   global.getBgState = function () {
-    setTimeout(() => {
-      store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({
-        pageName: '',
-        params: {}
-      }))
-    }, 0)
+    // setTimeout(() => {
+    //   store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({
+    //     pageName: '',
+    //     params: {}
+    //   }))
+    // }, 0)
     return store.state
   }
 
