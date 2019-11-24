@@ -127,184 +127,183 @@
 </template>
 
 <script>
-import store from "@/store";
-import QOSRpc from "js-for-qos-httprpc";
-import { getCurrentAccount } from "@/business/auth";
-
+import { rpc } from '@/utils/rpc'
+import { currentAccount, userName, address } from '../../common/index'
+import { mapState } from 'vuex'
 export default {
-  data() {
+  data () {
     return {
       activeName:
         this.$route.params.activeName == null
-          ? "balance"
+          ? 'balance'
           : this.$route.params.activeName,
-      currentAccount:
-        store.getters.accounts[
-          store.getters.accounts.findIndex(
-            x => x.address === getCurrentAccount().address
-          )
-        ],
+      currentAccount: currentAccount,
       userName: getCurrentAccount().name,
-      address: getCurrentAccount().address,
+      address: address,
       qos: 0,
       qcps: [],
-      delegations: [],
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
+      delegations: []
+    }
   },
-  created() {
-    //打开页面默认加载我的资产导航栏
-    this.getAccount(this.$data.address);
-    this.getDelegations(this.$data.address);
+  created () {
+    // 打开页面默认加载我的资产导航栏
+    this.getAccount(this.$data.address)
+    this.getDelegations(this.$data.address)
   },
   methods: {
-    getAccount(address) {
-      const account = this.rpc.recoveryAccountByPrivateKey(
+    getAccount (address) {
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
-      const res = account.queryAccount(address);
+      )
+      const res = account.queryAccount(address)
       res
         .then(result => {
           if (result.status === 200) {
-            this.$data.qos = result.data.value.qos;
-            this.$data.qcps = result.data.value.qcps;
+            this.$data.qos = result.data.value.qos
+            this.$data.qcps = result.data.value.qcps
           } else {
             this.$message({
               showClose: true,
               message: result.statusText,
-              type: "warning"
-            });
+              type: 'warning'
+            })
           }
         })
         .catch(error => {
+          console.log(error)
           this.$message({
             showClose: true,
-            message: "该账户在链上的‘账户信息’查询失败!",
-            type: "warning"
-          });
-        });
+            message: '该账户在链上的‘账户信息’查询失败!',
+            type: 'warning'
+          })
+        })
     },
-    getDelegations(address) {
-      //刷新委托信息
-      this.delegations = [];
-      const account = this.rpc.recoveryAccountByPrivateKey(
+    getDelegations (address) {
+      // 刷新委托信息
+      this.delegations = []
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
-      const res = account.queryDelagationAll(address);
+      )
+      const res = account.queryDelagationAll(address)
       res
         .then(async result => {
-          if (result.status == 200) {
+          if (result.status === 200) {
             for (var i = 0; i < result.data.length; i++) {
-              await this.getValidator(result.data, i);
+              await this.getValidator(result.data, i)
             }
           } else {
             this.$message({
               showClose: true,
               message: result.statusText,
-              type: "warning"
-            });
+              type: 'warning'
+            })
           }
         })
         .catch(error => {
+          console.log(error)
           this.$message({
             showClose: true,
-            message: "该账户在链上的‘委托信息’查询失败!",
-            type: "warning"
-          });
-        });
+            message: '该账户在链上的‘委托信息’查询失败!',
+            type: 'warning'
+          })
+        })
     },
-    getValidator(delegation, i) {
-      const account = this.rpc.recoveryAccountByPrivateKey(
+    getValidator (delegation, i) {
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
-      const res = account.queryValidatorOne(delegation[i].validator_address);
+      )
+      const res = account.queryValidatorOne(delegation[i].validator_address)
       res
         .then(result => {
-          if (result.status == 200) {
+          if (result.status === 200) {
             this.delegations.push({
               logo: result.data.description.logo,
               moniker: result.data.description.moniker,
               validator_address: delegation[i].validator_address,
               delegate_amount: delegation[i].delegate_amount,
               is_compound: delegation[i].is_compound,
-              validatorUrl: "http://www.baidu.com"
-            });
+              validatorUrl: 'http://www.baidu.com'
+            })
           } else {
             this.$message({
               showClose: true,
               message: result.statusText,
-              type: "warning"
-            });
+              type: 'warning'
+            })
           }
         })
         .catch(error => {
           this.$message({
             showClose: true,
             message: error,
-            type: "warning"
-          });
-        });
+            type: 'warning'
+          })
+        })
     },
-    handleClick(tab, event) {
+    handleClick (tab, event) {
       // console.log(tab, event);
-      if (tab.name == "delegation") {
-        this.getDelegations(this.$data.address);
-      } else if (tab.name == "balance") {
-        this.getAccount(this.$data.address);
+      if (tab.name === 'delegation') {
+        this.getDelegations(this.$data.address)
+      } else if (tab.name === 'balance') {
+        this.getAccount(this.$data.address)
       } else {
-        console.log("other tab !");
+        console.log('other tab !')
       }
     },
-    showAccountList() {
-      //console.log("showAccountList!");
-      this.$router.push({ name: "accountlist" });
+    showAccountList () {
+      // console.log("showAccountList!");
+      this.$router.push({ name: 'accountlist' })
     },
-    transfer(coin_name) {
-      if (!coin_name) {
-        coin_name = "QOS";
+    transfer (coinName) {
+      if (!coinName) {
+        coinName = 'QOS'
       }
-      this.$router.push({ name: "transfer" });
+      this.$router.push({ name: 'transfer' })
     },
-    approve(coinType) {
+    approve (coinType) {
       if (!coinType) {
-        coinType = "QOS";
+        coinType = 'QOS'
       }
       this.$message({
         showClose: true,
-        message: "暂不支持该功能!",
-        type: "warning"
-      });
+        message: '暂不支持该功能!',
+        type: 'warning'
+      })
     },
-    createDelegation(qos){
+    createDelegation (qos) {
       this.$router.push({
-        name: "delegationcreate",
+        name: 'delegationcreate',
         params: { amount: qos }
-      });
+      })
     },
-    delegateorunbond(operation, qos, delegation) {
+    delegateorunbond (operation, qos, delegation) {
       this.$router.push({
-        name: "delegateorunbond",
+        name: 'delegateorunbond',
         params: { amount: qos, operation: operation, delegation: delegation }
-      });
+      })
     },
-    modifyCompound(is_compound, qos, delegation) {
+    modifyCompound (isCompound, qos, delegation) {
       this.$router.push({
-        name: "modifycompound",
+        name: 'modifycompound',
         params: {
           amount: qos,
-          is_compound: is_compound,
+          is_compound: isCompound,
           delegation: delegation
         }
-      });
+      })
     },
-    copy() {
-      var Url2 = document.getElementById("test");
-      Url2.select(); // 选择对象
-      document.execCommand("Copy"); // 执行浏览器复制命令
+    copy () {
+      var Url2 = document.getElementById('test')
+      Url2.select() // 选择对象
+      document.execCommand('Copy') // 执行浏览器复制命令
     }
   },
-  computed: {}
-};
+  computed: {
+    ...mapState({
+      currentAccount
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>

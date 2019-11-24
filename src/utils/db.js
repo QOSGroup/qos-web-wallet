@@ -26,7 +26,7 @@ const db = {
       if (value instanceof Object) {
         value = JSON.stringify(value)
       }
-      extension.storage.local.set({ key, value }, function () {
+      extension.storage.local.set({ [key]: value }, function () {
         resolve()
       })
     })
@@ -34,11 +34,11 @@ const db = {
   getLocal (key) {
     return new Promise((resolve) => {
       extension.storage.local.get([key], function (result) {
-        const ret = getJSON(result.key)
+        const ret = getJSON(result[key])
         if (ret.flag) {
           return resolve(ret.value)
         }
-        resolve(result.key)
+        resolve(result[key])
       })
     })
   }

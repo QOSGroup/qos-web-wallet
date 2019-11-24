@@ -63,6 +63,7 @@ export default {
   [types.DELETE_ACCOUNT] (state, payload) {
     const accs = state.accounts
     let index = accs.findIndex(x => x.address === payload.address)
+    console.log(payload.address, index)
     if (index > -1) {
       state.accounts.splice(index, 1)
     }

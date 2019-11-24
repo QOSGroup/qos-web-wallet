@@ -1,4 +1,4 @@
-import { getAccountList2 } from '../../business/auth'
+import { getAccountList } from '../../business/auth'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 // import { ToPage } from '../../business/types'
@@ -14,18 +14,19 @@ const whiteListPage = ['/login/login', '/register/register', '/wallet/create', '
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
-// store.commit(types.CLONE_STATE, { keyArr: ['msgQueue'], bgState })
+// 已经登录,直接进行bg store的拷贝
+if (bgState.accounts.length !== 0) {
+  store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
+}
 
 export async function beforeEach (to, from, next) {
-  store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
-  console.log('MsgQueue first----:', store.getters.firstMsg)
   const accounts = store.getters.accounts
   console.log(`(!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1`,
     (!accounts || accounts.length === 0), whiteListPage.indexOf(to.path) === -1, from.path, to.path)
   // 是否未登录
   if ((!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1) {
-    const accs = await getAccountList2()
-    console.log('.....', from.name, to.name)
+    const accs = await getAccountList()
+    console.log('....', from.name, to.name)
     // if (from.name === to.name) {
     //   return next()
     // }
