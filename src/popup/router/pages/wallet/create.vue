@@ -61,7 +61,7 @@ export default {
     onSubmit (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          // 数据合法,创建账户 todo
+          // 数据合法,创建账户
           // 随机创建助记词
           const mn = this.rpc.generateMnemonic()
           // 调用背景页函数

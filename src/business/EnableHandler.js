@@ -17,6 +17,7 @@ export class EnableHandler extends BaseMsgHandler {
   async handler () {
     // 先判断是否有账户
     let acclist = await getAccountList()
+    console.log('enablehandler-acclist=0=', acclist)
     // 本地无账户信息
     if (!acclist || acclist.length === 0) {
       this.oMsg.sendResponse(new Res(true, {
@@ -30,6 +31,7 @@ export class EnableHandler extends BaseMsgHandler {
     }
     // 判断store中是否已有登录账户
     acclist = store.getters.accounts
+    console.log('enablehandler-acclist=1=', acclist)
     // 未登录
     if (!acclist || acclist.length === 0) {
       this.oMsg.sendResponse(new Res(true, {

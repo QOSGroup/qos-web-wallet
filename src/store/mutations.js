@@ -37,7 +37,8 @@ export default {
     }
   },
   [types.HAS_DIRECT_PAGE] (state, payload) {
-    // state.msgQueue[0].hasDirect = true
+    // 修改popup页面的从bg中msgqueue中clone的 第一条消息为hasDirect
+    state.msgQueueFirst.hasDirect = true
   },
   [types.DELETE_MSG_PROCESSED] (state, payload) {
     const msgQueue = state.msgQueue
@@ -67,5 +68,19 @@ export default {
     if (index > -1) {
       state.accounts.splice(index, 1)
     }
+  },
+  [types.SET_CURRENT_ACCOUNT] (state, payload) {
+    if (payload) {
+      state.currentAccount = payload
+      return
+    }
+    state.currentAccount = null
+  },
+  [types.SET_MSGQUEUE_FIRST] (state, payload) {
+    if (payload) {
+      state.msgQueueFirst = payload
+      return
+    }
+    state.msgQueueFirst = null
   }
 }

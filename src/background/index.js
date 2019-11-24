@@ -1,18 +1,12 @@
 import store from '../store'
-import {
-  ToPage
-} from '../business/types'
 import * as types from '../store/mutation-types'
 import QOSRpc from 'js-for-qos-httprpc'
 import {
-  encrypt,
   decrypt
 } from '../utils/crypt'
 import {
   getAccountList,
-  setAccount,
-  getCurrentAccount,
-  setCurrentAccount
+  setAccount
 } from '../business/auth'
 import {
   isNotEmpty
@@ -86,22 +80,8 @@ export function registerGloablFunction (global) {
       // 存储至store中,这其中的存储用于判断是否登录
       store.commit(types.SET_ACCOUNT, account)
     }
-    // 设置当前登录账户:默认所有登录成功账户中的第一个
-    const currentAcc = getCurrentAccount()
-    const encryptKey = encrypt(accountList[0].privateKey, pwd)
-    const address = accountList[0].address
-    const name = address.substr(address.length - 4, address.length - 1)
-    console.log('currentAcc==', currentAcc)
-    // 当前登录账户为空
-    if (currentAcc === null || currentAcc === 'undefined') {
-      setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })
-    } else {
-      // 当前登录的账户存在,判断是否在accountList中,不在其中,重新设置为accountList第一个
-      let acc = accountList.find(x => x.address === currentAcc.address)
-      if (!acc) {
-        setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })
-      }
-    }
+    // 调用设置当前账户
+
     return accountList
   }
 }

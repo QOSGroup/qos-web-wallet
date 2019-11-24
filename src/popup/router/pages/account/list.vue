@@ -179,9 +179,15 @@ export default {
         .catch(_ => {})
     },
     async changeAccount (address) {
-      const accountList = await getAccountList()
+      // 切换账户,首先获取到popup-store-accounts
+      const accountList = store.getters.accounts
+      // 要切换的账户在其中,返回整个account对象
       const changeAcc = accountList.find(x => x.address === address)
-      setCurrentAccount(changeAcc)
+      // 调用设置当前账户
+      await setCurrentAccount(changeAcc)
+      // 调用popup的store 存储当前账户
+
+      // 切换完成跳转主页
       this.$router.push({ name: 'homepage' })
     }
   }

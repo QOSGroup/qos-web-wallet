@@ -28,6 +28,17 @@ export function isNotEmpty (value) {
 }
 
 /**
+ * 是否非空对象
+ * @param obj 对象
+ */
+export function isNotEmptyObject (obj) {
+  if (obj !== undefined && obj !== '' && obj != null && Object.keys(obj).length > 0) {
+    return true
+  }
+  return false
+}
+
+/**
  * 生成随机字符串
  */
 export function createRandomId () {

@@ -12,6 +12,7 @@ export const getToPage = ({ commit, state, getters }, payload) => {
   return obj
 }
 
-export const getFirstMsg = ({ commit, state }, payload) => {
-  return state.msgQueue[0]
+export const setCurrentAccount = ({ commit }, payload) => {
+  
+  commit(types.SET_CURRENT_ACCOUNT, payload)
 }
