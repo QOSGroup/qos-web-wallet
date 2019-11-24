@@ -32,7 +32,7 @@ export function registerGloablFunction (global) {
     return store.state
   }
 
-  global.msgProcessed = function (msgIndex, msg) {
+  global.msgProcessed = function (msg, msgIndex) {
     msgIndex = msgIndex || 0
     // 删除指定索引消息, 并回调
     store.commit(types.DELETE_MSG_PROCESSED, {

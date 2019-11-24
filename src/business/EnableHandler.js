@@ -7,6 +7,7 @@ import {
 } from '../common/Common'
 import store from '../store'
 import NotificationManager from '../utils/NotificationManager'
+import * as types from '@/store/mutation-types.js'
 
 export class EnableHandler extends BaseMsgHandler {
   constructor (oMsg) {
@@ -35,7 +36,8 @@ export class EnableHandler extends BaseMsgHandler {
         flag: 'unlogin'
       }, this.oMsg.callbackId))
 
-      // 跳转登录页, 做store消息预存储，待popup获取跳转登录页
+      // 跳转登录页 ---, 做store消息预存储，待popup获取跳转登录页
+      store.commit(types.ADD_MSG_QUEUE, this.oMsg)
       const noti = new NotificationManager()
       noti.showPopup()
       return

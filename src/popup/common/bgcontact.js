@@ -8,11 +8,12 @@ export function getBackground () {
 }
 
 // 通过background处理消息
-export function processMsg (msgIndex, res) {
+export function processMsg (res, msgIndex) {
   const bg = getBackground()
   msgIndex = msgIndex || 0
   const msg = res || new Res(true, {
     message: 'ok'
   })
-  bg.msgProcessed(msgIndex, msg)
+
+  bg.msgProcessed(msg, msgIndex)
 }
