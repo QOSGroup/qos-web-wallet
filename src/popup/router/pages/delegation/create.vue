@@ -84,174 +84,171 @@
 </template>
 
 <script>
-import store from "@/store";
-import QOSRpc from "js-for-qos-httprpc";
-import { getCurrentAccount } from "@/business/auth";
+import store from '@/store'
+import QOSRpc from 'js-for-qos-httprpc'
+import { getCurrentAccount } from '@/business/auth'
 export default {
-  data() {
+  data () {
+    const index = store.getters.accounts.findIndex(x => x.address === getCurrentAccount().address)
     return {
-      title: "新建委托",
-      //用户信息
+      title: '新建委托',
+      // 用户信息
       amount: this.$route.params.amount,
-      //所有validators
+      // 所有validators
       validators: [],
-      //用户所选的validator信息
+      // 用户所选的validator信息
       validator: {
-        logo: "",
-        moniker: "",
-        address: "",
-        validatorUrl: ""
+        logo: '',
+        moniker: '',
+        address: '',
+        validatorUrl: ''
       },
-      //用户在当前validator的委托信息
+      // 用户在当前validator的委托信息
       delegation: {
-        delegator_address: "",
+        delegator_address: '',
         delegate_amount: 0,
         is_compound: false
       },
       form: {
-        tokens: "", //追加或撤回的token数量
-        gas: 0, //支付的gas费用
-        compound: "0" //页面选择是否复投
+        tokens: '', // 追加或撤回的token数量
+        gas: 0, // 支付的gas费用
+        compound: '0' // 页面选择是否复投
       },
       onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
-      error: "",
-      currentAccount:
-        store.getters.accounts[
-          store.getters.accounts.findIndex(
-            x => x.address === getCurrentAccount().address
-          )
-        ],
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
+      error: '',
+      currentAccount: store.getters.accounts[index],
+      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
+    }
   },
-  created() {
-    this.getValidators();
+  created () {
+    this.getValidators()
   },
   methods: {
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.push({
-            name: "homepage",
-            params: { activeName: "delegation" }
-          })
-        : this.$router.push({ name: "homepage" });
+          name: 'homepage',
+          params: { activeName: 'delegation' }
+        })
+        : this.$router.push({ name: 'homepage' })
     },
-    setMax() {
-      this.$data.form.tokens = this.$data.amount;
+    setMax () {
+      this.$data.form.tokens = this.$data.amount
     },
-    commitTx() {
-      this.onloading = true; 
-      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+    commitTx () {
+      this.onloading = true
+      // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
       const account = this.rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
+      )
       // 创建基础数据结构
       const myBase = {
         from: this.currentAccount.address
         // chain_id: "qos-test",
         // max_gas: this.form.gas.toString()
-      };
+      }
       // 组装data数据,调用rpc接口,提交交易
       const data = {
         base: myBase,
         amount: this.form.tokens.toString(),
-        is_compound: this.form.compound === "1" ? true : false
-      };
-      const res = account.sendCreateDelegateTx(this.validator.address, data);
+        is_compound: this.form.compound === '1'
+      }
+      const res = account.sendCreateDelegateTx(this.validator.address, data)
       // 得到返回值处理
       res
         .then(result => {
           if (result.status === 200) {
             this.$router.push({
-              name: "txresult",
+              name: 'txresult',
               params: { hash: result.data.hash }
-            });
+            })
           } else {
-            this.error = result.statusText;
-            this.dialogVisible = true;
+            this.error = result.statusText
+            this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error;
-          this.dialogVisible = true;
-        });
+          this.error = error
+          this.dialogVisible = true
+        })
     },
-    setValidator() {
-      const choose = this.$data.validator.address;
+    setValidator () {
+      const choose = this.$data.validator.address
       const account = this.rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
+      )
       const res = account.queryDelagationOne(
         this.currentAccount.address,
         choose
-      );
+      )
       res
         .then(result => {
           // this.$data.delegation.delegate_amount = result.data.delegate_amount;
           // this.$data.delegation.is_compound = result.data.is_compound;
-          this.$data.validator.address = "";
+          this.$data.validator.address = ''
           this.$message({
             showClose: true,
-            message: "已有委托,请从‘我的委托’中进行追加或撤回!",
-            type: "warning"
-          });
+            message: '已有委托,请从‘我的委托’中进行追加或撤回!',
+            type: 'warning'
+          })
         })
         .catch(error => {
+          console.log(error)
           this.$message({
             showClose: true,
-            message: "暂无委托,可以新建."
-          });
-          const validators = this.$data.validators;
+            message: '暂无委托,可以新建.'
+          })
+          const validators = this.$data.validators
           for (let index = 0; index < validators.length; index++) {
-            if (choose == validators[index].validator) {
-              this.$data.validator.logo = validators[index].description.logo;
+            if (choose === validators[index].validator) {
+              this.$data.validator.logo = validators[index].description.logo
               this.$data.validator.moniker =
-                validators[index].description.moniker;
-              this.$data.validator.address = validators[index].validator;
-              this.$data.validator.validatorUrl = "http://www.baidu.com";
+                validators[index].description.moniker
+              this.$data.validator.address = validators[index].validator
+              this.$data.validator.validatorUrl = 'http://www.baidu.com'
             }
           }
-        });
+        })
     },
-    getValidators() {
+    getValidators () {
       const account = this.rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
-      const res = account.queryValidatorAll();
+      )
+      const res = account.queryValidatorAll()
       res
         .then(result => {
-          if (result.status == 200) {
-            this.validators = result.data;
+          if (result.status === 200) {
+            this.validators = result.data
           } else {
             this.$message({
               showClose: true,
               message: result.statusText,
-              type: "warning"
-            });
+              type: 'warning'
+            })
           }
         })
         .catch(error => {
           this.$message({
             showClose: true,
             message: error,
-            type: "error"
-          });
-        });
-    },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(_ => {
-          done();
+            type: 'error'
+          })
         })
-        .catch(_ => {});
+    },
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
     }
   },
   computed: {
     // operation: ''
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

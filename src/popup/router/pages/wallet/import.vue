@@ -67,62 +67,62 @@
 </template>
 
 <script>
-import QOSRpc from "js-for-qos-httprpc";
-import { getBackground } from "../../../common/bgcontact";
+import QOSRpc from 'js-for-qos-httprpc'
+import { getBackground } from '../../../common/bgcontact'
 export default {
-  data() {
+  data () {
     var checkImportType = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("导入类型不能为空"));
+        return callback(new Error('导入类型不能为空'))
       }
-    };
+    }
     var checkPri = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("私钥不能为空"));
+        return callback(new Error('私钥不能为空'))
       }
-    };
+    }
 
     var checkMemwd = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("助记词不能为空"));
+        return callback(new Error('助记词不能为空'))
       }
-    };
+    }
 
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
-        if (this.ruleForm.repassword !== "") {
-          this.$refs.ruleForm.validateField("repassword");
+        if (this.ruleForm.repassword !== '') {
+          this.$refs.ruleForm.validateField('repassword')
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.ruleForm.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       ruleForm: {
-        pri: "",
-        memwd: "",
-        password: "",
-        repassword: "",
+        pri: '',
+        memwd: '',
+        password: '',
+        repassword: '',
         // 下拉框
-        value: "",
+        value: '',
         importtypes: [
           {
-            value: "0",
-            label: "私钥"
+            value: '0',
+            label: '私钥'
           },
           {
-            value: "1",
-            label: "助记词"
+            value: '1',
+            label: '助记词'
           }
         ]
       },
@@ -131,74 +131,74 @@ export default {
       flag_zjc: false,
       dialogVisible: false,
       rules: {
-        type: [{ validator: checkImportType, trigger: "blur" }],
-        pri: [{ validator: checkPri, trigger: "blur" }],
+        type: [{ validator: checkImportType, trigger: 'blur' }],
+        pri: [{ validator: checkPri, trigger: 'blur' }],
         memwd: [
-          { validator: checkMemwd, trigger: "blur" },
-          { min: 12, message: "长度为 12 个单词", trigger: "blur" }
+          { validator: checkMemwd, trigger: 'blur' },
+          { min: 12, message: '长度为 12 个单词', trigger: 'blur' }
         ],
         password: [
-          { validator: validatePass, trigger: "blur" },
-          { min: 8, max: 16, message: "密码位数8-16位!", trigger: "blur" }
+          { validator: validatePass, trigger: 'blur' },
+          { min: 8, max: 16, message: '密码位数8-16位!', trigger: 'blur' }
         ],
-        repassword: [{ validator: validatePass2, trigger: "blur" }]
+        repassword: [{ validator: validatePass2, trigger: 'blur' }]
       },
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
+      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
+    }
   },
   computed: {},
-  mounted() {},
+  mounted () {},
   methods: {
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push({ name: "homepage" });
+        : this.$router.push({ name: 'homepage' })
     },
-    setImportTypes() {
-      console.log("设置页面显示隐藏");
-      const type = this.ruleForm.value;
-      if (type == "0") {
-        this.flag_pri = true;
-        this.flag_zjc = false;
+    setImportTypes () {
+      console.log('设置页面显示隐藏')
+      const type = this.ruleForm.value
+      if (type === '0') {
+        this.flag_pri = true
+        this.flag_zjc = false
       } else {
-        this.flag_pri = false;
-        this.flag_zjc = true;
+        this.flag_pri = false
+        this.flag_zjc = true
       }
     },
-    async submitForm(formName) {
-      let mn, prikey;
+    async submitForm (formName) {
+      let mn, prikey
       // 私钥或助记词方式导入账户 todo
-      const select_type = this.ruleForm.value;
-      if (select_type == "1") {
-        mn = this.ruleForm.memwd;
-      } else if (select_type == "0") {
-        prikey = this.ruleForm.pri;
+      const selectType = this.ruleForm.value
+      if (selectType === '1') {
+        mn = this.ruleForm.memwd
+      } else if (selectType === '0') {
+        prikey = this.ruleForm.pri
       } else {
-        this.dialogVisible = true;
-        return;
+        this.dialogVisible = true
+        return
       }
 
-      const bg = getBackground();
-      const account = await bg.saveAccount({
+      const bg = getBackground()
+      await bg.saveAccount({
         privateKey: prikey,
         mnemonic: mn,
         pwd: this.ruleForm.password
-      });
+      })
       // 账户导入后,默认跳转homepage页面
-      this.$router.push({ name: "homepage" });
+      this.$router.push({ name: 'homepage' })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
+    handleClose (done) {
+      this.$confirm('确认关闭？')
         .then(_ => {
-          done();
+          done()
         })
-        .catch(_ => {});
+        .catch(_ => {})
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

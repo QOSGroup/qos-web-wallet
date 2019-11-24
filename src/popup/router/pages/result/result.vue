@@ -19,26 +19,26 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       txhash: this.$route.params.hash
-    };
+    }
   },
   methods: {
-    goBack() {
+    goBack () {
       // console.log("goBack !");
-      window.history.length > 1 ? this.$router.go(-1) : this.$router.push({name: "homepage"})
+      window.history.length > 1 ? this.$router.go(-1) : this.$router.push({ name: 'homepage' })
     },
-    confirm() {
-      this.$router.push({name: "homepage"})
+    confirm () {
+      this.$router.push({ name: 'homepage' })
     },
-    detailInWeb() {
-      window.open("http://www.baidu.com","_blank") 
+    detailInWeb () {
+      window.open('http://www.baidu.com', '_blank')
     }
   },
   computed: {},
-  mounted() {}
-};
+  mounted () {}
+}
 </script>
 
 <style lang="scss" scoped>

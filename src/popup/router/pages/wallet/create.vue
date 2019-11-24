@@ -18,75 +18,73 @@
 </template>
 
 <script>
-import QOSRpc from "js-for-qos-httprpc";
-import { getBackground } from "../../../common/bgcontact";
-import store from "@/store";
-import { getAccountList2 } from "@/business/auth"
+import QOSRpc from 'js-for-qos-httprpc'
+import { getBackground } from '../../../common/bgcontact'
 
 export default {
-  data() {
+  data () {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
-        if (this.form.repassword !== "") {
-          this.$refs.form.validateField("repassword");
+        if (this.form.repassword !== '') {
+          this.$refs.form.validateField('repassword')
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       form: {
-        password: "",
-        repassword: ""
+        password: '',
+        repassword: ''
       },
       rules: {
         password: [
-          { validator: validatePass, trigger: "blur" },
-          { min: 8, max: 16, message: "密码位数8-16位!", trigger: "blur" }
+          { validator: validatePass, trigger: 'blur' },
+          { min: 8, max: 16, message: '密码位数8-16位!', trigger: 'blur' }
         ],
-        repassword: [{ validator: validatePass2, trigger: "blur" }]
+        repassword: [{ validator: validatePass2, trigger: 'blur' }]
       },
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
+      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
+    }
   },
   methods: {
-    onSubmit(formName) {
+    onSubmit (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           // 数据合法,创建账户 todo
           // 随机创建助记词
-          const mn = this.rpc.generateMnemonic();
+          const mn = this.rpc.generateMnemonic()
           // 调用背景页函数
-          const bg = getBackground();
-          const account = await bg.saveAccount({ mnemonic: mn, pwd: this.form.password });
+          const bg = getBackground()
+          await bg.saveAccount({ mnemonic: mn, pwd: this.form.password })
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({
-            name: "walletresult",
+            name: 'walletresult',
             params: { mnemonic: mn }
-          });
+          })
         } else {
-          console.log("error newwallet!!");
-          return false;
+          console.log('error newwallet!!')
+          return false
         }
-      });
+      })
     },
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.go(-1)
-        : this.$router.push({ name: "homepage" });
+        : this.$router.push({ name: 'homepage' })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

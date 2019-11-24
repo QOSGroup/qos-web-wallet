@@ -67,20 +67,20 @@
 
 <script>
 // import QOSRpc from 'js-for-qos-httprpc'
-import { processMsg } from "../../../common/bgcontact";
-import store from "@/store";
-import QOSRpc from "js-for-qos-httprpc";
-import { getCurrentAccount } from "@/business/auth"
+import { processMsg } from '../../../common/bgcontact'
+import store from '@/store'
+import QOSRpc from 'js-for-qos-httprpc'
+import { getCurrentAccount } from '@/business/auth'
 
 export default {
-  data() {
+  data () {
     return {
       // 根据用户地址链上查询的数据
       coins: [],
-      value: "",
+      value: '',
       balance: 0,
       form: {
-        address: "",
+        address: '',
         tokens: 0,
         gas: 0
       },
@@ -88,117 +88,117 @@ export default {
       onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
-      error: "",
+      error: '',
       currentAccount: store.getters.accounts[store.getters.accounts.findIndex(x => x.address === getCurrentAccount().address)],
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
-  },
-  computed: {
-    inputParams() {
-      return JSON.stringify(this.$store.getters.firstMsg);
+      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
     }
   },
-  mounted() {},
-  created() {
-    this.getAccount(this.currentAccount);
+  computed: {
+    inputParams () {
+      return JSON.stringify(this.$store.getters.firstMsg)
+    }
+  },
+  mounted () {},
+  created () {
+    this.getAccount(this.currentAccount)
   },
   methods: {
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.push({
-            name: "homepage",
-            params: { activeName: "balance" }
-          })
-        : this.$router.push({ name: "homepage" });
+          name: 'homepage',
+          params: { activeName: 'balance' }
+        })
+        : this.$router.push({ name: 'homepage' })
     },
-    commitTx() {
-      this.onloading = true;
-      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+    commitTx () {
+      this.onloading = true
+      // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
       const account = this.rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
+      )
       // 创建数据结构
       const myBase = {
         from: this.currentAccount.address
         // chain_id: "qos-test",
         // max_gas: this.form.gas.toString()
-      };
+      }
       const data = {
         qos: this.form.tokens.toString(),
         base: myBase
-      };
-      const res = account.sendTransferTx(this.form.address, data);
+      }
+      const res = account.sendTransferTx(this.form.address, data)
       res
         .then(result => {
           if (result.status === 200) {
             this.$router.push({
-              name: "txresult",
+              name: 'txresult',
               params: { hash: result.data.hash }
-            });
+            })
           } else {
-            this.error = result.statusText;
-            this.dialogVisible = true;
+            this.error = result.statusText
+            this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error;
-          this.dialogVisible = true;
-        });
+          this.error = error
+          this.dialogVisible = true
+        })
     },
-    setCoinBalance() {
-      const choose = this.$data.value;
-      const coins = this.$data.coins;
+    setCoinBalance () {
+      const choose = this.$data.value
+      const coins = this.$data.coins
       for (let index = 0; index < coins.length; index++) {
-        if (choose == coins[index].value) {
-          this.$data.balance = coins[index].balance;
+        if (choose === coins[index].value) {
+          this.$data.balance = coins[index].balance
         }
       }
     },
-    setMax() {
-      this.$data.form.tokens = this.$data.balance;
+    setMax () {
+      this.$data.form.tokens = this.$data.balance
     },
-    onProcess() {
-      processMsg();
+    onProcess () {
+      processMsg()
     },
-    getAccount(currentAccount) {
+    getAccount (currentAccount) {
       const account = this.rpc.recoveryAccountByPrivateKey(
         currentAccount.privateKey
-      );
-      const res = account.queryAccount(currentAccount.address);
+      )
+      const res = account.queryAccount(currentAccount.address)
       res.then(result => {
         if (result.status === 200) {
-          let list = [];
+          let list = []
           list.push({
-            value: "QOS",
-            label: "QOS",
+            value: 'QOS',
+            label: 'QOS',
             balance: result.data.value.qos
-          });
+          })
           // this.$data.qos = result.data.value.qos;
-          const qcps = result.data.value.qcps;
+          const qcps = result.data.value.qcps
           if (qcps) {
             for (let qcp of qcps) {
               list.push({
                 value: qcp.coin_name,
                 label: qcp.coin_name,
                 balance: qcp.amount
-              });
+              })
             }
           }
-          this.coins = list;
+          this.coins = list
         } else {
           // alert(result.statusText);
         }
-      });
+      })
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
+    handleClose (done) {
+      this.$confirm('确认关闭？')
         .then(_ => {
-          done();
+          done()
         })
-        .catch(_ => {});
+        .catch(_ => {})
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
