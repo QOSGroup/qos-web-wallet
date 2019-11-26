@@ -1,21 +1,49 @@
 import store from '../store'
 import * as types from '../store/mutation-types'
-import QOSRpc from 'js-for-qos-httprpc'
 import {
-  decrypt
+  decrypt,
+  encrypt
 } from '../utils/crypt'
 import {
   getAccountList,
-  setAccount
+  setAccount,
+  getCurrentAccount,
+  setCurrentAccount
 } from '../business/auth'
 import {
-  isNotEmpty
+  isNotEmpty,
+  isNotEmptyObject
 } from '../utils'
+import { rpc } from '@/utils/rpc'
+
+// 注册成功、登录成功、账户切换:完成持久化存储当前账户信息
+export async function setCurrentAccountLocal (accountList, pwd) {
+  return new Promise(async (resolve) => {
+    // 设置当前登录账户:默认所有登录成功账户中的第一个
+    const currentAcc = await getCurrentAccount()
+    const encryptKey = encrypt(accountList[0].privateKey, pwd)
+    const address = accountList[0].address
+    const name = address.substr(address.length - 4, address.length - 1)
+    const accCurrent = { name: name, address: address, encryptKey: encryptKey }
+    // 当前登录账户为空
+    if (!isNotEmptyObject(currentAcc)) {
+      await setCurrentAccount(accCurrent)
+      store.commit(types.SET_CURRENT_ACCOUNT, accCurrent)
+    } else {
+      // 当前登录的账户存在,判断是否在accountList中,不在其中,重新设置为accountList第一个
+      let acc = accountList.find(x => x.address === currentAcc.address)
+      if (!acc) {
+        await setCurrentAccount(accCurrent)
+        store.commit(types.SET_CURRENT_ACCOUNT, accCurrent)
+      } else {
+        store.commit(types.SET_CURRENT_ACCOUNT, { name: acc.address.substr(acc.address.length - 4, acc.address.length - 1), address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+      }
+    }
+    return resolve()
+  })
+}
 
 export function registerGloablFunction (global) {
-  const qosRpc = new QOSRpc({
-    baseUrl: ''
-  })
   global.getBgState = function () {
     // setTimeout(() => {
     //   store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({
@@ -40,7 +68,7 @@ export function registerGloablFunction (global) {
     store.commit(types.DELETE_ACCOUNT, account)
   }
 
-  // 保存账户信息
+  // 保存账户信息,创建或导入(助记词或私钥)
   global.saveAccount = async function ({
     privateKey,
     mnemonic,
@@ -49,19 +77,23 @@ export function registerGloablFunction (global) {
     return new Promise(async (resolve) => {
       let account
       if (privateKey) {
-        account = qosRpc.recoveryAccountByPrivateKey(privateKey)
-        // 账户本地持久化
-        await setAccount(account, pwd)
-        store.commit(types.SET_ACCOUNT, account)
-        return resolve(account)
+        account = rpc.recoveryAccountByPrivateKey(privateKey)
+        // console.log('根据私钥恢复的账户信息:', account)
       }
       if (mnemonic) {
-        account = qosRpc.importAccount(mnemonic)
-        // 账户本地持久化
-        await setAccount(account, pwd)
-        store.commit(types.SET_ACCOUNT, account)
-        return resolve(account)
+        account = rpc.importAccount(mnemonic)
+        // console.log('根据助记词恢复账户信息:', account)
       }
+      // 账户列表本地持久化:新增
+      await setAccount(account, pwd)
+      // 当前账户本地持久化:更新
+      const list = [account]
+      await setCurrentAccountLocal(list, pwd)
+
+      // bg store 存储登录信息
+      store.commit(types.SET_PASS_CHECK, pwd)
+      store.commit(types.SET_ACCOUNT, account)
+      return resolve(account)
     })
   }
 
@@ -74,14 +106,16 @@ export function registerGloablFunction (global) {
       if (!isNotEmpty(privateKey)) {
         return false
       }
-      let account = qosRpc.recoveryAccountByPrivateKey(privateKey)
+      let account = rpc.recoveryAccountByPrivateKey(privateKey)
       // 返回登录的账户列表
       accountList.push(account)
-      // 存储至store中,这其中的存储用于判断是否登录
+      // 存储至store中,数组类型,这其中的存储用于判断是否登录
       store.commit(types.SET_ACCOUNT, account)
     }
-    // 调用设置当前账户
-
+    // 本地持久化存储当前账户
+    await setCurrentAccountLocal(accountList, pwd)
+    store.commit(types.SET_PASS_CHECK, pwd)
+    // 返回该密码可以解密的账户列表
     return accountList
   }
 }

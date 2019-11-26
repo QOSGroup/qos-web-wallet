@@ -33,11 +33,10 @@
 </template>
 
 <script>
-import { getAccountList } from '@/business/auth'
-import { encrypt, decrypt } from '@/utils/crypt'
 import { getBackground } from '../../../common/bgcontact'
 import store from '../../../../store'
 import * as types from '@/store/mutation-types'
+import { getCurrentAccount } from '@/business/auth'
 export default {
   data () {
     return {
@@ -68,15 +67,17 @@ export default {
     async enterWallet () {
       const bg = getBackground()
       const acclist = await bg.login(this.ruleForm.pwd)
-      // 设置当前账户
-
-      // popup -> store中 存储当前账户
-
-      // 跳转主页,如果有消息,自动跳转消息处理
-
-      // process MSG  返回当前账户地址
-
+      // 解密出账户列表
       if (acclist) {
+        // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+        const currentAccount = await getCurrentAccount()
+        store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+        // 创建账户成功,拷贝bg store中的accounts到popup store中
+        const bgState = bg.getBgState()
+        store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
+        // process MSG  返回当前账户地址
+        bg.msgProcessed('登录成功')
+        // 跳转主页,如果有消息,自动跳转后续消息处理
         this.$router.push({ name: 'homepage' })
       } else {
         this.dialogVisible = true

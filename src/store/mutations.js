@@ -82,5 +82,8 @@ export default {
       return
     }
     state.msgQueueFirst = null
+  },
+  [types.SET_PASS_CHECK] (state, payload) {
+    state.pwd = payload
   }
 }

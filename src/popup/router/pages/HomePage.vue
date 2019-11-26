@@ -128,8 +128,8 @@
 
 <script>
 import { rpc } from '@/utils/rpc'
-import { currentAccount, userName, address } from '../../common/index'
 import { mapState } from 'vuex'
+import store from '@/store'
 export default {
   data () {
     return {
@@ -137,15 +137,21 @@ export default {
         this.$route.params.activeName == null
           ? 'balance'
           : this.$route.params.activeName,
-      currentAccount: currentAccount,
-      userName: getCurrentAccount().name,
-      address: address,
+      currentAccount: store.getters.currentAccount,
+      userName: store.getters.currentAccount.name,
+      address: store.getters.currentAccount.address,
       qos: 0,
       qcps: [],
       delegations: []
     }
   },
+  computed: {
+    ...mapState({
+      // currentAccount: store.getters.currentAccount
+    })
+  },
   created () {
+    console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)
@@ -171,11 +177,11 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.$message({
-            showClose: true,
-            message: '该账户在链上的‘账户信息’查询失败!',
-            type: 'warning'
-          })
+          // this.$message({
+          //   showClose: true,
+          //   message: '该账户在链上的‘账户信息’查询失败!',
+          //   type: 'warning'
+          // })
         })
     },
     getDelegations (address) {
@@ -201,11 +207,11 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.$message({
-            showClose: true,
-            message: '该账户在链上的‘委托信息’查询失败!',
-            type: 'warning'
-          })
+          // this.$message({
+          //   showClose: true,
+          //   message: '该账户在链上的‘委托信息’查询失败!',
+          //   type: 'warning'
+          // })
         })
     },
     getValidator (delegation, i) {
@@ -233,11 +239,12 @@ export default {
           }
         })
         .catch(error => {
-          this.$message({
-            showClose: true,
-            message: error,
-            type: 'warning'
-          })
+          console.log(error)
+          // this.$message({
+          //   showClose: true,
+          //   message: error,
+          //   type: 'warning'
+          // })
         })
     },
     handleClick (tab, event) {
@@ -297,11 +304,6 @@ export default {
       Url2.select() // 选择对象
       document.execCommand('Copy') // 执行浏览器复制命令
     }
-  },
-  computed: {
-    ...mapState({
-      currentAccount
-    })
   }
 }
 </script>

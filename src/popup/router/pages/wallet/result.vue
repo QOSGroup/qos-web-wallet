@@ -21,25 +21,25 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       form: {
         memwd: this.$route.params.mnemonic
       }
-    };
+    }
   },
   methods: {
-    exportMemwd() {
-      console.log("exportMemwd!");
+    exportMemwd () {
+      console.log('exportMemwd!')
     },
-    goBack() {
-      this.$router.push({ name: "homepage" });
+    goBack () {
+      this.$router.push({ name: 'homepage' })
     },
-    confirm() {
-      this.$router.push({ name: "homepage" });
+    confirm () {
+      this.$router.push({ name: 'homepage' })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

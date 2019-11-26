@@ -18,9 +18,11 @@
 </template>
 
 <script>
-import QOSRpc from 'js-for-qos-httprpc'
+import { rpc } from '@/utils/rpc'
 import { getBackground } from '../../../common/bgcontact'
-
+import store from '@/store'
+import * as types from '@/store/mutation-types'
+import { getCurrentAccount } from '@/business/auth'
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
@@ -53,20 +55,24 @@ export default {
           { min: 8, max: 16, message: '密码位数8-16位!', trigger: 'blur' }
         ],
         repassword: [{ validator: validatePass2, trigger: 'blur' }]
-      },
-      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
+      }
     }
   },
   methods: {
     onSubmit (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          // 数据合法,创建账户
           // 随机创建助记词
-          const mn = this.rpc.generateMnemonic()
-          // 调用背景页函数
+          const mn = rpc.generateMnemonic()
+          // // 调用背景页函数
           const bg = getBackground()
           await bg.saveAccount({ mnemonic: mn, pwd: this.form.password })
+          // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+          const currentAccount = await getCurrentAccount()
+          store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+          // 创建账户成功,拷贝bg store中的accounts到popup store中
+          const bgState = bg.getBgState()
+          store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({
             name: 'walletresult',

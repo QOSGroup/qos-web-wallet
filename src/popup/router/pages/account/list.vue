@@ -63,16 +63,15 @@ import * as types from '@/store/mutation-types'
 import { getBackground } from '../../../common/bgcontact'
 import clone from 'clone'
 import {
-  getCurrentAccount,
-  getAccountList,
-  setCurrentAccount
+  setCurrentAccount,
+  getAccountList
 } from '@/business/auth'
 import { rpc } from '@/utils/rpc'
 
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
-      x => x.address === getCurrentAccount().address
+      x => x.address === store.getters.currentAccount.address
     )
     return {
       accounts: [],
@@ -114,10 +113,12 @@ export default {
       }
       this.$router.push({ name: 'login' })
     },
-    getAccountList (accountList) {
-      // 刷新页面,将账户列表置空
+    async getAccountList (accountList) {
+      const localAccountList = await getAccountList()
+      console.log(localAccountList)
+      // 刷新页面,将页面账户列表置空
       this.accounts = []
-      let account, res, qcps
+      let account, res, qcps, localAcc, name
       for (let acc of accountList) {
         account = rpc.recoveryAccountByPrivateKey(acc.privateKey)
         res = account.queryAccount(acc.address)
@@ -125,7 +126,8 @@ export default {
           .then(result => {
             if (result.status === 200) {
               let address = result.data.value.account_address
-              let name = address.substr(address.length - 4, address.length - 1)
+              localAcc = localAccountList.find(x => x.address === address)
+              name = localAcc.name
 
               let list = []
               list.push({
@@ -150,24 +152,25 @@ export default {
           })
           .catch(error => {
             console.log(error.message)
+            localAcc = localAccountList.find(x => x.address === acc.address)
+            console.log('acc==', acc)
+            console.log('localAcc==', localAcc)
+            name = localAcc.name
             this.accounts.push({
-              name: acc.address.substr(
-                acc.address.length - 4,
-                acc.address.length - 1
-              ),
+              name: name,
               address: acc.address,
               coins: [{ cointype: 'QOS', amount: 0 }]
             })
-            this.$message({
-              showClose: true,
-              message:
-                '链上‘账户信息’查询失败!账户地址后4位:' +
-                acc.address.substr(
-                  acc.address.length - 4,
-                  acc.address.length - 1
-                ),
-              type: 'warning'
-            })
+            // this.$message({
+            //   showClose: true,
+            //   message:
+            //     '链上‘账户信息’查询失败!账户地址后4位:' +
+            //     acc.address.substr(
+            //       acc.address.length - 4,
+            //       acc.address.length - 1
+            //     ),
+            //   type: 'warning'
+            // })
           })
       }
     },

@@ -16,7 +16,7 @@ const CURRENTACCOUNT = 'qos-current-account'
 /** 设置账户 */
 export async function setAccount (account, pwd) {
   let list = await getAccountList()
-  // {adddress,privateKey}
+  // {address,privateKey}
   let acc
   if (list && Array.isArray(list)) {
     acc = list.find(x => x.address === account.address)
@@ -26,11 +26,10 @@ export async function setAccount (account, pwd) {
   const encryptKey = encrypt(account.privateKey, pwd)
   const name = account.address.substr(account.address.length - 4, account.address.length - 1)
   if (acc) {
-    acc = { name: name, adddress: account.address, encryptKey: encryptKey }
+    acc = { name: name, address: account.address, encryptKey: encryptKey }
   } else {
-    list.push({ name: name, adddress: account.address, encryptKey: encryptKey })
+    list.push({ name: name, address: account.address, encryptKey: encryptKey })
   }
-
   await setAccountList(list)
 }
 
@@ -49,7 +48,7 @@ export function setAccount2 (account, pwd) {
   if (list == null) {
     list = []
   }
-  // {name,adddress,encryptKey}
+  // {name,address,encryptKey}
   if (list && Array.isArray(list)) {
     let acc = list.find(x => x.address === account.address)
     const encryptKey = encrypt(account.privateKey, pwd)

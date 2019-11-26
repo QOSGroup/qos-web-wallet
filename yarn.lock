@@ -3803,7 +3803,7 @@ js-base64@^2.1.8:
 
 "js-for-qos-httprpc@https://github.com/wangkuanzzu/js-for-qos-httprpc.git":
   version "1.0.0"
-  resolved "https://github.com/wangkuanzzu/js-for-qos-httprpc.git#706987826378d980f9e7e07869743db1ee42af0e"
+  resolved "https://github.com/wangkuanzzu/js-for-qos-httprpc.git#a7c8de66bca97e7f8e3ce2dd9a92543a97bcebdd"
   dependencies:
     axios "^0.19.0"
     bip39 "^3.0.2"
@@ -5293,7 +5293,7 @@ punycode@^2.1.0:
 
 "qosKeys@https://github.com/QOSGroup/js-keys":
   version "1.0.2"
-  resolved "https://github.com/QOSGroup/js-keys#6e42a0d9719fc6aefd128bfe1074627b6670bb76"
+  resolved "https://github.com/QOSGroup/js-keys#161a205a5c3e5fc7a3345be6d98619dc67ed11f3"
 
 qs@~6.5.2:
   version "6.5.2"

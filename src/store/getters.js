@@ -9,3 +9,7 @@ export const accounts = (state) => {
 export const msgQueueFirst = (state) => {
   return state.msgQueueFirst
 }
+
+export const currentAccount = (state) => {
+  return state.currentAccount
+}
