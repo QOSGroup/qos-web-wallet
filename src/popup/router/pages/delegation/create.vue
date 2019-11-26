@@ -85,11 +85,10 @@
 
 <script>
 import store from '@/store'
-import QOSRpc from 'js-for-qos-httprpc'
-import { getCurrentAccount } from '@/business/auth'
+import { rpc } from '@/utils/rpc'
 export default {
   data () {
-    const index = store.getters.accounts.findIndex(x => x.address === getCurrentAccount().address)
+    const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
     return {
       title: '新建委托',
       // 用户信息
@@ -118,8 +117,7 @@ export default {
       // 弹出提示框数据
       dialogVisible: false,
       error: '',
-      currentAccount: store.getters.accounts[index],
-      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
+      currentAccount: store.getters.accounts[index]
     }
   },
   created () {
@@ -140,7 +138,7 @@ export default {
     commitTx () {
       this.onloading = true
       // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
-      const account = this.rpc.recoveryAccountByPrivateKey(
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )
       // 创建基础数据结构
@@ -176,7 +174,7 @@ export default {
     },
     setValidator () {
       const choose = this.$data.validator.address
-      const account = this.rpc.recoveryAccountByPrivateKey(
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )
       const res = account.queryDelagationOne(
@@ -213,7 +211,7 @@ export default {
         })
     },
     getValidators () {
-      const account = this.rpc.recoveryAccountByPrivateKey(
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )
       const res = account.queryValidatorAll()

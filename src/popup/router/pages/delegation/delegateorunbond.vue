@@ -72,121 +72,115 @@
 </template>
 
 <script>
-import store from "@/store";
-import QOSRpc from "js-for-qos-httprpc";
-import { getCurrentAccount } from "@/business/auth";
+import store from '@/store'
+import { rpc } from '@/utils/rpc'
 export default {
-  data() {
+  data () {
+    const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
     return {
       title:
-        this.$route.params.operation == "delegate" ? "追加委托" : "撤回委托",
-      //用户信息
+        this.$route.params.operation == 'delegate' ? '追加委托' : '撤回委托',
+      // 用户信息
       amount: this.$route.params.amount,
-      //用户选择的操作：委托deleagte / 解除委托unbond web页面传递
+      // 用户选择的操作：委托deleagte / 解除委托unbond web页面传递
       operation: this.$route.params.operation,
-      //用户所选的validator信息
+      // 用户所选的validator信息
       validator: {
         logo: this.$route.params.delegation.logo,
         moniker: this.$route.params.delegation.moniker,
         address: this.$route.params.delegation.validator_address,
-        validatorUrl: "https://www.baidu.com"
+        validatorUrl: 'https://www.baidu.com'
       },
-      //用户在当前validator的委托信息
+      // 用户在当前validator的委托信息
       delegation: {
         delegator_address: this.$route.params.delegation.validator_address,
         delegate_amount: this.$route.params.delegation.delegate_amount,
         is_compound: this.$route.params.delegation.is_compound
       },
       form: {
-        tokens: "", //追加或撤回的token数量
-        gas: 0, //支付的gas费用
-        compound: "0" //页面选择是否复投
+        tokens: '', // 追加或撤回的token数量
+        gas: 0, // 支付的gas费用
+        compound: '0' // 页面选择是否复投
       },
       onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
-      error: "",
-      currentAccount:
-        store.getters.accounts[
-          store.getters.accounts.findIndex(
-            x => x.address === getCurrentAccount().address
-          )
-        ],
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
+      error: '',
+      currentAccount: store.getters.accounts[index]
+    }
   },
   methods: {
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.push({
-            name: "homepage",
-            params: { activeName: "delegation" }
-          })
-        : this.$router.push({ name: "homepage" });
+          name: 'homepage',
+          params: { activeName: 'delegation' }
+        })
+        : this.$router.push({ name: 'homepage' })
     },
-    setMax() {
-      this.$data.form.tokens = this.$data.amount;
+    setMax () {
+      this.$data.form.tokens = this.$data.amount
     },
-    commitTx() {
-      this.onloading = true;
-      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
-      const account = this.rpc.recoveryAccountByPrivateKey(
+    commitTx () {
+      this.onloading = true
+      // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
+      )
       // 创建基础数据结构
       const myBase = {
         from: this.currentAccount.address
         // chain_id: "qos-test",
         // max_gas: this.form.gas.toString()
-      };
+      }
       // 组装data数据,调用rpc接口,提交交易
-      let data, res;
-      if (this.operation === "delegate") {
+      let data, res
+      if (this.operation === 'delegate') {
         data = {
           amount: this.form.tokens.toString(),
           base: myBase
-        };
-        if (this.delegation.delegate_amount.toString() === "0") {
-          data.is_compound = this.form.compound === "1" ? true : false;
         }
-        res = account.sendCreateDelegateTx(this.validator.address, data);
+        if (this.delegation.delegate_amount.toString() === '0') {
+          data.is_compound = this.form.compound === '1';
+        }
+        res = account.sendCreateDelegateTx(this.validator.address, data)
       } else {
         data = {
           unbond_amount: this.form.tokens.toString(),
           base: myBase
-        };
-        res = account.sendUnbondDelegationTx(this.validator.address, data);
+        }
+        res = account.sendUnbondDelegationTx(this.validator.address, data)
       }
       // 得到返回值处理
       res
         .then(result => {
           if (result.status === 200) {
             this.$router.push({
-              name: "txresult",
+              name: 'txresult',
               params: { hash: result.data.hash }
-            });
+            })
           } else {
-            this.error = result.statusText;
-            this.dialogVisible = true;
+            this.error = result.statusText
+            this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error;
-          this.dialogVisible = true;
-        });
-    },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(_ => {
-          done();
+          this.error = error
+          this.dialogVisible = true
         })
-        .catch(_ => {});
+    },
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
     }
   },
   computed: {
     // operation: ''
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

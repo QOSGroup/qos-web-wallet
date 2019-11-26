@@ -18,7 +18,7 @@
     <div v-for="(account, index) in accounts" :key="index">
       <el-row>
         <el-col :span="24">
-          <div class="grid-content bg-purple-dark" @click="changeAccount(account.address)">
+          <div :class="currentAccount.address === account.address ? 'grid-content bg-purple-dark' : 'grid-content bg-purple-light'" @click="changeAccount(account.address)">
             <div>
               <span>{{ account.name }}&nbsp;&nbsp;</span>
               <el-divider direction="vertical"></el-divider>
@@ -111,11 +111,12 @@ export default {
         // 移除popup store 中账户
         store.commit(types.DELETE_ACCOUNT, accountlist[i])
       }
+      bg.accountCurrentDelete()
+      store.commit(types.SET_CURRENT_ACCOUNT)
       this.$router.push({ name: 'login' })
     },
     async getAccountList (accountList) {
       const localAccountList = await getAccountList()
-      console.log(localAccountList)
       // 刷新页面,将页面账户列表置空
       this.accounts = []
       let account, res, qcps, localAcc, name
@@ -151,10 +152,8 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error.message)
+            console.log(error)
             localAcc = localAccountList.find(x => x.address === acc.address)
-            console.log('acc==', acc)
-            console.log('localAcc==', localAcc)
             name = localAcc.name
             this.accounts.push({
               name: name,
@@ -182,13 +181,17 @@ export default {
         .catch(_ => {})
     },
     async changeAccount (address) {
-      // 切换账户,首先获取到popup-store-accounts
-      const accountList = store.getters.accounts
-      // 要切换的账户在其中,返回整个account对象
+      // 切换账户,首先获取到本地存储的账户列表
+      const accountList = await getAccountList()
+      // 要切换的账户在其中,返回account对象
       const changeAcc = accountList.find(x => x.address === address)
-      // 调用设置当前账户
+
+      // 本地local storage中设置账户
       await setCurrentAccount(changeAcc)
-      // 调用popup的store 存储当前账户
+      // bg store和popup store中的currentAccount.
+      store.commit(types.SET_CURRENT_ACCOUNT, changeAcc)
+      const bg = getBackground()
+      await bg.setCurrentAccount(changeAcc)
 
       // 切换完成跳转主页
       this.$router.push({ name: 'homepage' })

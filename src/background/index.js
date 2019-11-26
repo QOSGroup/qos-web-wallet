@@ -68,6 +68,18 @@ export function registerGloablFunction (global) {
     store.commit(types.DELETE_ACCOUNT, account)
   }
 
+  // 注销
+  global.accountCurrentDelete = function () {
+    // 不传递account 将设置为null
+    store.commit(types.SET_CURRENT_ACCOUNT)
+  }
+
+  // bg store 设置当前账户
+  global.setCurrentAccount = function (account) {
+    // 不传递account 将设置为null
+    store.commit(types.SET_CURRENT_ACCOUNT, account)
+  }
+
   // 保存账户信息,创建或导入(助记词或私钥)
   global.saveAccount = async function ({
     privateKey,

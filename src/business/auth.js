@@ -74,10 +74,8 @@ export function setAccountList2 (list) {
 
 export function setCurrentAccount (account) {
   return db.setLocal(CURRENTACCOUNT, account)
-  // return db.set(CURRENTACCOUNT, account)
 }
 
 export function getCurrentAccount () {
   return db.getLocal(CURRENTACCOUNT)
-  // return db.get(CURRENTACCOUNT)
 }

@@ -8,17 +8,7 @@
     <el-page-header @back="goBack" content="转账"></el-page-header>
     <el-divider></el-divider>
     <div>
-      <span>
-        资产类型：
-        <el-select v-model="value" placeholder="请选择" size="mini" @change="setCoinBalance">
-          <el-option
-            v-for="coin in coins"
-            :key="coin.value"
-            :label="coin.label"
-            :value="coin.value"
-          ></el-option>
-        </el-select>
-      </span>
+      <span>资产类型：{{ coin }}</span>
     </div>
     <div>
       <span>资产余额：{{ balance }}</span>
@@ -69,15 +59,16 @@
 // import QOSRpc from 'js-for-qos-httprpc'
 import { processMsg } from '../../../common/bgcontact'
 import store from '@/store'
-import QOSRpc from 'js-for-qos-httprpc'
-import { getCurrentAccount } from '@/business/auth'
-
+import { rpc } from '@/utils/rpc'
 export default {
   data () {
+    const index = store.getters.accounts.findIndex(
+      x => x.address === store.getters.currentAccount.address
+    )
     return {
       // 根据用户地址链上查询的数据
-      coins: [],
-      value: '',
+      // coins: [],
+      coin: this.$route.params.coin,
       balance: 0,
       form: {
         address: '',
@@ -89,8 +80,7 @@ export default {
       // 弹出提示框数据
       dialogVisible: false,
       error: '',
-      currentAccount: store.getters.accounts[store.getters.accounts.findIndex(x => x.address === getCurrentAccount().address)],
-      rpc: new QOSRpc({ baseUrl: 'http://47.98.253.9:9876' })
+      currentAccount: store.getters.accounts[index]
     }
   },
   computed: {
@@ -98,7 +88,8 @@ export default {
       return JSON.stringify(this.$store.getters.firstMsg)
     }
   },
-  mounted () {},
+  mounted: {
+  },
   created () {
     this.getAccount(this.currentAccount)
   },
@@ -114,7 +105,7 @@ export default {
     commitTx () {
       this.onloading = true
       // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
-      const account = this.rpc.recoveryAccountByPrivateKey(
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )
       // 创建数据结构
@@ -145,15 +136,6 @@ export default {
           this.dialogVisible = true
         })
     },
-    setCoinBalance () {
-      const choose = this.$data.value
-      const coins = this.$data.coins
-      for (let index = 0; index < coins.length; index++) {
-        if (choose === coins[index].value) {
-          this.$data.balance = coins[index].balance
-        }
-      }
-    },
     setMax () {
       this.$data.form.tokens = this.$data.balance
     },
@@ -161,32 +143,26 @@ export default {
       processMsg()
     },
     getAccount (currentAccount) {
-      const account = this.rpc.recoveryAccountByPrivateKey(
+      alert(this.coin)
+      const account = rpc.recoveryAccountByPrivateKey(
         currentAccount.privateKey
       )
       const res = account.queryAccount(currentAccount.address)
       res.then(result => {
         if (result.status === 200) {
-          let list = []
-          list.push({
-            value: 'QOS',
-            label: 'QOS',
-            balance: result.data.value.qos
-          })
-          // this.$data.qos = result.data.value.qos;
-          const qcps = result.data.value.qcps
-          if (qcps) {
-            for (let qcp of qcps) {
-              list.push({
-                value: qcp.coin_name,
-                label: qcp.coin_name,
-                balance: qcp.amount
-              })
+          if (this.$data.coin === 'QOS') {
+            this.balance = result.data.value.qos
+          } else {
+            const qcps = result.data.value.qcps
+            if (qcps) {
+              for (let qcp of qcps) {
+                if (qcp.coin_name === this.coin) {
+                  this.balance = qcp.amount
+                  break
+                }
+              }
             }
           }
-          this.coins = list
-        } else {
-          // alert(result.statusText);
         }
       })
     },

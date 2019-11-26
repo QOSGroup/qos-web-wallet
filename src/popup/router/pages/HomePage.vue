@@ -265,7 +265,7 @@ export default {
       if (!coinName) {
         coinName = 'QOS'
       }
-      this.$router.push({ name: 'transfer' })
+      this.$router.push({ name: 'transfer', params: { coin: coinName } })
     },
     approve (coinType) {
       if (!coinType) {
