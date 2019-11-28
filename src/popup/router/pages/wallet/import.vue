@@ -196,7 +196,7 @@ export default {
       store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
       // 创建账户成功,拷贝bg store中的accounts到popup store中
       const bgState = bg.getBgState()
-      store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
+      store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'passCheck'], bgState })
       // 账户导入后,默认跳转homepage页面
       this.$router.push({ name: 'homepage' })
     },

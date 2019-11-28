@@ -3,7 +3,7 @@
     <div style="background:rgba(50, 115, 200, 1);height:25%;">
       <div>
         <br />
-        <div style="float:left;width:90%;text-align:left;">
+        <div style="float:left;width:90%;text-align:left;" @click="accNameModify">
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
         <div style="float:right;width:10%;" @click="showAccountList">
@@ -152,6 +152,12 @@ export default {
     })
   },
   created () {
+    // console.log('store.getters.currentAccount:', store.getters.currentAccount)
+    // // 打开页面默认加载我的资产导航栏
+    // this.getAccount(this.$data.address)
+    // this.getDelegations(this.$data.address)
+  },
+  mounted () {
     console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address)
@@ -227,7 +233,7 @@ export default {
               logo: result.data.description.logo,
               moniker: result.data.description.moniker,
               validator_address: delegation[i].validator_address,
-              delegate_amount: delegation[i].delegate_amount,
+              delegate_amount: numFor4Decimal(delegation[i].delegate_amount),
               is_compound: delegation[i].is_compound,
               validatorUrl: 'http://www.baidu.com'
             })
@@ -297,6 +303,14 @@ export default {
           amount: qos,
           is_compound: isCompound,
           delegation: delegation
+        }
+      })
+    },
+    accNameModify () {
+      this.$router.push({
+        name: 'accountmodify',
+        params: {
+          name: this.userName
         }
       })
     },

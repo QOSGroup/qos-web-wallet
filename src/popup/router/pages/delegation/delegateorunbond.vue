@@ -79,7 +79,7 @@ export default {
     const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
     return {
       title:
-        this.$route.params.operation == 'delegate' ? '追加委托' : '撤回委托',
+        this.$route.params.operation === 'delegate' ? '追加委托' : '撤回委托',
       // 用户信息
       amount: this.$route.params.amount,
       // 用户选择的操作：委托deleagte / 解除委托unbond web页面传递
@@ -141,7 +141,7 @@ export default {
           base: myBase
         }
         if (this.delegation.delegate_amount.toString() === '0') {
-          data.is_compound = this.form.compound === '1';
+          data.is_compound = this.form.compound === '1'
         }
         res = account.sendCreateDelegateTx(this.validator.address, data)
       } else {

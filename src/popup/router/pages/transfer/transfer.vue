@@ -60,6 +60,7 @@
 import { processMsg } from '../../../common/bgcontact'
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
+import { numFor4Decimal } from '@/utils/index'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
@@ -88,11 +89,10 @@ export default {
       return JSON.stringify(this.$store.getters.firstMsg)
     }
   },
-  mounted: {
-  },
-  created () {
+  mounted () {
     this.getAccount(this.currentAccount)
   },
+  created () {},
   methods: {
     goBack () {
       window.history.length > 1
@@ -143,7 +143,6 @@ export default {
       processMsg()
     },
     getAccount (currentAccount) {
-      alert(this.coin)
       const account = rpc.recoveryAccountByPrivateKey(
         currentAccount.privateKey
       )
@@ -151,13 +150,13 @@ export default {
       res.then(result => {
         if (result.status === 200) {
           if (this.$data.coin === 'QOS') {
-            this.balance = result.data.value.qos
+            this.balance = numFor4Decimal(result.data.value.qos)
           } else {
             const qcps = result.data.value.qcps
             if (qcps) {
               for (let qcp of qcps) {
                 if (qcp.coin_name === this.coin) {
-                  this.balance = qcp.amount
+                  this.balance = numFor4Decimal(qcp.amount)
                   break
                 }
               }

@@ -112,7 +112,7 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     commitTx () {
-      // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
+      // 点击完成确认按钮后,调用修改委托方式.
       const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )

@@ -3,8 +3,7 @@ import Register from './pages/register/register'
 import HomePage from './pages/HomePage'
 
 import AccountList from './pages/account/list'
-// import AccountCreate from './pages/account/create'
-import AccountImport from './pages/account/import'
+import AccountModify from './pages/account/modify'
 
 import Transfer from './pages/transfer/transfer'
 
@@ -91,14 +90,19 @@ export default [
     name: 'accountlist',
     component: AccountList
   },
+  {
+    path: '/account/modify',
+    name: 'accountmodify',
+    component: AccountModify
+  }
   // {
   //   path: '/account/create',
   //   name: 'accountcreate',
   //   component: AccountCreate
   // },
-  {
-    path: '/account/import',
-    name: 'accountimport',
-    component: AccountImport
-  }
+  // {
+  //   path: '/account/import',
+  //   name: 'accountimport',
+  //   component: AccountImport
+  // }
 ]
