@@ -130,6 +130,7 @@
 import { rpc } from '@/utils/rpc'
 import { mapState } from 'vuex'
 import store from '@/store'
+import { numFor4Decimal } from '@/utils/index'
 export default {
   data () {
     return {
@@ -165,7 +166,7 @@ export default {
       res
         .then(result => {
           if (result.status === 200) {
-            this.$data.qos = result.data.value.qos
+            this.$data.qos = numFor4Decimal(result.data.value.qos)
             this.$data.qcps = result.data.value.qcps
           } else {
             this.$message({

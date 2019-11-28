@@ -36,7 +36,23 @@ export default {
       this.$router.push({ name: 'homepage' })
     },
     confirm () {
-      this.$router.push({ name: 'homepage' })
+      this.$confirm('再次确认您已经妥善保存助记词!', '助记词确认', {
+        customClass: 'message-confirm',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '您点击了确认,助记词不会再展示!'
+        })
+        this.$router.push({ name: 'homepage' })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '您点击了取消,请妥善保存助记词!'
+        })
+      })
     }
   }
 }
@@ -46,5 +62,10 @@ export default {
 @import "~style/common.scss";
 .newwalletresult-wrap {
   @include common-container;
+}
+</style>
+<style lang="scss">
+.message-confirm {
+    width: 300px !important;
 }
 </style>

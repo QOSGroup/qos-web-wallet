@@ -22,7 +22,7 @@
             <div>
               <span>{{ account.name }}&nbsp;&nbsp;</span>
               <el-divider direction="vertical"></el-divider>
-              <span>&nbsp;&nbsp;{{ account.address }}</span>
+              <span class="span-point">&nbsp;&nbsp;{{ account.address }}</span>
             </div>
             <div>
               <div style="float:left;">
@@ -97,10 +97,10 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     addAccount () {
-      this.$router.push({ name: 'walletcreate' })
+      this.$router.push({ name: 'walletcreate2' })
     },
     importAccount () {
-      this.$router.push({ name: 'walletimport' })
+      this.$router.push({ name: 'walletimport2' })
     },
     exit () {
       const bg = getBackground()
@@ -111,8 +111,10 @@ export default {
         // 移除popup store 中账户
         store.commit(types.DELETE_ACCOUNT, accountlist[i])
       }
+      // 移除popup和bg store中的当前账户信息
       bg.accountCurrentDelete()
       store.commit(types.SET_CURRENT_ACCOUNT)
+      // 跳转登录
       this.$router.push({ name: 'login' })
     },
     async getAccountList (accountList) {
@@ -208,7 +210,7 @@ export default {
     text-align: left;
     overflow: hidden;
     overflow-y: auto;
-    margin: 3% 0 2% 0;
+    margin: 2% 0 1.5% 0;
     vertical-align: middle;
   }
   span {
@@ -241,6 +243,13 @@ export default {
   .row-bg {
     padding: 10px 0;
     background-color: #f9fafc;
+  }
+  .span-point {
+    display:inline-block;
+    white-space: nowrap;
+    width:220px;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
   }
 }
 </style>

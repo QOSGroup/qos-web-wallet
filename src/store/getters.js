@@ -13,3 +13,7 @@ export const msgQueueFirst = (state) => {
 export const currentAccount = (state) => {
   return state.currentAccount
 }
+
+export const passCheck = (state) => {
+  return state.passCheck
+}

@@ -39,7 +39,7 @@
         ></el-input>
       </el-form-item>
 
-      <el-form-item label="新密码" prop="password">
+      <!-- <el-form-item label="新密码" prop="password">
         <el-input placeholder="请输入密码" v-model="ruleForm.password" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="重复密码" prop="repassword">
@@ -49,7 +49,7 @@
           show-password
           auto-complete="off"
         ></el-input>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">导入</el-button>
@@ -97,31 +97,31 @@ export default {
       }
     }
 
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.ruleForm.repassword !== '') {
-          this.$refs.ruleForm.validateField('repassword')
-        }
-        callback()
-      }
-    }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.ruleForm.password) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
-      }
-    }
+    // var validatePass = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请输入密码'))
+    //   } else {
+    //     if (this.ruleForm.repassword !== '') {
+    //       this.$refs.ruleForm.validateField('repassword')
+    //     }
+    //     callback()
+    //   }
+    // }
+    // var validatePass2 = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请再次输入密码'))
+    //   } else if (value !== this.ruleForm.password) {
+    //     callback(new Error('两次输入密码不一致!'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       ruleForm: {
         pri: '',
         memwd: '',
-        password: '',
-        repassword: '',
+        password: store.getters.passCheck,
+        // repassword: '',
         // 下拉框
         value: '',
         importtypes: [
@@ -145,12 +145,7 @@ export default {
         memwd: [
           { validator: checkMemwd, trigger: 'blur' },
           { min: 12, message: '长度为 12 个单词', trigger: 'blur' }
-        ],
-        password: [
-          { validator: validatePass, trigger: 'blur' },
-          { min: 8, max: 16, message: '密码位数8-16位!', trigger: 'blur' }
-        ],
-        repassword: [{ validator: validatePass2, trigger: 'blur' }]
+        ]
       }
     }
   },

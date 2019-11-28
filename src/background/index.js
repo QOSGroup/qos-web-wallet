@@ -17,13 +17,15 @@ import {
 import { rpc } from '@/utils/rpc'
 
 // 注册成功、登录成功、账户切换:完成持久化存储当前账户信息
-export async function setCurrentAccountLocal (accountList, pwd) {
+export async function setCurrentAccountLocal (accountList, pwd, name) {
   return new Promise(async (resolve) => {
     // 设置当前登录账户:默认所有登录成功账户中的第一个
     const currentAcc = await getCurrentAccount()
     const encryptKey = encrypt(accountList[0].privateKey, pwd)
     const address = accountList[0].address
-    const name = address.substr(address.length - 4, address.length - 1)
+    if (!name) {
+      name = address.substr(address.length - 4, address.length - 1)
+    }
     const accCurrent = { name: name, address: address, encryptKey: encryptKey }
     // 当前登录账户为空
     if (!isNotEmptyObject(currentAcc)) {
@@ -84,7 +86,8 @@ export function registerGloablFunction (global) {
   global.saveAccount = async function ({
     privateKey,
     mnemonic,
-    pwd
+    pwd,
+    name
   }) {
     return new Promise(async (resolve) => {
       let account
@@ -97,10 +100,10 @@ export function registerGloablFunction (global) {
         // console.log('根据助记词恢复账户信息:', account)
       }
       // 账户列表本地持久化:新增
-      await setAccount(account, pwd)
+      await setAccount(account, pwd, name)
       // 当前账户本地持久化:更新
       const list = [account]
-      await setCurrentAccountLocal(list, pwd)
+      await setCurrentAccountLocal(list, pwd, name)
 
       // bg store 存储登录信息
       store.commit(types.SET_PASS_CHECK, pwd)

@@ -14,7 +14,7 @@ const CURRENTACCOUNT = 'qos-current-account'
 // }
 
 /** 设置账户 */
-export async function setAccount (account, pwd) {
+export async function setAccount (account, pwd, name) {
   let list = await getAccountList()
   // {address,privateKey}
   let acc
@@ -24,7 +24,9 @@ export async function setAccount (account, pwd) {
     list = []
   }
   const encryptKey = encrypt(account.privateKey, pwd)
-  const name = account.address.substr(account.address.length - 4, account.address.length - 1)
+  if (!name) {
+    name = account.address.substr(account.address.length - 4, account.address.length - 1)
+  }
   if (acc) {
     acc = { name: name, address: account.address, encryptKey: encryptKey }
   } else {

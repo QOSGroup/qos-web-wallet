@@ -28,6 +28,15 @@ export function isNotEmpty (value) {
 }
 
 /**
+ * 金额数量处理:除以10000,小数点后保留4位
+ * @param {*} num
+ */
+
+export function numFor4Decimal (num) {
+  return num / 10000
+}
+
+/**
  * 是否非空对象
  * @param obj 对象
  */
