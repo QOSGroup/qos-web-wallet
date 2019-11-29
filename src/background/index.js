@@ -16,7 +16,7 @@ import {
 } from '../utils'
 import { rpc } from '@/utils/rpc'
 
-// 注册成功、登录成功、账户切换:完成持久化存储当前账户信息
+// 注册成功、登录成功、账户切换、修改账户名称:完成持久化存储当前账户信息
 export async function setCurrentAccountLocal (accountList, pwd, name) {
   return new Promise(async (resolve) => {
     // 设置当前登录账户:默认所有登录成功账户中的第一个
@@ -27,19 +27,14 @@ export async function setCurrentAccountLocal (accountList, pwd, name) {
       name = address.substr(address.length - 4, address.length - 1)
     }
     const accCurrent = { name: name, address: address, encryptKey: encryptKey }
-    // 当前登录账户为空
-    if (!isNotEmptyObject(currentAcc)) {
+    let acc = accountList.find(x => x.address === currentAcc.address)
+    // 当前登录账户为空、登录的账户存在accountList中
+    if (!isNotEmptyObject(currentAcc) || !acc) {
       await setCurrentAccount(accCurrent)
       store.commit(types.SET_CURRENT_ACCOUNT, accCurrent)
     } else {
-      // 当前登录的账户存在,判断是否在accountList中,不在其中,重新设置为accountList第一个
-      let acc = accountList.find(x => x.address === currentAcc.address)
-      if (!acc) {
-        await setCurrentAccount(accCurrent)
-        store.commit(types.SET_CURRENT_ACCOUNT, accCurrent)
-      } else {
-        store.commit(types.SET_CURRENT_ACCOUNT, { name: acc.address.substr(acc.address.length - 4, acc.address.length - 1), address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
-      }
+      await setCurrentAccount({ name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+      store.commit(types.SET_CURRENT_ACCOUNT, { name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
     }
     return resolve()
   })

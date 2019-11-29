@@ -28,7 +28,8 @@ export async function setAccount (account, pwd, name) {
     name = account.address.substr(account.address.length - 4, account.address.length - 1)
   }
   if (acc) {
-    acc = { name: name, address: account.address, encryptKey: encryptKey }
+    // acc = { name: name, address: account.address, encryptKey: encryptKey }
+    acc.name = name
   } else {
     list.push({ name: name, address: account.address, encryptKey: encryptKey })
   }
