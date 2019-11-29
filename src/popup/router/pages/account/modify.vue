@@ -36,13 +36,7 @@ export default {
   },
   methods: {
     async onSubmit (formName) {
-      // 随机创建助记词
-      // const mn = rpc.generateMnemonic()
-      // const currentAcc = store.getters.currentAccount
-      // currentAcc.name = this.form.name
-      console.log(this.form.password)
-      console.log(this.form.name)
-      // // 调用背景页函数
+      // 调用背景页函数
       const bg = getBackground()
       await bg.saveAccount({ privateKey: this.currentAccount.privateKey, pwd: this.form.password, name: this.form.name })
       // popup store中存储currentAccount, 数据来源与持久化存储的当前账户

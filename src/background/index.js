@@ -26,15 +26,20 @@ export async function setCurrentAccountLocal (accountList, pwd, name) {
     if (!name) {
       name = address.substr(address.length - 4, address.length - 1)
     }
-    const accCurrent = { name: name, address: address, encryptKey: encryptKey }
-    let acc = accountList.find(x => x.address === currentAcc.address)
+    const accFirst = { name: name, address: address, encryptKey: encryptKey }
     // 当前登录账户为空、登录的账户存在accountList中
-    if (!isNotEmptyObject(currentAcc) || !acc) {
-      await setCurrentAccount(accCurrent)
-      store.commit(types.SET_CURRENT_ACCOUNT, accCurrent)
+    if (!isNotEmptyObject(currentAcc)) {
+      await setCurrentAccount(accFirst)
+      store.commit(types.SET_CURRENT_ACCOUNT, accFirst)
     } else {
-      await setCurrentAccount({ name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
-      store.commit(types.SET_CURRENT_ACCOUNT, { name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+      let acc = accountList.find(x => x.address === currentAcc.address)
+      if (!acc) {
+        await setCurrentAccount(accFirst)
+        store.commit(types.SET_CURRENT_ACCOUNT, accFirst)
+      } else {
+        await setCurrentAccount({ name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+        store.commit(types.SET_CURRENT_ACCOUNT, { name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+      }
     }
     return resolve()
   })

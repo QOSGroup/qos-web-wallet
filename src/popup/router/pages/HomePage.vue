@@ -115,7 +115,7 @@
             <el-button
               icon="el-icon-plus"
               circle
-              @click="createDelegation(qos.toString())"
+              @click="createDelegation"
               title="新增委托"
             ></el-button>
           </div>
@@ -286,8 +286,7 @@ export default {
     },
     createDelegation (qos) {
       this.$router.push({
-        name: 'delegationcreate',
-        params: { amount: qos }
+        name: 'validatorlist'
       })
     },
     delegateorunbond (operation, qos, delegation) {

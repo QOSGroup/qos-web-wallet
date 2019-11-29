@@ -8,11 +8,14 @@
     </div>
     <el-divider></el-divider>
     <div>
-      <el-button type="primary" plain @click="addAccount" size="medium" style="width:46%;">
+      <el-button type="primary" plain @click="addAccount" size="small" style="width:30%;">
         <i class="el-icon-plus"></i>新建账户
       </el-button>
-      <el-button type="success" plain @click="importAccount" size="medium" style="width:46%;">
+      <el-button type="success" plain @click="importAccount" size="small" style="width:30%;">
         <i class="el-icon-download"></i>导入账户
+      </el-button>
+      <el-button type="warning" plain @click="exportAccount" size="small" style="width:30%;">
+        <i class="el-icon-upload2"></i>导出私钥
       </el-button>
     </div>
     <div v-for="(account, index) in accounts" :key="index">
@@ -101,6 +104,9 @@ export default {
     },
     importAccount () {
       this.$router.push({ name: 'walletimport2' })
+    },
+    exportAccount () {
+      this.$router.push({ name: 'accountexport' })
     },
     exit () {
       const bg = getBackground()
@@ -228,7 +234,7 @@ export default {
     border-radius: 4px;
   }
   .bg-purple-dark {
-    background: #99a9bf;
+    background: #69c976;
   }
   .bg-purple {
     background: #d3dce6;

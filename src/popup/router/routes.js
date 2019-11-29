@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage'
 
 import AccountList from './pages/account/list'
 import AccountModify from './pages/account/modify'
+import AccountExport from './pages/account/export'
 
 import Transfer from './pages/transfer/transfer'
 
@@ -16,6 +17,8 @@ import WalletImport2 from './pages/wallet/import2'
 import DelegateOrUnbond from './pages/delegation/delegateorunbond'
 import ModifyCompound from './pages/delegation/modify'
 import DelegationCreate from './pages/delegation/create'
+
+import ValidatorList from './pages/validator/list'
 
 import TxResult from './pages/result/result'
 
@@ -94,6 +97,16 @@ export default [
     path: '/account/modify',
     name: 'accountmodify',
     component: AccountModify
+  },
+  {
+    path: '/account/export',
+    name: 'accountexport',
+    component: AccountExport
+  },
+  {
+    path: '/validator/list',
+    name: 'validatorlist',
+    component: ValidatorList
   }
   // {
   //   path: '/account/create',

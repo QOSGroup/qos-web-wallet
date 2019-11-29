@@ -37,6 +37,15 @@ export function numFor4Decimal (num) {
 }
 
 /**
+ * 金额数量处理:乘以10000,交易的数量
+ * @param {*} num
+ */
+
+export function numForNoDecimal (num) {
+  return num * 10000
+}
+
+/**
  * 是否非空对象
  * @param obj 对象
  */

@@ -10,19 +10,7 @@
       <div style="float:right;width:200px;">
         <div style="text-align:left;">
           <div style="float:left;">
-            <el-select
-              v-model="validator.address"
-              placeholder="请选择"
-              size="mini"
-              @change="setValidator"
-            >
-              <el-option
-                v-for="(validator, index) in validators"
-                :key="index"
-                :label="validator.description.moniker"
-                :value="validator.validator"
-              ></el-option>
-            </el-select>
+            <span>{{ validator.moniker }}</span>
           </div>
           <div style="float:left;font-size: xx-large;">
             <el-link :href="validator.validatorUrl" target="_blank">
@@ -86,25 +74,24 @@
 <script>
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
+import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
     return {
       title: '新建委托',
       // 用户信息
-      amount: this.$route.params.amount,
-      // 所有validators
-      validators: [],
+      amount: '0',
       // 用户所选的validator信息
       validator: {
-        logo: '',
-        moniker: '',
-        address: '',
-        validatorUrl: ''
+        logo: this.$route.params.description.logo,
+        moniker: this.$route.params.description.moniker,
+        address: this.$route.params.validator,
+        validatorUrl: this.$route.params.validator
       },
       // 用户在当前validator的委托信息
       delegation: {
-        delegator_address: '',
+        delegator_address: this.$route.params.validator,
         delegate_amount: 0,
         is_compound: false
       },
@@ -121,16 +108,19 @@ export default {
     }
   },
   created () {
-    this.getValidators()
+    // this.getAccount(this.currentAccount.address)
+  },
+  mounted () {
+    this.getAccount(this.currentAccount.address)
   },
   methods: {
     goBack () {
       window.history.length > 1
-        ? this.$router.push({
+        ? this.$router.go(-1)
+        : this.$router.push({
           name: 'homepage',
           params: { activeName: 'delegation' }
         })
-        : this.$router.push({ name: 'homepage' })
     },
     setMax () {
       this.$data.form.tokens = this.$data.amount
@@ -150,7 +140,7 @@ export default {
       // 组装data数据,调用rpc接口,提交交易
       const data = {
         base: myBase,
-        amount: this.form.tokens.toString(),
+        amount: numForNoDecimal(this.form.tokens).toString(),
         is_compound: this.form.compound === '1'
       }
       const res = account.sendCreateDelegateTx(this.validator.address, data)
@@ -163,7 +153,7 @@ export default {
               params: { hash: result.data.hash }
             })
           } else {
-            this.error = result.statusText
+            this.error = result
             this.dialogVisible = true
           }
         })
@@ -172,53 +162,15 @@ export default {
           this.dialogVisible = true
         })
     },
-    setValidator () {
-      const choose = this.$data.validator.address
+    getAccount (address) {
       const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )
-      const res = account.queryDelagationOne(
-        this.currentAccount.address,
-        choose
-      )
-      res
-        .then(result => {
-          // this.$data.delegation.delegate_amount = result.data.delegate_amount;
-          // this.$data.delegation.is_compound = result.data.is_compound;
-          this.$data.validator.address = ''
-          this.$message({
-            showClose: true,
-            message: '已有委托,请从‘我的委托’中进行追加或撤回!',
-            type: 'warning'
-          })
-        })
-        .catch(error => {
-          console.log(error)
-          this.$message({
-            showClose: true,
-            message: '暂无委托,可以新建.'
-          })
-          const validators = this.$data.validators
-          for (let index = 0; index < validators.length; index++) {
-            if (choose === validators[index].validator) {
-              this.$data.validator.logo = validators[index].description.logo
-              this.$data.validator.moniker =
-                validators[index].description.moniker
-              this.$data.validator.address = validators[index].validator
-              this.$data.validator.validatorUrl = 'http://www.baidu.com'
-            }
-          }
-        })
-    },
-    getValidators () {
-      const account = rpc.recoveryAccountByPrivateKey(
-        this.currentAccount.privateKey
-      )
-      const res = account.queryValidatorAll()
+      const res = account.queryAccount(address)
       res
         .then(result => {
           if (result.status === 200) {
-            this.validators = result.data
+            this.$data.amount = numFor4Decimal(result.data.value.qos)
           } else {
             this.$message({
               showClose: true,
@@ -228,11 +180,12 @@ export default {
           }
         })
         .catch(error => {
-          this.$message({
-            showClose: true,
-            message: error,
-            type: 'error'
-          })
+          console.log(error)
+          // this.$message({
+          //   showClose: true,
+          //   message: '该账户在链上的‘账户信息’查询失败!',
+          //   type: 'warning'
+          // })
         })
     },
     handleClose (done) {
