@@ -7,13 +7,12 @@
 
     <el-page-header @back="goBack" content="转账"></el-page-header>
     <el-divider></el-divider>
-    <div>
+    <div style="margin-left:6%;">
       <span>资产类型：{{ coin }}</span>
     </div>
-    <div>
+    <div style="margin-left:6%;">
       <span>资产余额：{{ balance }}</span>
     </div>
-    <div></div>
     <el-form :model="form" ref="form" label-width="100px">
       <el-form-item
         label="接收方地址"
