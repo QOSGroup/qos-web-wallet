@@ -1,9 +1,9 @@
 <template>
   <div class="transfer-wrap">
-    <div>这是转账页面: {{inputParams}}</div>
+    <!-- <div>这是转账页面: {{inputParams}}</div>
     <div>
       <button @click="onProcess">processMsg</button>
-    </div>
+    </div> -->
 
     <el-page-header @back="goBack" content="转账"></el-page-header>
     <el-divider></el-divider>
@@ -14,26 +14,42 @@
       <span>资产余额：{{ balance }}</span>
     </div>
     <div></div>
-    <div>
-      <span>接收方地址：</span>
-    </div>
-    <div>
-      <el-input type="input" v-model="form.address" clearable size="small"></el-input>
-    </div>
-    <div>
-      <span>转账数量：</span>
-    </div>
-    <div>
-      <el-input type="input" v-model="form.tokens" clearable size="mini" style="width:75%;"></el-input>
-      <el-button size="mini" style="float:right;height:38px;" @click="setMax">最大值</el-button>
-    </div>
+    <el-form :model="form" ref="form" label-width="100px">
+      <el-form-item
+        label="接收方地址"
+        prop="address"
+        :rules="[
+      { required: true, message: '地址不能为空'}
+    ]"
+      >
+        <el-input type="input" v-model="form.address" clearable size="small" ></el-input>
+      </el-form-item>
 
-    <div style="display:none;">
-      <span>最大手续费：{{ form.gas }}</span>
-    </div>
-    <div class="block" style="display:none;">
-      <el-slider v-model="form.gas"></el-slider>
-    </div>
+      <el-form-item
+        label="转账数量"
+        prop="tokens"
+        :rules="[
+      { required: true, message: '转账数量不能为空'}
+    ]"
+      >
+        <el-input type="input" v-model="form.tokens" clearable size="mini" style="width:65%;"></el-input>
+        <el-button size="mini" @click="setMax">最大值</el-button>
+      </el-form-item>
+      <el-form-item
+      v-if="false"
+        label="最大手续费"
+        prop="gas"
+        :rules="[
+      { required: true, message: '最大手续费不能为空'}
+    ]"
+      >
+        <span>{{ form.gas }}</span>
+        <el-slider v-model="form.gas"></el-slider>
+      </el-form-item>
+    </el-form>
+
+    <div style="display:none;"></div>
+    <div class="block" style="display:none;"></div>
 
     <div style="text-align:center;">
       <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
@@ -103,20 +119,28 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     confirm () {
-      let details = '<span style="word-break: break-all;"><span style="color:blue;">转出地址</span>:<br />' + this.currentAccount.address
-      details += '<br /><span style="color:green;">转入地址</span>:<br />' + this.form.address
-      details += '<br /><span style="color:red;">转账金额</span>:<br />' + numForNoDecimal(this.form.tokens).toString() + this.coin + '</span>'
+      let details =
+        '<span style="word-break: break-all;"><span style="color:blue;">转出地址</span>:<br />' +
+        this.currentAccount.address
+      details +=
+        '<br /><span style="color:green;">转入地址</span>:<br />' +
+        this.form.address
+      details +=
+        '<br /><span style="color:red;">转账金额</span>:<br />' +
+        numForNoDecimal(this.form.tokens).toString() +
+        this.coin +
+        '</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         // type: 'warning',
         dangerouslyUseHTMLString: true
-      }).then(() => {
-        this.commitTx()
-      }).catch(() => {
-
       })
+        .then(() => {
+          this.commitTx()
+        })
+        .catch(() => {})
     },
     commitTx () {
       this.onloading = true
@@ -200,7 +224,7 @@ export default {
     text-align: left;
     overflow: hidden;
     overflow-y: auto;
-    margin: 2% 0 2% 0;
+    margin: 3% 0 4% 0;
     vertical-align: middle;
   }
   span {
