@@ -151,12 +151,7 @@ export default {
       // currentAccount: store.getters.currentAccount
     })
   },
-  created () {
-    // console.log('store.getters.currentAccount:', store.getters.currentAccount)
-    // // 打开页面默认加载我的资产导航栏
-    // this.getAccount(this.$data.address)
-    // this.getDelegations(this.$data.address)
-  },
+  created () {},
   mounted () {
     console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏

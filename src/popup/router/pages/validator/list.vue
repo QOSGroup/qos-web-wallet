@@ -35,7 +35,7 @@
         </div>
 
         <div>
-          <span>验证状态：{{ validator.status }}</span>
+          <span>验证状态：{{ validator.status === 'active' ? '活跃' : '非活跃' }}</span>
         </div>
         <div>
           <span>佣&nbsp;&nbsp;金&nbsp;&nbsp;率：{{ validator.commission.commission_rates.rate }}</span>

@@ -36,7 +36,7 @@
     </div>
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx" :loading="onloading">确定</el-button>
+      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
     </div>
 
     <el-dialog
@@ -60,7 +60,7 @@
 import { processMsg } from '../../../common/bgcontact'
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
-import { numFor4Decimal } from '@/utils/index'
+import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
@@ -102,6 +102,22 @@ export default {
         })
         : this.$router.push({ name: 'homepage' })
     },
+    confirm () {
+      let details = '<span style="word-break: break-all;"><span style="color:blue;">转出地址</span>:<br />' + this.currentAccount.address
+      details += '<br /><span style="color:green;">转入地址</span>:<br />' + this.form.address
+      details += '<br /><span style="color:red;">转账金额</span>:<br />' + numForNoDecimal(this.form.tokens).toString() + this.coin + '</span>'
+      this.$confirm(details, '交易确认', {
+        customClass: 'message-confirm',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // type: 'warning',
+        dangerouslyUseHTMLString: true
+      }).then(() => {
+        this.commitTx()
+      }).catch(() => {
+
+      })
+    },
     commitTx () {
       this.onloading = true
       // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
@@ -115,7 +131,7 @@ export default {
         // max_gas: this.form.gas.toString()
       }
       const data = {
-        qos: this.form.tokens.toString(),
+        qos: numForNoDecimal(this.form.tokens).toString(),
         base: myBase
       }
       const res = account.sendTransferTx(this.form.address, data)

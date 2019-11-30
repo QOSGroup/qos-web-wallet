@@ -53,14 +53,13 @@
     </div>-->
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx" :loading="onloading">确定</el-button>
+      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
     </div>
 
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
       width="80%"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>{{ this.error }}</span>
@@ -125,6 +124,24 @@ export default {
     setMax () {
       this.$data.form.tokens = this.$data.amount
     },
+    confirm () {
+      let details = '<span style="word-break: break-all;"><span style="color:blue;">委托人地址:</span><br />' + this.currentAccount.address
+      details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
+      details += '<br /><span style="color:red;">委托金额:</span><br />' + numForNoDecimal(this.form.tokens).toString() + 'QOS'
+      details += '<br /><span style="color:red;">委托方式:</span><br />'
+      details += this.form.compound === 1 ? '复投' : '不复投' + '</span>'
+      this.$confirm(details, '交易确认', {
+        customClass: 'message-confirm',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // type: 'warning',
+        dangerouslyUseHTMLString: true
+      }).then(() => {
+        this.commitTx()
+      }).catch(() => {
+
+      })
+    },
     commitTx () {
       this.onloading = true
       // 点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
@@ -187,13 +204,6 @@ export default {
           //   type: 'warning'
           // })
         })
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   },
   computed: {

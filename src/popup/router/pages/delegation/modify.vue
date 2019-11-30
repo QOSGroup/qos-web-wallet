@@ -52,7 +52,7 @@
     </div>-->
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
+      <el-button type="primary" size="small" plain @click="confirm">确定</el-button>
     </div>
 
     <el-dialog
@@ -110,6 +110,26 @@ export default {
           params: { activeName: 'delegation' }
         })
         : this.$router.push({ name: 'homepage' })
+    },
+    confirm () {
+      let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
+      if (this.$route.params.is_compound === 'true') {
+        details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
+      } else {
+        details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"不复投"修改为"复投"'
+      }
+      details += '</span>'
+      this.$confirm(details, '交易确认', {
+        customClass: 'message-confirm',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // type: 'warning',
+        dangerouslyUseHTMLString: true
+      }).then(() => {
+        this.commitTx()
+      }).catch(() => {
+
+      })
     },
     commitTx () {
       // 点击完成确认按钮后,调用修改委托方式.

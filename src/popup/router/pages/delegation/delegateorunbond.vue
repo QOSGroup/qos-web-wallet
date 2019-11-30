@@ -52,7 +52,7 @@
     </div>-->
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx" :loading="onloading">确定</el-button>
+      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
     </div>
 
     <el-dialog
@@ -74,6 +74,7 @@
 <script>
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
+import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
@@ -94,7 +95,7 @@ export default {
       // 用户在当前validator的委托信息
       delegation: {
         delegator_address: this.$route.params.delegation.validator_address,
-        delegate_amount: this.$route.params.delegation.delegate_amount,
+        delegate_amount: numFor4Decimal(this.$route.params.delegation.delegate_amount),
         is_compound: this.$route.params.delegation.is_compound
       },
       form: {
@@ -120,6 +121,22 @@ export default {
     },
     setMax () {
       this.$data.form.tokens = this.$data.amount
+    },
+    confirm () {
+      let details = '<span style="word-break: break-all;"><span style="color:blue;">操作地址</span>:<br />' + this.currentAccount.address
+      details += '<br /><span style="color:green;">验证人地址</span>:<br />' + this.form.address
+      details += '<br /><span style="color:red;">操作金额</span>:<br />' + numForNoDecimal(this.form.tokens).toString() + this.coin + '</span>'
+      this.$confirm(details, '交易确认', {
+        customClass: 'message-confirm',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // type: 'warning',
+        dangerouslyUseHTMLString: true
+      }).then(() => {
+        this.commitTx()
+      }).catch(() => {
+
+      })
     },
     commitTx () {
       this.onloading = true

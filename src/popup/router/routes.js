@@ -108,14 +108,4 @@ export default [
     name: 'validatorlist',
     component: ValidatorList
   }
-  // {
-  //   path: '/account/create',
-  //   name: 'accountcreate',
-  //   component: AccountCreate
-  // },
-  // {
-  //   path: '/account/import',
-  //   name: 'accountimport',
-  //   component: AccountImport
-  // }
 ]
