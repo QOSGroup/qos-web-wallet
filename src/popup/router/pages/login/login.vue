@@ -103,6 +103,8 @@ export default {
 @import "~style/common.scss";
 .login-wrap {
   @include common-container;
+  padding: 20px 30px;
+  box-sizing: border-box;
   .logo {
     width: 20%;
     display: block;
