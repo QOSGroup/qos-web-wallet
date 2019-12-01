@@ -4,7 +4,7 @@
     <el-divider></el-divider>
     <div>
       <span>钱包创建成功，钱包助记词为：</span>
-      <el-input type="textarea" v-model="form.memwd"></el-input>
+      <el-input type="textarea" v-model="form.memwd" :autosize="{ minRows: 2, maxRows: 6}"></el-input>
       <span>助记词是您恢复钱包的唯一手段，请牢记助记词，并确保助记词的安全。</span>
     </div>
     <br />

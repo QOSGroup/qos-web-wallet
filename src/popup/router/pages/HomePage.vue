@@ -355,4 +355,7 @@ span {
   margin-top: 6px;
   cursor: pointer;
 }
+.el-icon-more {
+  cursor: pointer;
+}
 </style>
