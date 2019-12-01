@@ -11,7 +11,3 @@ export const getToPage = ({ commit, state, getters }, payload) => {
   commit(types.INPUT_TOPAGE_PARAMS, new ToPage({ pageName: '', params: obj.params }))
   return obj
 }
-
-export const getFirstMsg = ({ commit, state }, payload) => {
-  return state.msgQueue[0]
-}

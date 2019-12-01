@@ -16,29 +16,29 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       ruleForm: {},
       rules: {}
-    };
+    }
   },
   computed: {
-    testName() {
-      return this.$store.state.toPage.pageName;
+    testName () {
+      return this.$store.state.toPage.pageName
     }
   },
-  mounted() {
-    console.log(this.$store.state.toPage.pageName);
+  mounted () {
+    console.log(this.$store.state.toPage.pageName)
   },
   methods: {
-    newWallet() {
-      this.$router.push({ name: "walletcreate" });
+    newWallet () {
+      this.$router.push({ name: 'walletcreate' })
     },
-    importWallet() {
-      this.$router.push({ name: "walletimport" });
+    importWallet () {
+      this.$router.push({ name: 'walletimport' })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -27,22 +27,35 @@
       //     console.log("test.html", res);
       //   });
 
+      // const resEnable = await qos.enable();
+      // if (resEnable.res.data.addr){
+      //   const resProcess = await qos.process(
+      //     {
+      //           type: "transfer"
+      //     }
+      //   )
+      //   // 判断消息是否处理成功
+      //   if (resProcess) {
+
+      //   }
+      // }
+
       qos.enable()
         .then(function (res) {
-          if (res.res.data.flag == "unregister") {
-            alert("您还没有账户,请创建或导入账户后重新操作!");
-          }else if(res.res.data.flag == "unlogin"){
-            alert("您还没有登录,请登录账户后重新操作!");
-          }else {
+          // if (res.res.data.flag == "unregister") {
+          //   alert("您还没有账户,请创建或导入账户后重新操作!");
+          // }else if(res.res.data.flag == "unlogin"){
+          //   alert("您还没有登录,请登录账户后重新操作!");
+          // }else
+           if(res.res.data.addr){
             qos.process({
                 type: "transfer"
               })
-              .then(function(res) {
-                console.log("test.html-process", res);
+              .then(function(response) {
+                console.log("test.html-process", response);
               });
           }
         });
-
 
     });
       // window.addEventListener('DOMContentLoaded', function () {

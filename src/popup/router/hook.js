@@ -3,7 +3,7 @@ import store from '@/store'
 import * as types from '@/store/mutation-types'
 // import { ToPage } from '../../business/types'
 import {
-  isNotEmpty
+  isNotEmpty, isNotEmptyObject
 } from '../../utils'
 const extension = require('extensionizer')
 
@@ -16,8 +16,10 @@ const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 // 已经登录,直接进行bg store的拷贝
 if (bgState.accounts.length !== 0) {
-  store.commit(types.CLONE_STATE, { keyArr: ['msgQueue', 'accounts'], bgState })
+  store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'currentAccount', 'passCheck'], bgState })
 }
+// 无论是否登录,将bg store的msgQueue[0]拷贝至popup页面的store.state.msgQueueFirst
+store.commit(types.SET_MSGQUEUE_FIRST, bgState.msgQueue[0])
 
 export async function beforeEach (to, from, next) {
   const accounts = store.getters.accounts
@@ -38,9 +40,10 @@ export async function beforeEach (to, from, next) {
     return
   }
 
-  const first = store.getters.firstMsg
-  console.log('MsgQueue first:', first)
-  if (isNotEmpty(first)) {
+  // 获取popup store中的msgQueueFirst
+  const first = store.getters.msgQueueFirst
+  console.log('msgQueueFirst :', first)
+  if (isNotEmptyObject(first)) {
     const data = first.params
     // console.log('from.params---', from, from.params)
     // console.log('to.params---', to, to.params)

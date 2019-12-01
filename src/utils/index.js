@@ -28,6 +28,35 @@ export function isNotEmpty (value) {
 }
 
 /**
+ * 金额数量处理:除以10000,小数点后保留4位
+ * @param {*} num
+ */
+
+export function numFor4Decimal (num) {
+  return num / 10000
+}
+
+/**
+ * 金额数量处理:乘以10000,交易的数量
+ * @param {*} num
+ */
+
+export function numForNoDecimal (num) {
+  return num * 10000
+}
+
+/**
+ * 是否非空对象
+ * @param obj 对象
+ */
+export function isNotEmptyObject (obj) {
+  if (obj !== undefined && obj !== '' && obj != null && Object.keys(obj).length > 0) {
+    return true
+  }
+  return false
+}
+
+/**
  * 生成随机字符串
  */
 export function createRandomId () {

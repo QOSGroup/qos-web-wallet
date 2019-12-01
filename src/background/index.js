@@ -1,12 +1,8 @@
 import store from '../store'
-import {
-  ToPage
-} from '../business/types'
 import * as types from '../store/mutation-types'
-import QOSRpc from 'js-for-qos-httprpc'
 import {
-  encrypt,
-  decrypt
+  decrypt,
+  encrypt
 } from '../utils/crypt'
 import {
   getAccountList,
@@ -15,13 +11,41 @@ import {
   setCurrentAccount
 } from '../business/auth'
 import {
-  isNotEmpty
+  isNotEmpty,
+  isNotEmptyObject
 } from '../utils'
+import { rpc } from '@/utils/rpc'
+
+// 注册成功、登录成功、账户切换、修改账户名称:完成持久化存储当前账户信息
+export async function setCurrentAccountLocal (accountList, pwd, name) {
+  return new Promise(async (resolve) => {
+    // 设置当前登录账户:默认所有登录成功账户中的第一个
+    const currentAcc = await getCurrentAccount()
+    const encryptKey = encrypt(accountList[0].privateKey, pwd)
+    const address = accountList[0].address
+    if (!name) {
+      name = address.substr(address.length - 4, address.length - 1)
+    }
+    const accFirst = { name: name, address: address, encryptKey: encryptKey }
+    // 当前登录账户为空、登录的账户存在accountList中
+    if (!isNotEmptyObject(currentAcc)) {
+      await setCurrentAccount(accFirst)
+      store.commit(types.SET_CURRENT_ACCOUNT, accFirst)
+    } else {
+      let acc = accountList.find(x => x.address === currentAcc.address)
+      if (!acc) {
+        await setCurrentAccount(accFirst)
+        store.commit(types.SET_CURRENT_ACCOUNT, accFirst)
+      } else {
+        await setCurrentAccount({ name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+        store.commit(types.SET_CURRENT_ACCOUNT, { name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
+      }
+    }
+    return resolve()
+  })
+}
 
 export function registerGloablFunction (global) {
-  const qosRpc = new QOSRpc({
-    baseUrl: ''
-  })
   global.getBgState = function () {
     // setTimeout(() => {
     //   store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage({
@@ -46,28 +70,45 @@ export function registerGloablFunction (global) {
     store.commit(types.DELETE_ACCOUNT, account)
   }
 
-  // 保存账户信息
+  // 注销
+  global.accountCurrentDelete = function () {
+    // 不传递account 将设置为null
+    store.commit(types.SET_CURRENT_ACCOUNT)
+  }
+
+  // bg store 设置当前账户
+  global.setCurrentAccount = function (account) {
+    // 不传递account 将设置为null
+    store.commit(types.SET_CURRENT_ACCOUNT, account)
+  }
+
+  // 保存账户信息,创建或导入(助记词或私钥)
   global.saveAccount = async function ({
     privateKey,
     mnemonic,
-    pwd
+    pwd,
+    name
   }) {
     return new Promise(async (resolve) => {
       let account
       if (privateKey) {
-        account = qosRpc.recoveryAccountByPrivateKey(privateKey)
-        // 账户本地持久化
-        await setAccount(account, pwd)
-        store.commit(types.SET_ACCOUNT, account)
-        return resolve(account)
+        account = rpc.recoveryAccountByPrivateKey(privateKey)
+        // console.log('根据私钥恢复的账户信息:', account)
       }
       if (mnemonic) {
-        account = qosRpc.importAccount(mnemonic)
-        // 账户本地持久化
-        await setAccount(account, pwd)
-        store.commit(types.SET_ACCOUNT, account)
-        return resolve(account)
+        account = rpc.importAccount(mnemonic)
+        // console.log('根据助记词恢复账户信息:', account)
       }
+      // 账户列表本地持久化:新增
+      await setAccount(account, pwd, name)
+      // 当前账户本地持久化:更新
+      const list = [account]
+      await setCurrentAccountLocal(list, pwd, name)
+
+      // bg store 存储登录信息
+      store.commit(types.SET_PASS_CHECK, pwd)
+      store.commit(types.SET_ACCOUNT, account)
+      return resolve(account)
     })
   }
 
@@ -80,28 +121,16 @@ export function registerGloablFunction (global) {
       if (!isNotEmpty(privateKey)) {
         return false
       }
-      let account = qosRpc.recoveryAccountByPrivateKey(privateKey)
+      let account = rpc.recoveryAccountByPrivateKey(privateKey)
       // 返回登录的账户列表
       accountList.push(account)
-      // 存储至store中,这其中的存储用于判断是否登录
+      // 存储至store中,数组类型,这其中的存储用于判断是否登录
       store.commit(types.SET_ACCOUNT, account)
     }
-    // 设置当前登录账户:默认所有登录成功账户中的第一个
-    const currentAcc = getCurrentAccount()
-    const encryptKey = encrypt(accountList[0].privateKey, pwd)
-    const address = accountList[0].address
-    const name = address.substr(address.length - 4, address.length - 1)
-    console.log('currentAcc==', currentAcc)
-    // 当前登录账户为空
-    if (currentAcc === null || currentAcc === 'undefined') {
-      setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })
-    } else {
-      // 当前登录的账户存在,判断是否在accountList中,不在其中,重新设置为accountList第一个
-      let acc = accountList.find(x => x.address === currentAcc.address)
-      if (!acc) {
-        setCurrentAccount({ name: name, address: address, encryptKey: encryptKey })
-      }
-    }
+    // 本地持久化存储当前账户
+    await setCurrentAccountLocal(accountList, pwd)
+    store.commit(types.SET_PASS_CHECK, pwd)
+    // 返回该密码可以解密的账户列表
     return accountList
   }
 }

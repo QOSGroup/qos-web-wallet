@@ -8,21 +8,24 @@
     </div>
     <el-divider></el-divider>
     <div>
-      <el-button type="primary" plain @click="addAccount" size="medium" style="width:46%;">
+      <el-button type="primary" plain @click="addAccount" size="small" style="width:30%;">
         <i class="el-icon-plus"></i>新建账户
       </el-button>
-      <el-button type="success" plain @click="importAccount" size="medium" style="width:46%;">
+      <el-button type="success" plain @click="importAccount" size="small" style="width:30%;">
         <i class="el-icon-download"></i>导入账户
+      </el-button>
+      <el-button type="warning" plain @click="exportAccount" size="small" style="width:30%;">
+        <i class="el-icon-upload2"></i>导出私钥
       </el-button>
     </div>
     <div v-for="(account, index) in accounts" :key="index">
       <el-row>
         <el-col :span="24">
-          <div class="grid-content bg-purple-dark" @click="changeAccount(account.address)">
+          <div :class="currentAccount.address === account.address ? 'grid-content bg-purple-dark' : 'grid-content bg-purple-light'" @click="changeAccount(account.address)">
             <div>
               <span>{{ account.name }}&nbsp;&nbsp;</span>
               <el-divider direction="vertical"></el-divider>
-              <span>&nbsp;&nbsp;{{ account.address }}</span>
+              <span class="span-point">&nbsp;&nbsp;{{ account.address }}</span>
             </div>
             <div>
               <div style="float:left;">
@@ -63,16 +66,15 @@ import * as types from '@/store/mutation-types'
 import { getBackground } from '../../../common/bgcontact'
 import clone from 'clone'
 import {
-  getCurrentAccount,
-  getAccountList,
-  setCurrentAccount
+  setCurrentAccount,
+  getAccountList
 } from '@/business/auth'
 import { rpc } from '@/utils/rpc'
 
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
-      x => x.address === getCurrentAccount().address
+      x => x.address === store.getters.currentAccount.address
     )
     return {
       accounts: [],
@@ -98,10 +100,13 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     addAccount () {
-      this.$router.push({ name: 'walletcreate' })
+      this.$router.push({ name: 'walletcreate2' })
     },
     importAccount () {
-      this.$router.push({ name: 'walletimport' })
+      this.$router.push({ name: 'walletimport2' })
+    },
+    exportAccount () {
+      this.$router.push({ name: 'accountexport' })
     },
     exit () {
       const bg = getBackground()
@@ -112,12 +117,17 @@ export default {
         // 移除popup store 中账户
         store.commit(types.DELETE_ACCOUNT, accountlist[i])
       }
+      // 移除popup和bg store中的当前账户信息
+      bg.accountCurrentDelete()
+      store.commit(types.SET_CURRENT_ACCOUNT)
+      // 跳转登录
       this.$router.push({ name: 'login' })
     },
-    getAccountList (accountList) {
-      // 刷新页面,将账户列表置空
+    async getAccountList (accountList) {
+      const localAccountList = await getAccountList()
+      // 刷新页面,将页面账户列表置空
       this.accounts = []
-      let account, res, qcps
+      let account, res, qcps, localAcc, name
       for (let acc of accountList) {
         account = rpc.recoveryAccountByPrivateKey(acc.privateKey)
         res = account.queryAccount(acc.address)
@@ -125,7 +135,8 @@ export default {
           .then(result => {
             if (result.status === 200) {
               let address = result.data.value.account_address
-              let name = address.substr(address.length - 4, address.length - 1)
+              localAcc = localAccountList.find(x => x.address === address)
+              name = localAcc.name
 
               let list = []
               list.push({
@@ -149,25 +160,24 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error.message)
+            console.log(error)
+            localAcc = localAccountList.find(x => x.address === acc.address)
+            name = localAcc.name
             this.accounts.push({
-              name: acc.address.substr(
-                acc.address.length - 4,
-                acc.address.length - 1
-              ),
+              name: name,
               address: acc.address,
               coins: [{ cointype: 'QOS', amount: 0 }]
             })
-            this.$message({
-              showClose: true,
-              message:
-                '链上‘账户信息’查询失败!账户地址后4位:' +
-                acc.address.substr(
-                  acc.address.length - 4,
-                  acc.address.length - 1
-                ),
-              type: 'warning'
-            })
+            // this.$message({
+            //   showClose: true,
+            //   message:
+            //     '链上‘账户信息’查询失败!账户地址后4位:' +
+            //     acc.address.substr(
+            //       acc.address.length - 4,
+            //       acc.address.length - 1
+            //     ),
+            //   type: 'warning'
+            // })
           })
       }
     },
@@ -179,9 +189,19 @@ export default {
         .catch(_ => {})
     },
     async changeAccount (address) {
+      // 切换账户,首先获取到本地存储的账户列表
       const accountList = await getAccountList()
+      // 要切换的账户在其中,返回account对象
       const changeAcc = accountList.find(x => x.address === address)
-      setCurrentAccount(changeAcc)
+
+      // 本地local storage中设置账户
+      await setCurrentAccount(changeAcc)
+      // bg store和popup store中的currentAccount.
+      store.commit(types.SET_CURRENT_ACCOUNT, changeAcc)
+      const bg = getBackground()
+      await bg.setCurrentAccount(changeAcc)
+
+      // 切换完成跳转主页
       this.$router.push({ name: 'homepage' })
     }
   }
@@ -196,7 +216,7 @@ export default {
     text-align: left;
     overflow: hidden;
     overflow-y: auto;
-    margin: 3% 0 2% 0;
+    margin: 2% 0 1.5% 0;
     vertical-align: middle;
   }
   span {
@@ -214,7 +234,7 @@ export default {
     border-radius: 4px;
   }
   .bg-purple-dark {
-    background: #99a9bf;
+    background: #69c976;
   }
   .bg-purple {
     background: #d3dce6;
@@ -229,6 +249,13 @@ export default {
   .row-bg {
     padding: 10px 0;
     background-color: #f9fafc;
+  }
+  .span-point {
+    display:inline-block;
+    white-space: nowrap;
+    width:220px;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
   }
 }
 </style>

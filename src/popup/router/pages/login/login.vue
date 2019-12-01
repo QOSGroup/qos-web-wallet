@@ -33,59 +33,65 @@
 </template>
 
 <script>
-import { getAccountList } from "@/business/auth"
-import { encrypt, decrypt } from "@/utils/crypt";
-import { getBackground } from '../../../common/bgcontact';
+import { getBackground } from '../../../common/bgcontact'
 import store from '../../../../store'
 import * as types from '@/store/mutation-types'
+import { getCurrentAccount } from '@/business/auth'
 export default {
-  data() {
+  data () {
     return {
       ruleForm: {
-        pwd: ""
+        pwd: ''
       },
       rules: {
         pwd: [
-          { required: true, message: "请输入登录密码", trigger: "blur" },
+          { required: true, message: '请输入登录密码', trigger: 'blur' },
           {
             min: 8,
             max: 16,
-            message: "长度8-16个字符",
-            trigger: "blur"
+            message: '长度8-16个字符',
+            trigger: 'blur'
           }
         ]
       },
       dialogVisible: false
-    };
+    }
   },
   methods: {
-    forgetPassword() {
-      this.$router.push({ name: "walletimport" });
+    forgetPassword () {
+      this.$router.push({ name: 'walletimport' })
     },
-    noWallet() {
-      this.$router.push({ name: "walletcreate" });
+    noWallet () {
+      this.$router.push({ name: 'walletcreate' })
     },
-    async enterWallet() {
-      const bg = getBackground();
-      const acclist = await bg.login(this.ruleForm.pwd);
+    async enterWallet () {
+      const bg = getBackground()
+      const acclist = await bg.login(this.ruleForm.pwd)
+      // 解密出账户列表
       if (acclist) {
-        for (const acc of acclist){
-          store.commit(types.SET_ACCOUNT, acc)
-        }
-        this.$router.push({ name: "homepage" });
+        // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+        const currentAccount = await getCurrentAccount()
+        store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+        // 创建账户成功,拷贝bg store中的accounts到popup store中
+        const bgState = bg.getBgState()
+        store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
+        // process MSG  返回当前账户地址
+        bg.msgProcessed()
+        // 跳转主页,如果有消息,自动跳转后续消息处理
+        this.$router.push({ name: 'homepage' })
       } else {
-        this.dialogVisible = true;
+        this.dialogVisible = true
       }
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
+    handleClose (done) {
+      this.$confirm('确认关闭？')
         .then(_ => {
-          done();
+          done()
         })
-        .catch(_ => {});
+        .catch(_ => {})
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

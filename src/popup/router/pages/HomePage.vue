@@ -3,7 +3,7 @@
     <div style="background:rgba(50, 115, 200, 1);height:25%;">
       <div>
         <br />
-        <div style="float:left;width:90%;text-align:left;">
+        <div style="float:left;width:90%;text-align:left;" @click="accNameModify">
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
         <div style="float:right;width:10%;" @click="showAccountList">
@@ -115,7 +115,7 @@
             <el-button
               icon="el-icon-plus"
               circle
-              @click="createDelegation(qos.toString())"
+              @click="createDelegation"
               title="新增委托"
             ></el-button>
           </div>
@@ -128,8 +128,9 @@
 
 <script>
 import { rpc } from '@/utils/rpc'
-import { currentAccount, userName, address } from '../../common/index'
 import { mapState } from 'vuex'
+import store from '@/store'
+import { numFor4Decimal } from '@/utils/index'
 export default {
   data () {
     return {
@@ -137,15 +138,22 @@ export default {
         this.$route.params.activeName == null
           ? 'balance'
           : this.$route.params.activeName,
-      currentAccount: currentAccount,
-      userName: getCurrentAccount().name,
-      address: address,
+      currentAccount: store.getters.currentAccount,
+      userName: store.getters.currentAccount.name,
+      address: store.getters.currentAccount.address,
       qos: 0,
       qcps: [],
       delegations: []
     }
   },
-  created () {
+  computed: {
+    ...mapState({
+      // currentAccount: store.getters.currentAccount
+    })
+  },
+  created () {},
+  mounted () {
+    console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)
@@ -159,7 +167,7 @@ export default {
       res
         .then(result => {
           if (result.status === 200) {
-            this.$data.qos = result.data.value.qos
+            this.$data.qos = numFor4Decimal(result.data.value.qos)
             this.$data.qcps = result.data.value.qcps
           } else {
             this.$message({
@@ -171,11 +179,11 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.$message({
-            showClose: true,
-            message: '该账户在链上的‘账户信息’查询失败!',
-            type: 'warning'
-          })
+          // this.$message({
+          //   showClose: true,
+          //   message: '该账户在链上的‘账户信息’查询失败!',
+          //   type: 'warning'
+          // })
         })
     },
     getDelegations (address) {
@@ -201,11 +209,11 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.$message({
-            showClose: true,
-            message: '该账户在链上的‘委托信息’查询失败!',
-            type: 'warning'
-          })
+          // this.$message({
+          //   showClose: true,
+          //   message: '该账户在链上的‘委托信息’查询失败!',
+          //   type: 'warning'
+          // })
         })
     },
     getValidator (delegation, i) {
@@ -220,7 +228,7 @@ export default {
               logo: result.data.description.logo,
               moniker: result.data.description.moniker,
               validator_address: delegation[i].validator_address,
-              delegate_amount: delegation[i].delegate_amount,
+              delegate_amount: numFor4Decimal(delegation[i].delegate_amount),
               is_compound: delegation[i].is_compound,
               validatorUrl: 'http://www.baidu.com'
             })
@@ -233,11 +241,12 @@ export default {
           }
         })
         .catch(error => {
-          this.$message({
-            showClose: true,
-            message: error,
-            type: 'warning'
-          })
+          console.log(error)
+          // this.$message({
+          //   showClose: true,
+          //   message: error,
+          //   type: 'warning'
+          // })
         })
     },
     handleClick (tab, event) {
@@ -258,7 +267,7 @@ export default {
       if (!coinName) {
         coinName = 'QOS'
       }
-      this.$router.push({ name: 'transfer' })
+      this.$router.push({ name: 'transfer', params: { coin: coinName } })
     },
     approve (coinType) {
       if (!coinType) {
@@ -272,8 +281,7 @@ export default {
     },
     createDelegation (qos) {
       this.$router.push({
-        name: 'delegationcreate',
-        params: { amount: qos }
+        name: 'validatorlist'
       })
     },
     delegateorunbond (operation, qos, delegation) {
@@ -292,16 +300,19 @@ export default {
         }
       })
     },
+    accNameModify () {
+      this.$router.push({
+        name: 'accountmodify',
+        params: {
+          name: this.userName
+        }
+      })
+    },
     copy () {
       var Url2 = document.getElementById('test')
       Url2.select() // 选择对象
       document.execCommand('Copy') // 执行浏览器复制命令
     }
-  },
-  computed: {
-    ...mapState({
-      currentAccount
-    })
   }
 }
 </script>

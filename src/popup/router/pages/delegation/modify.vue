@@ -52,7 +52,7 @@
     </div>-->
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="commitTx">确定</el-button>
+      <el-button type="primary" size="small" plain @click="confirm">确定</el-button>
     </div>
 
     <el-dialog
@@ -72,97 +72,111 @@
 </template>
 
 <script>
-import store from "@/store";
-import QOSRpc from "js-for-qos-httprpc";
-import { getCurrentAccount } from "@/business/auth";
+import store from '@/store'
+import { rpc } from '@/utils/rpc'
 export default {
-  data() {
+  data () {
+    const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
     return {
-      //用户信息
+      // 用户信息
       amount: this.$route.params.amount,
-      //用户所选的validator信息
+      // 用户所选的validator信息
       validator: {
         logo: this.$route.params.delegation.logo,
         moniker: this.$route.params.delegation.moniker,
         address: this.$route.params.delegation.validator_address,
-        validatorUrl: "http://www.baidu.com"
+        validatorUrl: 'http://www.baidu.com'
       },
-      //用户在当前validator的委托信息
+      // 用户在当前validator的委托信息
       delegation: {
         delegator_address: this.$route.params.delegation.validator_address,
         delegate_amount: this.$route.params.delegation.delegate_amount,
         is_compound: this.$route.params.delegation.is_compound
       },
       form: {
-        gas: 0 //支付的gas费用
+        gas: 0 // 支付的gas费用
       },
       // 弹出提示框数据
       dialogVisible: false,
-      error: "",
-      currentAccount:
-        store.getters.accounts[
-          store.getters.accounts.findIndex(
-            x => x.address === getCurrentAccount().address
-          )
-        ],
-      rpc: new QOSRpc({ baseUrl: "http://47.98.253.9:9876" })
-    };
+      error: '',
+      currentAccount: store.getters.accounts[index]
+    }
   },
   methods: {
-    goBack() {
+    goBack () {
       window.history.length > 1
         ? this.$router.push({
-            name: "homepage",
-            params: { activeName: "delegation" }
-          })
-        : this.$router.push({ name: "homepage" });
+          name: 'homepage',
+          params: { activeName: 'delegation' }
+        })
+        : this.$router.push({ name: 'homepage' })
     },
-    commitTx() {
-      //点击完成确认按钮后,首先调用转账接口,得到后台返回的json字符串
-      const account = this.rpc.recoveryAccountByPrivateKey(
+    confirm () {
+      let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
+      if (this.$route.params.is_compound === 'true') {
+        details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
+      } else {
+        details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"不复投"修改为"复投"'
+      }
+      details += '</span>'
+      this.$confirm(details, '交易确认', {
+        customClass: 'message-confirm',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        // type: 'warning',
+        dangerouslyUseHTMLString: true
+      }).then(() => {
+        this.commitTx()
+      }).catch(() => {
+
+      })
+    },
+    commitTx () {
+      // 点击完成确认按钮后,调用修改委托方式.
+      const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
-      );
+      )
       // 创建基础数据结构
       const myBase = {
         from: this.currentAccount.address
         // chain_id: "qos-test",
         // max_gas: this.form.gas.toString()
-      };
+      }
       // 组装data数据,调用rpc接口,提交交易
       const data = {
-        is_compound: !(this.$route.params.is_compound == 'true'),
+        is_compound: !(this.$route.params.is_compound === 'true'),
         base: myBase
-      };
-      const res = account.sendModifyDelegationTx(this.validator.address, data);
+      }
+      const res = account.sendModifyDelegationTx(this.validator.address, data)
       // 得到返回值处理
       res
         .then(result => {
           if (result.status === 200) {
             this.$router.push({
-              name: "txresult",
+              name: 'txresult',
               params: { hash: result.data.hash }
-            });
+            })
           } else {
-            console.log(result);
-            this.error = result;
-            this.dialogVisible = true;
+            console.log(result)
+            this.error = result
+            this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error;
-          this.dialogVisible = true;
-        });
-    },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(_ => {
-          done();
+          this.error = error
+          this.dialogVisible = true
         })
-        .catch(_ => {});
+    },
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
     }
   },
   computed: {}
-};
+}
 </script>
 
 <style lang="scss" scoped>
