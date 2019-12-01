@@ -65,6 +65,13 @@ export function registerGloablFunction (global) {
     })
   }
 
+  global.deleteMsg = function (msg) {
+    console.log('global.deleteMsg:  ------  start')
+    console.log(msg)
+    store.commit(types.DELETEMSGBYCALLBACKID, msg.callbackId)
+    console.log('global.deleteMsg:  ------  end')
+  }
+
   // 注销时store移除账户
   global.accountDelete = function (account) {
     store.commit(types.DELETE_ACCOUNT, account)

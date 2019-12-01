@@ -47,17 +47,28 @@ export default {
     const msgQueue = state.msgQueue
     const msgs = msgQueue.splice(payload.msgIndex, 1)
     if (msgs.length > 0) {
+      let duration = 0
       if (msgs[0].type === 'qosEnable') { // 登录之后先关闭原窗口
         window.qos_noti.closePopup()
+        duration = 100
       }
-      // 赋值回调消息索引
-      console.log(' 赋值回调消息索引', msgs[0])
+      // 赋值回调callbackId
+      console.log('赋值回调消息索引:  ', msgs[0])
       payload.msg.callbackId = msgs[0].callbackId
       // 回调消息
-      msgs[0].sendResponse(payload.msg)
+      setTimeout(() => {
+        msgs[0].sendResponse(payload.msg)
+      }, duration)
     }
-    state.msgQueue = msgQueue
+    // state.msgQueue = msgQueue
+    console.log('state.msgQueue.length', state.msgQueue.length)
     console.log('types.DELETE_MSG_PROCESSED --------- end')
+  },
+  [types.DELETEMSGBYCALLBACKID] (state, callbackId) {
+    const index = state.msgQueue.findIndex(x => x.callbackId === callbackId)
+    if (index > -1) {
+      state.msgQueue.splice(index, 1)
+    }
   },
   [types.SET_ACCOUNT] (state, payload) {
     const accs = state.accounts

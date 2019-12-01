@@ -40,7 +40,8 @@ export async function beforeEach (to, from, next) {
 
   // 获取popup store中的msgQueueFirst
   const first = store.getters.msgQueueFirst
-  console.log('msgQueueFirst :', first)
+  console.log('msgQueueFirst: ---------- popup -----', first)
+  console.log(first)
   if (isNotEmptyObject(first)) {
     const data = first.params
     // console.log('from.params---', from, from.params)
@@ -56,4 +57,10 @@ export async function beforeEach (to, from, next) {
     }
   }
   next()
+}
+
+window.onbeforeunload = function (e) {
+  // // 页面关闭之前，删除当前正在处理的消息，根据callbackId进行删除处理
+  const first = store.getters.msgQueueFirst
+  bg.deleteMsg(first)
 }

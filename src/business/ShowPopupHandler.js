@@ -11,9 +11,6 @@ export class ShowPopupHandler extends BaseMsgHandler {
   handler () {
     store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage(this.oMsg.params))
     store.commit(types.ADD_ACTIONNUM)
-    setTimeout(() => {
-      // const noti = new NotificationManager()
-      this.noti.showPopup()
-    }, 0)
+    this.noti.showPopup()
   }
 }

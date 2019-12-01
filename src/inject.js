@@ -26,7 +26,6 @@ class QOSWallet {
   }
 
   process (msg) {
-    console.log('process', msg)
     const promise = new Promise((resolve) => {
       let handler
       if (msg.type === 'transfer') {
