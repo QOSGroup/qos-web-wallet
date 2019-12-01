@@ -3,7 +3,7 @@
     <!-- <div>这是转账页面: {{inputParams}}</div>
     <div>
       <button @click="onProcess">processMsg</button>
-    </div> -->
+    </div>-->
 
     <el-page-header @back="goBack" content="转账"></el-page-header>
     <el-divider></el-divider>
@@ -21,21 +21,15 @@
       { required: true, message: '地址不能为空'}
     ]"
       >
-        <el-input type="input" v-model="form.address" clearable size="small" ></el-input>
+        <el-input type="input" v-model="form.address" clearable size="small"></el-input>
       </el-form-item>
 
-      <el-form-item
-        label="转账数量"
-        prop="tokens"
-        :rules="[
-      { required: true, message: '转账数量不能为空'}
-    ]"
-      >
+      <el-form-item label="转账数量" prop="tokens">
         <el-input type="input" v-model="form.tokens" clearable size="mini" style="width:65%;"></el-input>
         <el-button size="mini" @click="setMax">最大值</el-button>
       </el-form-item>
       <el-form-item
-      v-if="false"
+        v-if="false"
         label="最大手续费"
         prop="gas"
         :rules="[
@@ -46,9 +40,6 @@
         <el-slider v-model="form.gas"></el-slider>
       </el-form-item>
     </el-form>
-
-    <div style="display:none;"></div>
-    <div class="block" style="display:none;"></div>
 
     <div style="text-align:center;">
       <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
