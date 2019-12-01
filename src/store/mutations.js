@@ -43,7 +43,6 @@ export default {
   [types.DELETE_MSG_PROCESSED] (state, payload) {
     const msgQueue = state.msgQueue
     const msgs = msgQueue.splice(payload.msgIndex, 1)
-    console.log('payload', payload, msgQueue, msgs)
     if (msgs.length > 0) {
       // 赋值回调消息索引
       console.log(' 赋值回调消息索引', msgs[0])
