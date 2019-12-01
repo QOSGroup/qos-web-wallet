@@ -14,7 +14,7 @@
     "build:dev": "cross-env NODE_ENV=development webpack --config 'build/webpack.dev.conf.js' --hide-modules",
     "build-zip": "node scripts/build-zip.js",
     "watch": "run-p watch-webpack-build inject",
-    "watch-webpack-build": "cross-env NODE_ENV=production run-s build-webpack-base inject build-webpack-prod-watch",
+    "watch-webpack-build": "cross-env NODE_ENV=production run-s build-webpack-base build-webpack-prod-watch inject",
     "watch:dev": "run-p watch-webpack inject",
     "watch-webpack": "cross-env HMR=true npm run build:dev -- --watch",
     "inject": "node src/inject/index.js"

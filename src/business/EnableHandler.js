@@ -33,20 +33,20 @@ export class EnableHandler extends BaseMsgHandler {
     acclist = store.getters.accounts
     console.log('enablehandler-acclist=1=', acclist)
     // 未登录
-    if (!acclist || acclist.length === 0) {
-      this.oMsg.sendResponse(new Res(true, {
-        flag: 'unlogin'
-      }, this.oMsg.callbackId))
+    // if (!acclist || acclist.length === 0) {
+    // this.oMsg.sendResponse(new Res(true, {
+    //   flag: 'unlogin'
+    // }, this.oMsg.callbackId))
 
-      // 跳转登录页 ---, 做store消息预存储，待popup获取跳转登录页
-      store.commit(types.ADD_MSG_QUEUE, this.oMsg)
-      const noti = new NotificationManager()
-      noti.showPopup()
-      return
-    }
+    // 跳转登录页 ---, 做store消息预存储，待popup获取跳转登录页
+    store.commit(types.ADD_MSG_QUEUE, this.oMsg)
+    const noti = new NotificationManager()
+    noti.showPopup()
+    // return
+    // }
     // 已有账户且已登录,删除type:qosEnable消息
-    this.oMsg.sendResponse(new Res(true, {
-      flag: 'haslogin'
-    }, this.oMsg.callbackId))
+    // this.oMsg.sendResponse(new Res(true, {
+    //   flag: 'haslogin'
+    // }, this.oMsg.callbackId))
   }
 }

@@ -18,6 +18,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 // 监听 dist 下 inject.js 变化
 watch([srcFilePath, filePath], function (cb) {
+  console.log(srcFilePath)
+  console.log(' or ')
+  console.log(filePath)
+  console.log('changed')
   // body omitted
   injectJSContent()
   cb()
