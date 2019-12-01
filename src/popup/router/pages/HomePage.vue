@@ -7,7 +7,7 @@
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
         <div style="float:right;width:10%;" @click="showAccountList">
-          <i class="el-icon-more" style="font-size:24px;" title="更多"></i>
+          <i class="el-icon-more" style="font-size:24px;"title="更多"></i>
         </div>
       </div>
       <div>
@@ -15,7 +15,7 @@
           <span>{{ address }}</span>
         </div>
         <div>
-          <i class="el-icon-document-copy" style="font-size:22px;margin-top:6px;" title="复制"></i>
+          <i class="el-icon-document-copy btn" :data-clipboard-text="address" title="复制"></i>
         </div>
       </div>
     </div>
@@ -112,12 +112,7 @@
           </div>
 
           <div>
-            <el-button
-              icon="el-icon-plus"
-              circle
-              @click="createDelegation"
-              title="新增委托"
-            ></el-button>
+            <el-button icon="el-icon-plus" circle @click="createDelegation" title="新增委托"></el-button>
           </div>
         </el-tab-pane>
         <el-tab-pane label="我的授权" name="approve">暂不支持该功能！</el-tab-pane>
@@ -131,6 +126,8 @@ import { rpc } from '@/utils/rpc'
 import { mapState } from 'vuex'
 import store from '@/store'
 import { numFor4Decimal } from '@/utils/index'
+import ClipboardJS from 'clipboard'
+
 export default {
   data () {
     return {
@@ -157,6 +154,16 @@ export default {
     // 打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)
+
+    var clipboard = new ClipboardJS('.btn')
+
+    clipboard.on('success', function (e) {
+      console.info('Action:', e.action)
+      console.info('Text:', e.text)
+      console.info('Trigger:', e.trigger)
+
+      e.clearSelection()
+    })
   },
   methods: {
     getAccount (address) {
@@ -342,5 +349,10 @@ span {
   overflow: hidden !important;
   white-space: nowrap;
   float: left;
+}
+.el-icon-document-copy {
+  font-size: 22px;
+  margin-top: 6px;
+  cursor: pointer;
 }
 </style>
