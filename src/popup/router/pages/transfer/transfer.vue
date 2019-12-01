@@ -24,10 +24,13 @@
         <el-input type="input" v-model="form.address" clearable size="small"></el-input>
       </el-form-item>
 
-      <el-form-item label="转账数量" prop="tokens">
+      <el-form-item label="转账数量" prop="tokens" :rules="[
+      { required: true, message: '转账数量不能为空'}
+    ]">
         <el-input type="input" v-model="form.tokens" clearable size="mini" style="width:65%;"></el-input>
         <el-button size="mini" @click="setMax">最大值</el-button>
       </el-form-item>
+
       <el-form-item
         v-if="false"
         label="最大手续费"
@@ -79,7 +82,7 @@ export default {
       balance: 0,
       form: {
         address: '',
-        tokens: 0,
+        tokens: '',
         gas: 0
       },
       // 确定按钮
