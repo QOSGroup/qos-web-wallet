@@ -3,11 +3,16 @@
     <div class="header-wrap">
       <el-page-header @back="goBack" content="账户列表"></el-page-header>
       <div>
-        <el-button class="logout" type="primary" icon="el-icon-switch-button" size="mini" @click="exit">注销</el-button>
+        <el-button
+          class="logout"
+          type="primary"
+          icon="el-icon-switch-button"
+          size="mini"
+          @click="exit"
+        >注销</el-button>
       </div>
     </div>
-    <el-divider></el-divider>
-    <div>
+    <div class="btns-wrap">
       <el-button type="primary" plain @click="addAccount" size="small" style="width:30%;">
         <i class="el-icon-plus"></i>新建账户
       </el-button>
@@ -19,25 +24,25 @@
       </el-button>
     </div>
     <div v-for="(account, index) in accounts" :key="index">
-      <el-row>
+      <el-row class="row-wrap">
         <el-col :span="24">
-          <div :class="currentAccount.address === account.address ? 'grid-content bg-purple-dark' : 'grid-content bg-purple-light'" @click="changeAccount(account.address)">
-            <div>
+          <div
+            class="row-content"
+            :class="currentAccount.address === account.address ? 'grid-content bg-purple-dark' : 'grid-content bg-purple-light'"
+            @click="changeAccount(account.address)"
+          >
+            <div class="top-wrap">
               <span>{{ account.name }}&nbsp;&nbsp;</span>
-              <el-divider direction="vertical"></el-divider>
-              <span class="span-point">&nbsp;&nbsp;{{ account.address }}</span>
             </div>
+            <div class="span-point">{{ account.address }}</div>
             <div>
-              <div style="float:left;">
+              <div class="cont-wrap">
                 <span
                   v-for="(coin, index) in account.coins"
                   :key="index"
-                >&nbsp;&nbsp;{{ coin.cointype }}: {{ coin.amount }}&nbsp;&nbsp;</span>
+                >{{ coin.cointype }}: {{ coin.amount }}&nbsp;&nbsp;</span>
               </div>
-              <div
-                style="float:right;color:blue;"
-                v-if="currentAccount.address === account.address"
-              >当前账户</div>
+              <div class="current" v-if="currentAccount.address === account.address">当前账户</div>
             </div>
           </div>
         </el-col>
@@ -65,10 +70,7 @@ import store from '@/store'
 import * as types from '@/store/mutation-types'
 import { getBackground } from '../../../common/bgcontact'
 import clone from 'clone'
-import {
-  setCurrentAccount,
-  getAccountList
-} from '@/business/auth'
+import { setCurrentAccount, getAccountList } from '@/business/auth'
 import { rpc } from '@/utils/rpc'
 
 export default {
@@ -216,7 +218,7 @@ export default {
     text-align: left;
     overflow: hidden;
     overflow-y: auto;
-    margin: 2% 0 1.5% 0;
+    // margin: 2% 0 1.5% 0;
     vertical-align: middle;
   }
   span {
@@ -251,11 +253,33 @@ export default {
     background-color: #f9fafc;
   }
   .span-point {
-    display:inline-block;
+    display: inline-block;
     white-space: nowrap;
-    width:220px;
-    overflow: hidden!important;
-    text-overflow: ellipsis!important;
+    width: 100%;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 14px;
+  }
+  .btns-wrap {
+    margin: 15px;
+  }
+  .row-wrap {
+    margin: 0 15px 15px !important;
+    .row-content {
+      padding: 10px;
+    }
+    .top-wrap {
+      display: flex;
+      align-items: center;
+      line-height: 30px;
+    }
+    .current{
+      text-align: right;
+      color: #ffffff;
+    }
+    .cont-wrap {
+      line-height: 28px;
+    }
   }
 }
 </style>
@@ -265,3 +289,4 @@ export default {
     padding: 0 30px !important;
   }
 }
+</style>
