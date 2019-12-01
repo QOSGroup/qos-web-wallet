@@ -13,32 +13,17 @@
     <div style="margin-left:6%;">
       <span>资产余额：{{ balance }}</span>
     </div>
-    <el-form :model="form" ref="form" label-width="100px">
-      <el-form-item
-        label="接收方地址"
-        prop="address"
-        :rules="[
-      { required: true, message: '地址不能为空'}
-    ]"
-      >
-        <el-input type="input" v-model="form.address" clearable size="small"></el-input>
+    <el-form :model="form" ref="form" v-bind:rules="rules" label-width="100px">
+      <el-form-item label="接收方地址" prop="address">
+        <el-input placeholder="请输入地址" v-model="form.address" clearable size="small"></el-input>
       </el-form-item>
 
-      <el-form-item label="转账数量" prop="tokens" :rules="[
-      { required: true, message: '转账数量不能为空'}
-    ]">
-        <el-input type="input" v-model="form.tokens" clearable size="mini" style="width:65%;"></el-input>
+      <el-form-item label="转账数量" prop="tokens">
+        <el-input placeholder="请输金额" v-model="form.tokens" clearable size="mini" style="width:65%;"></el-input>
         <el-button size="mini" @click="setMax">最大值</el-button>
       </el-form-item>
 
-      <el-form-item
-        v-if="false"
-        label="最大手续费"
-        prop="gas"
-        :rules="[
-      { required: true, message: '最大手续费不能为空'}
-    ]"
-      >
+      <el-form-item v-if="false" label="最大手续费" prop="gas">
         <span>{{ form.gas }}</span>
         <el-slider v-model="form.gas"></el-slider>
       </el-form-item>
@@ -75,7 +60,23 @@ export default {
     const index = store.getters.accounts.findIndex(
       x => x.address === store.getters.currentAccount.address
     )
+    var validateAddr = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入接收地址'))
+      } else {
+        const res = rpc.verifyBech32StringByAccAddress(this.form.address)
+        console.log('res==addr verify==', res)
+        callback(new Error('地址格式有误,请检查!'))
+      }
+    }
     return {
+      rules: {
+        address: [
+          { validator: validateAddr, trigger: 'blur' },
+          { required: true, message: '请输入接收地址', trigger: 'blur' }
+        ],
+        tokens: [{ required: true, message: '请输入转账数量', trigger: 'blur' }]
+      },
       // 根据用户地址链上查询的数据
       // coins: [],
       // coin: this.$route.params.coin,
@@ -113,8 +114,6 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     confirm () {
-      const res = rpc.verifyBech32StringByAccAddress(this.form.address)
-      console.log('res==addr verify==', res)
       let details =
         '<span style="word-break: break-all;"><span style="color:blue;">转出地址</span>:<br />' +
         this.currentAccount.address

@@ -11,7 +11,7 @@ class DelegateHandler extends MsgHandler {
     console.log('handler DelegateHandler')
     console.log(this)
     const id = this.addCallBack(callback)
-    window.postMessage(new InputParams('qosToPage', { pageName: 'delegate', params: this.oMsg }, id), '*')
+    window.postMessage(new InputParams('qosToPage', { pageName: 'validatorlist', params: this.oMsg }, id), '*')
   }
 }
 

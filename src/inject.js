@@ -1,4 +1,5 @@
 import TransferHandler from './inject/TransferHandler'
+import DelegateHandler from './inject/DelegateHandler'
 import { CallBackMap } from './inject/BaseHandler'
 import EnableHandler from './inject/EnableHandler'
 
@@ -30,6 +31,8 @@ class QOSWallet {
       let handler
       if (msg.type === 'transfer') {
         handler = new TransferHandler(msg.data)
+      } else if (msg.type === 'delegate') {
+        handler = new DelegateHandler(msg.data)
       }
       if (handler) {
         handler.handler(function (res) {

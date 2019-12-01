@@ -9,9 +9,10 @@
 </head>
 
 <body>
-  <button id="test">transfer</button>
+  <button id="transfer">transfer</button>
+  <button id="delegate">delegate</button>
   <script>
-    document.getElementById("test").addEventListener("click", function () {
+    document.getElementById("transfer").addEventListener("click", function () {
       // window.postMessage({ type: 'toPage', params: { msg: 'Hello, I am page.' } }, '*');
       var qos = new QOSWallet();
       // qos
@@ -56,7 +57,10 @@
           if (res.res.data.addr) {
             console.log("transfer start --")
             qos.process({
-              type: "transfer"
+              type: "transfer",
+              data: {
+                coin: "QOS"
+              }
             })
               .then(function (response) {
                 console.log("test.html-process", response);
@@ -76,6 +80,32 @@
       //   else if (msg.question == "哪位女士？")
       //     port.postMessage({ answer: "Bovary 女士" });
       // });
+
+      document.getElementById("delegate").addEventListener("click", function () {
+      var qos = new QOSWallet();
+      qos.enable()
+        .then(function (res) {
+          console.log(res)
+          if (res.res.data && res.res.data.flag == "unregister") {
+            return alert("您还没有账户,请创建或导入账户后重新操作!");
+          }
+          if (res.res.data.addr) {
+
+
+            console.log("deleagte start --")
+            qos.process({
+              type: "delegate",
+              data: {
+                valAddress: "qosval1x6d58mx3hssq6ksaftfwvdskaz35pumr49e8gm"
+              }
+            })
+              .then(function (response) {
+                console.log("test.html-process", response);
+              });
+          }
+        });
+
+    });
   </script>
 </body>
 
