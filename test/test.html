@@ -42,7 +42,8 @@
 
       qos.enable()
         .then(function (res) {
-          if (res.res.data.flag == "unregister") {
+          console.log(res)
+          if (res.res.data && res.res.data.flag == "unregister") {
             return alert("您还没有账户,请创建或导入账户后重新操作!");
           }
           // else if(res.res.data.flag == "unlogin"){
