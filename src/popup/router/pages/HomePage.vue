@@ -1,6 +1,6 @@
 <template>
   <div class="homepage-wrap">
-    <div style="background:rgba(50, 115, 200, 1);height:25%;">
+    <div style="background:rgba(50, 115, 200, 1);height:125px">
       <div>
         <br />
         <div style="float:left;width:90%;text-align:left;" @click="accNameModify">
