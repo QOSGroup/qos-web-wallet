@@ -112,6 +112,8 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     confirm () {
+      const res = rpc.verifyBech32StringByAccAddress(this.form.address)
+      console.log('res==addr verify==', res)
       let details =
         '<span style="word-break: break-all;"><span style="color:blue;">转出地址</span>:<br />' +
         this.currentAccount.address
