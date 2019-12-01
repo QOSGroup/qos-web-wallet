@@ -1,6 +1,6 @@
 <template>
   <div class="homepage-wrap">
-    <div style="background:rgba(50, 115, 200, 1);height:125px">
+    <div class="home-top-info">
       <div>
         <br />
         <div style="float:left;width:90%;text-align:left;" @click="accNameModify">
@@ -11,7 +11,7 @@
         </div>
       </div>
       <div>
-        <div style="width:88%;float:left;font-size:medium;">
+        <div style="width:88%;float:left;font-size:medium;text-align:left">
           <span>{{ address }}</span>
         </div>
         <div>
@@ -19,18 +19,18 @@
         </div>
       </div>
     </div>
-    <el-divider></el-divider>
+    <!-- <el-divider></el-divider> -->
     <div>
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch>
         <el-tab-pane label="我的资产" name="balance">
           <div>
-            <div>
-              <div>QOS</div>
-              <div>
-                {{ qos }}
+            <div class="text-wrap">
+              <div class="text-title">QOS</div>
+              <div class="link-wrap ">
+                <span class="number-style">{{ qos }}</span>
                 <i class="el-icon-link"></i>
               </div>
-              <div>
+              <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer('QOS')">转账</el-button>
                 <el-button type="primary" size="small" plain @click="approve('QOS')">预授权</el-button>
               </div>
@@ -334,8 +334,6 @@ div {
   text-align: center;
   overflow: hidden;
   overflow-y: auto;
-  margin-bottom: 2%;
-  margin-top: 2%;
   vertical-align: middle;
 }
 span {
@@ -358,5 +356,28 @@ span {
 }
 .el-icon-more {
   cursor: pointer;
+}
+.home-top-info {
+  background:rgba(50, 115, 200, 1);
+  height:125px;
+  color: #ffffff;
+  // border-radius: 6px;
+  padding: 0 8px;
+}
+.text-wrap {
+  line-height: 1.5;
+}
+.text-title {
+  font-size: 24px;
+  font-weight: 300;
+}
+.btn-wrap {
+  margin-top: 10px;
+}
+.link-wrap {
+  cursor: pointer;
+}
+.number-style {
+  font-size: 30px;
 }
 </style>
