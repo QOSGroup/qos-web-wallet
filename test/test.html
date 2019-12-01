@@ -42,16 +42,21 @@
 
       qos.enable()
         .then(function (res) {
-          // if (res.res.data.flag == "unregister") {
-          //   alert("您还没有账户,请创建或导入账户后重新操作!");
-          // }else if(res.res.data.flag == "unlogin"){
+          if (res.res.data.flag == "unregister") {
+            return alert("您还没有账户,请创建或导入账户后重新操作!");
+          }
+          // else if(res.res.data.flag == "unlogin"){
           //   alert("您还没有登录,请登录账户后重新操作!");
           // }else
-           if(res.res.data.addr){
+          // if (!res.res.data.addr) {
+          //   alert('您还没有账户,请创建或导入账户后重新操作。')
+          //   return
+          // }
+          if (res.res.data.addr) {
             qos.process({
-                type: "transfer"
-              })
-              .then(function(response) {
+              type: "transfer"
+            })
+              .then(function (response) {
                 console.log("test.html-process", response);
               });
           }
