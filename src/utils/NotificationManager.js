@@ -19,6 +19,10 @@ class NotificationManager {
     this._getPopup((err, popup) => {
       if (err) throw err
       // Bring focus to chrome popup
+
+      console.log('showPopup ------ start')
+      console.log(popup)
+      console.log('showPopup ------ end')
       if (popup) {
         // bring focus to existing chrome popup
         extension.windows.update(popup.id, { focused: true })

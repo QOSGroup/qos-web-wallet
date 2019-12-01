@@ -26,8 +26,10 @@ export default {
     state.toPage = payload
   },
   [types.ADD_MSG_QUEUE] (state, payload) {
-    console.log('types.ADD_MSG_QUEUE===', payload)
+    console.log('types.ADD_MSG_QUEUE-----------------start')
     state.msgQueue.push(payload)
+    console.log(state.msgQueue)
+    console.log('types.ADD_MSG_QUEUE-----------------end')
   },
   [types.CLONE_STATE] (state, payload) {
     const keyArr = payload.keyArr
@@ -41,9 +43,13 @@ export default {
     state.msgQueueFirst.hasDirect = true
   },
   [types.DELETE_MSG_PROCESSED] (state, payload) {
+    console.log('types.DELETE_MSG_PROCESSED --------- start')
     const msgQueue = state.msgQueue
     const msgs = msgQueue.splice(payload.msgIndex, 1)
     if (msgs.length > 0) {
+      if (msgs[0].type === 'qosEnable') { // 登录之后先关闭原窗口
+        window.qos_noti.closePopup()
+      }
       // 赋值回调消息索引
       console.log(' 赋值回调消息索引', msgs[0])
       payload.msg.callbackId = msgs[0].callbackId
@@ -51,6 +57,7 @@ export default {
       msgs[0].sendResponse(payload.msg)
     }
     state.msgQueue = msgQueue
+    console.log('types.DELETE_MSG_PROCESSED --------- end')
   },
   [types.SET_ACCOUNT] (state, payload) {
     const accs = state.accounts
