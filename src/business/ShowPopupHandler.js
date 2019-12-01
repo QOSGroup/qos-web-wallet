@@ -1,4 +1,3 @@
-import NotificationManager from '../utils/NotificationManager'
 import BaseMsgHandler from './BaseMsgHandler'
 import store from '@/store'
 import * as types from '@/store/mutation-types.js'
@@ -10,11 +9,9 @@ export class ShowPopupHandler extends BaseMsgHandler {
   }
 
   handler () {
+    console.log('ShowPopupHandler handler')
     store.commit(types.INPUT_TOPAGE_PARAMS, new ToPage(this.oMsg.params))
     store.commit(types.ADD_ACTIONNUM)
-    setTimeout(() => {
-      const noti = new NotificationManager()
-      noti.showPopup()
-    }, 0)
+    this.noti.showPopup()
   }
 }

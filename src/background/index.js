@@ -56,13 +56,19 @@ export function registerGloablFunction (global) {
     return store.state
   }
 
-  global.msgProcessed = function (msg = {}, msgIndex) {
-    msgIndex = msgIndex || 0
+  global.msgProcessed = function (msg = {}, callbackId) {
     // 删除指定索引消息, 并回调
     store.commit(types.DELETE_MSG_PROCESSED, {
-      msgIndex,
+      callbackId,
       msg
     })
+  }
+
+  global.deleteMsg = function (msg) {
+    console.log('global.deleteMsg:  ------  start')
+    console.log(msg)
+    store.commit(types.DELETEMSGBYCALLBACKID, msg.callbackId)
+    console.log('global.deleteMsg:  ------  end')
   }
 
   // 注销时store移除账户

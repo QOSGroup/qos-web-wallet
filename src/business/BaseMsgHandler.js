@@ -1,7 +1,8 @@
 import { Res } from '../common/Common'
+import NotificationManager from '../utils/NotificationManager'
 
 class BaseMsgHandler {
-  constructor (oMsg) {
+  constructor (oMsg, noti) {
     if (new.target === BaseMsgHandler) {
       throw new Error('MsgHandler class can`t instantiate')
     }
@@ -11,6 +12,7 @@ class BaseMsgHandler {
       }
     }
     this.oMsg = oMsg
+    this.noti = noti || new NotificationManager()
   }
 
   handler () { }

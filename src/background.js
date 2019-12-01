@@ -3,10 +3,13 @@ import * as types from './store/mutation-types'
 import { ShowPopupHandler } from './business/ShowPopupHandler'
 import { registerGloablFunction } from './background/index'
 import { EnableHandler } from './business/EnableHandler'
+import NotificationManager from './utils/NotificationManager'
 global.browser = require('webextension-polyfill')
 const extension = require('extensionizer')
 
 // alert(`Hello ${store.getters.foo}!`)
+
+window.qos_noti = new NotificationManager()
 
 extension.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   console.log(sender.tab ? 'from a content script:' + sender.tab.url : 'from the extension')
@@ -22,7 +25,7 @@ extension.runtime.onMessage.addListener(async function (request, sender, sendRes
   if (request.type === 'qosToPage') {
     msgHandler = new ShowPopupHandler(request)
   } else if (request.type === 'qosEnable') {
-    msgHandler = new EnableHandler(request)
+    msgHandler = new EnableHandler(request, window.qos_noti)
   }
   if (!msgHandler) { sendResponse('qos wallet connected'); return false }
   await msgHandler.handler()
