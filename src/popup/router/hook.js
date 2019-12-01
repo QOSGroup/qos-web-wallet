@@ -23,8 +23,6 @@ store.commit(types.SET_MSGQUEUE_FIRST, bgState.msgQueue[0])
 
 export async function beforeEach (to, from, next) {
   const accounts = store.getters.accounts
-  console.log(`(!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1`,
-    (!accounts || accounts.length === 0), whiteListPage.indexOf(to.path) === -1, from.path, to.path)
   // 是否未登录
   if ((!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1) {
     const accs = await getAccountList()

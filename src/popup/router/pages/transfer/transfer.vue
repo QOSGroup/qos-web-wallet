@@ -75,7 +75,8 @@ export default {
     return {
       // 根据用户地址链上查询的数据
       // coins: [],
-      coin: this.$route.params.coin,
+      // coin: this.$route.params.coin,
+      coin: 'QOS',
       balance: 0,
       form: {
         address: '',
