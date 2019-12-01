@@ -7,7 +7,7 @@
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
         <div style="float:right;width:10%;" @click="showAccountList">
-          <i class="el-icon-more" style="font-size:24px;"title="更多"></i>
+          <i class="el-icon-more" style="font-size:24px;" title="更多"></i>
         </div>
       </div>
       <div>
