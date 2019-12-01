@@ -37,6 +37,8 @@ import { getBackground } from '../../../common/bgcontact'
 import store from '../../../../store'
 import * as types from '@/store/mutation-types'
 import { getCurrentAccount } from '@/business/auth'
+import { Res } from '../../../../common/Common'
+
 export default {
   data () {
     return {
@@ -76,7 +78,7 @@ export default {
         const bgState = bg.getBgState()
         store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
         // process MSG  返回当前账户地址
-        bg.msgProcessed()
+        bg.msgProcessed(new Res(true, { addr: store.getters.currentAccount.address }))
         // 跳转主页,如果有消息,自动跳转后续消息处理
         this.$router.push({ name: 'homepage' })
       } else {
