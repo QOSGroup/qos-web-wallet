@@ -29,9 +29,9 @@ extension.runtime.onMessage.addListener(async function (request, sender, sendRes
   return true
 })
 
-chrome.runtime.onInstalled.addListener(function () {
-  registerGloablFunction(window)
-})
+// chrome.runtime.onInstalled.addListener(function () {
+registerGloablFunction(window)
+// })
 
 // chrome.runtime.onMessageExternal.addListener(function (request, sender, sendResponse) {
 //   // 可以针对sender做一些白名单检查
