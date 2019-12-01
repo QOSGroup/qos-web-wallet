@@ -1,10 +1,10 @@
 <template>
   <div class="accountlist-wrap">
-    <div style="float:left">
+    <div class="header-wrap">
       <el-page-header @back="goBack" content="账户列表"></el-page-header>
-    </div>
-    <div style="float:right">
-      <el-button type="primary" icon="el-icon-switch-button" size="mini" @click="exit">注销</el-button>
+      <div>
+        <el-button class="logout" type="primary" icon="el-icon-switch-button" size="mini" @click="exit">注销</el-button>
+      </div>
     </div>
     <el-divider></el-divider>
     <div>
