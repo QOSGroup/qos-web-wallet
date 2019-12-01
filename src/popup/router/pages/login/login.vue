@@ -20,7 +20,6 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="80%"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>密码不匹配,请重新输入!</span>
@@ -87,13 +86,6 @@ export default {
       } else {
         this.dialogVisible = true
       }
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   }
 }

@@ -113,6 +113,7 @@ export default {
     },
     confirm () {
       let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
+      alert(this.$route.params.is_compound)
       if (this.$route.params.is_compound === 'true') {
         details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
       } else {
