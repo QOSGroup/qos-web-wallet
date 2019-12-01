@@ -14,12 +14,12 @@ const whiteListPage = ['/login/login', '/register/register', '/wallet/create', '
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
+// 无论是否登录,将bg store的msgQueue[0]拷贝至popup页面的store.state.msgQueueLast
+store.commit(types.SET_MSGQUEUE_FIRST, bgState.msgQueue[bgState.msgQueue.length - 1])
 // 已经登录,直接进行bg store的拷贝
 if (bgState.accounts.length !== 0) {
   store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'currentAccount', 'passCheck'], bgState })
 }
-// 无论是否登录,将bg store的msgQueue[0]拷贝至popup页面的store.state.msgQueueFirst
-store.commit(types.SET_MSGQUEUE_FIRST, bgState.msgQueue[0])
 
 export async function beforeEach (to, from, next) {
   const accounts = store.getters.accounts
@@ -38,15 +38,15 @@ export async function beforeEach (to, from, next) {
     return
   }
 
-  // 获取popup store中的msgQueueFirst
-  const first = store.getters.msgQueueFirst
-  console.log('msgQueueFirst: ---------- popup -----', first)
-  console.log(first)
-  if (isNotEmptyObject(first)) {
-    const data = first.params
+  // 获取popup store中的msgQueueLast
+  const last = store.getters.msgQueueLast
+  console.log('msgQueueLast: ---------- popup -------', last)
+  console.log(last)
+  if (isNotEmptyObject(last)) {
+    const data = last.params
     // console.log('from.params---', from, from.params)
     // console.log('to.params---', to, to.params)
-    if (isNotEmpty(data.pageName) && !first.hasDirect) {
+    if (isNotEmpty(data.pageName) && !last.hasDirect) {
       // 更新当前first data 为已跳转页面状态
       store.commit(types.HAS_DIRECT_PAGE)
       next({
@@ -61,6 +61,6 @@ export async function beforeEach (to, from, next) {
 
 window.onbeforeunload = function (e) {
   // // 页面关闭之前，删除当前正在处理的消息，根据callbackId进行删除处理
-  const first = store.getters.msgQueueFirst
-  bg.deleteMsg(first)
+  const last = store.getters.msgQueueLast
+  bg.deleteMsg(last)
 }

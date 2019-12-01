@@ -1,4 +1,5 @@
 import { Res } from '../common/Common'
+import NotificationManager from '../utils/NotificationManager'
 
 class BaseMsgHandler {
   constructor (oMsg, noti) {
@@ -11,7 +12,7 @@ class BaseMsgHandler {
       }
     }
     this.oMsg = oMsg
-    this.noti = noti
+    this.noti = noti || new NotificationManager()
   }
 
   handler () { }

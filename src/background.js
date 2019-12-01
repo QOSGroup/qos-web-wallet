@@ -23,7 +23,7 @@ extension.runtime.onMessage.addListener(async function (request, sender, sendRes
   }
   let msgHandler
   if (request.type === 'qosToPage') {
-    msgHandler = new ShowPopupHandler(request, window.qos_noti)
+    msgHandler = new ShowPopupHandler(request)
   } else if (request.type === 'qosEnable') {
     msgHandler = new EnableHandler(request, window.qos_noti)
   }

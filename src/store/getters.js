@@ -6,8 +6,8 @@ export const accounts = (state) => {
   return state.accounts
 }
 
-export const msgQueueFirst = (state) => {
-  return state.msgQueueFirst
+export const msgQueueLast = (state) => {
+  return state.msgQueueLast
 }
 
 export const currentAccount = (state) => {

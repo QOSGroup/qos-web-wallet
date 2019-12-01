@@ -27,7 +27,9 @@ export default {
   },
   [types.ADD_MSG_QUEUE] (state, payload) {
     console.log('types.ADD_MSG_QUEUE-----------------start')
-    state.msgQueue.push(payload)
+    const msgQueue = state.msgQueue
+    msgQueue.push(payload)
+    state.msgQueue = msgQueue
     console.log(state.msgQueue)
     console.log('types.ADD_MSG_QUEUE-----------------end')
   },
@@ -40,12 +42,21 @@ export default {
   },
   [types.HAS_DIRECT_PAGE] (state, payload) {
     // 修改popup页面的从bg中msgqueue中clone的 第一条消息为hasDirect
-    state.msgQueueFirst.hasDirect = true
+    state.msgQueueLast.hasDirect = true
   },
   [types.DELETE_MSG_PROCESSED] (state, payload) {
     console.log('types.DELETE_MSG_PROCESSED --------- start')
     const msgQueue = state.msgQueue
-    const msgs = msgQueue.splice(payload.msgIndex, 1)
+    let msgs
+    if (payload.callbackId) {
+      const index = state.msgQueue.findIndex(x => x.callbackId === payload.callbackId)
+      if (index > -1) {
+        msgs = state.msgQueue.splice(index, 1)
+      }
+    } else {
+      msgs = [msgQueue.pop()]
+    }
+
     if (msgs.length > 0) {
       let duration = 0
       if (msgs[0].type === 'qosEnable') { // 登录之后先关闭原窗口
@@ -95,10 +106,10 @@ export default {
   },
   [types.SET_MSGQUEUE_FIRST] (state, payload) {
     if (payload) {
-      state.msgQueueFirst = payload
+      state.msgQueueLast = payload
       return
     }
-    state.msgQueueFirst = null
+    state.msgQueueLast = null
   },
   [types.SET_PASS_CHECK] (state, payload) {
     state.passCheck = payload
