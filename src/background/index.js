@@ -125,13 +125,16 @@ export function registerGloablFunction (global) {
       let privateKey = decrypt(acc.encryptKey, pwd)
       // 解密失败，密码不正确
       if (!isNotEmpty(privateKey)) {
-        return false
+        continue
       }
       let account = rpc.recoveryAccountByPrivateKey(privateKey)
       // 返回登录的账户列表
       accountList.push(account)
       // 存储至store中,数组类型,这其中的存储用于判断是否登录
       store.commit(types.SET_ACCOUNT, account)
+    }
+    if (accountList.length === 0) {
+      return false
     }
     // 本地持久化存储当前账户
     await setCurrentAccountLocal(accountList, pwd)
