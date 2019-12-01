@@ -74,7 +74,7 @@
 <script>
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
-import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
+import { numForNoDecimal } from '@/utils/index'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
@@ -95,7 +95,7 @@ export default {
       // 用户在当前validator的委托信息
       delegation: {
         delegator_address: this.$route.params.delegation.validator_address,
-        delegate_amount: numFor4Decimal(this.$route.params.delegation.delegate_amount),
+        delegate_amount: this.$route.params.delegation.delegate_amount,
         is_compound: this.$route.params.delegation.is_compound
       },
       form: {
@@ -123,9 +123,9 @@ export default {
       this.$data.form.tokens = this.$data.amount
     },
     confirm () {
-      let details = '<span style="word-break: break-all;"><span style="color:blue;">操作地址</span>:<br />' + this.currentAccount.address
-      details += '<br /><span style="color:green;">验证人地址</span>:<br />' + this.form.address
-      details += '<br /><span style="color:red;">操作金额</span>:<br />' + numForNoDecimal(this.form.tokens).toString() + this.coin + '</span>'
+      let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
+      details += '<br /><span style="color:green;">验证人地址:</span>:<br />' + this.validator.address
+      details += '<br /><span style="color:red;">操作金额</span>:<br />' + this.form.tokens.toString() + 'QOS</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
         confirmButtonText: '确定',
@@ -154,7 +154,7 @@ export default {
       let data, res
       if (this.operation === 'delegate') {
         data = {
-          amount: this.form.tokens.toString(),
+          amount: numForNoDecimal(this.form.tokens.toString()),
           base: myBase
         }
         if (this.delegation.delegate_amount.toString() === '0') {
@@ -163,7 +163,7 @@ export default {
         res = account.sendCreateDelegateTx(this.validator.address, data)
       } else {
         data = {
-          unbond_amount: this.form.tokens.toString(),
+          unbond_amount: numForNoDecimal(this.form.tokens.toString()),
           base: myBase
         }
         res = account.sendUnbondDelegationTx(this.validator.address, data)

@@ -151,7 +151,8 @@ export default {
       // currentAccount: store.getters.currentAccount
     })
   },
-  created () {},
+  created () {
+  },
   mounted () {
     console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏

@@ -120,7 +120,7 @@ export default {
         this.form.address
       details +=
         '<br /><span style="color:red;">转账金额</span>:<br />' +
-        numForNoDecimal(this.form.tokens).toString() +
+        this.form.tokens.toString() +
         this.coin +
         '</span>'
       this.$confirm(details, '交易确认', {

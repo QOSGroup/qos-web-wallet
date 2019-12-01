@@ -127,7 +127,7 @@ export default {
     confirm () {
       let details = '<span style="word-break: break-all;"><span style="color:blue;">委托人地址:</span><br />' + this.currentAccount.address
       details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
-      details += '<br /><span style="color:red;">委托金额:</span><br />' + numForNoDecimal(this.form.tokens).toString() + 'QOS'
+      details += '<br /><span style="color:red;">委托金额:</span><br />' + this.form.tokens.toString() + 'QOS'
       details += '<br /><span style="color:red;">委托方式:</span><br />'
       details += this.form.compound === 1 ? '复投' : '不复投' + '</span>'
       this.$confirm(details, '交易确认', {
