@@ -4,8 +4,8 @@
   "version": null,
   "manifest_version": 2,
   "icons": {
-    "48": "icons/icon_48.png",
-    "128": "icons/icon_128.png"
+    "48": "icons/qos.png",
+    "128": "icons/qos.png"
   },
   "browser_action": {
     "default_title": "qos-web-wallet",
