@@ -1,20 +1,19 @@
 <template>
   <div class="homepage-wrap">
     <div class="home-top-info">
-      <div>
-        <br />
-        <div style="float:left;width:90%;text-align:left;" @click="accNameModify" class="link-wrap">
-          <span style="font-size:24px;">{{ userName }}</span>
+      <div class="contents-head">
+        <div @click="accNameModify" class="link-wrap div-left">
+          <span >{{ userName }}</span>
         </div>
-        <div style="float:right;width:10%;" @click="showAccountList">
-          <i class="el-icon-more" style="font-size:24px;" title="更多"></i>
+        <div @click="showAccountList" class="div-right">
+          <i class="el-icon-more" title="更多"></i>
         </div>
       </div>
-      <div>
-        <div style="width:88%;float:left;font-size:medium;text-align:left">
+      <div class="contents-head">
+        <div class="div-left">
           <span>{{ address }}</span>
         </div>
-        <div>
+        <div class="div-right">
           <i class="el-icon-document-copy btn" :data-clipboard-text="address" title="复制"></i>
         </div>
       </div>
@@ -333,7 +332,7 @@ span {
 }
 .el-icon-document-copy {
   font-size: 22px;
-  margin-top: 6px;
+  margin-top: 20px;
   cursor: pointer;
 }
 .el-icon-more {
@@ -389,5 +388,19 @@ span {
 }
 .tab-info{
   text-align: center;
+}
+.contents-head{
+  display: flex;
+}
+.div-left{
+  margin-top: 15px;
+  width: 90%;
+  font-size: 20px;
+  font-weight: 100
+}
+.div-right{
+    margin-top: 15px;
+    font-size: 20px;
+    font-weight: 100
 }
 </style>

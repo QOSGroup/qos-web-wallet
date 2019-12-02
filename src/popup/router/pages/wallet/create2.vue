@@ -8,7 +8,7 @@
         <el-input placeholder="请输入名称" v-model="form.name" ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')" :loading="onloading">立即创建</el-button>
+        <el-button type="primary" :loading="onloading" @click="onSubmit('form')" >立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     onSubmit (formName) {
+      this.onloading = 'true'
       this.$refs[formName].validate(async valid => {
         if (valid) {
           this.onloading = true
