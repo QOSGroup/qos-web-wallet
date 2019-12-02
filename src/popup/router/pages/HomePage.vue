@@ -329,12 +329,7 @@ export default {
 @import "~style/common.scss";
 .homepage-wrap {
   @include common-container;
-}
-div {
-  text-align: center;
-  overflow: hidden;
-  overflow-y: auto;
-  vertical-align: middle;
+  box-sizing: border-box;
 }
 span {
   word-break: break-all;
@@ -366,6 +361,7 @@ span {
 }
 .text-wrap {
   line-height: 1.5;
+  text-align: center;
 }
 .text-title {
   font-size: 24px;

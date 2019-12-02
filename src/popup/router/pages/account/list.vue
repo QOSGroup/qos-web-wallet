@@ -214,13 +214,7 @@ export default {
 @import "~style/common.scss";
 .accountlist-wrap {
   @include common-container;
-  div {
-    text-align: left;
-    overflow: hidden;
-    overflow-y: auto;
-    // margin: 2% 0 1.5% 0;
-    vertical-align: middle;
-  }
+
   span {
     word-break: break-all;
     word-wrap: break-word;
