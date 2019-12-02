@@ -72,6 +72,7 @@ import { getBackground } from '../../../common/bgcontact'
 import clone from 'clone'
 import { setCurrentAccount, getAccountList } from '@/business/auth'
 import { rpc } from '@/utils/rpc'
+import { numFor4Decimal } from '@/utils/index'
 
 export default {
   data () {
@@ -143,14 +144,14 @@ export default {
               let list = []
               list.push({
                 cointype: 'QOS',
-                amount: result.data.value.qos
+                amount: numFor4Decimal(result.data.value.qos)
               })
               qcps = result.data.value.qcps
               if (qcps) {
                 for (let qcp of qcps) {
                   list.push({
                     cointype: qcp.coin_name,
-                    amount: qcp.amount
+                    amount: numFor4Decimal(qcp.amount)
                   })
                 }
               }

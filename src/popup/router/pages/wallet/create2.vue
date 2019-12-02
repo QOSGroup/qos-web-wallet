@@ -1,13 +1,14 @@
 <template>
   <div class="newwallet-wrap">
-    <el-page-header @back="goBack" content="创建钱包"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="创建钱包"></el-page-header>
+    </div>
     <el-form ref="form" :model="form" label-width="80px" v-bind:rules="rules">
-      <el-form-item label="账户名称" prop="name">
+      <el-form-item label="账户名称" prop="name" class="form-row">
         <el-input placeholder="请输入名称" v-model="form.name" ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
+        <el-button type="primary" @click="onSubmit('form')" :loading="onloading">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -26,13 +27,15 @@ export default {
       form: {
         name: '',
         password: store.getters.passCheck
-      }
+      },
+      onloading: false
     }
   },
   methods: {
     onSubmit (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
+          this.onloading = true
           // 随机创建助记词
           const mn = rpc.generateMnemonic()
           // // 调用背景页函数
@@ -51,6 +54,7 @@ export default {
           })
         } else {
           console.log('error newwallet!!')
+          this.onloading = false
           return false
         }
       })
@@ -68,5 +72,8 @@ export default {
 @import "~style/common.scss";
 .newwallet-wrap {
   @include common-container;
+  .form-row{
+        margin: 20px 10px;
+  }
 }
 </style>

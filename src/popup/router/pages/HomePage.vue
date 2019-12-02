@@ -19,7 +19,6 @@
         </div>
       </div>
     </div>
-    <!-- <el-divider></el-divider> -->
     <div>
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch>
         <el-tab-pane label="我的资产" name="balance">

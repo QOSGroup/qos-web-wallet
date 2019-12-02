@@ -162,11 +162,13 @@ export default {
               params: { hash: result.data.hash }
             })
           } else {
+            this.onloading = false
             this.error = result.statusText
             this.dialogVisible = true
           }
         })
         .catch(error => {
+          this.onloading = false
           this.error = error
           this.dialogVisible = true
         })

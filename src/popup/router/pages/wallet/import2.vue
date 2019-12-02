@@ -1,9 +1,10 @@
 <template>
   <div class="importaccount-wrap">
-    <el-page-header @back="goBack" content="导入账户"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="导入账户"></el-page-header>
+    </div>
     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="导入类型" prop="type">
+      <el-form-item label="导入类型" prop="type" class="form-row form-label">
         <el-select
           v-model="ruleForm.value"
           placeholder="请选择"
@@ -20,22 +21,22 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="输入私钥" prop="pri" v-if="flag_pri">
+      <el-form-item label="输入私钥" prop="pri" v-if="flag_pri" class="form-row form-label">
         <el-input
           placeholder="请输入私钥"
           type="textarea"
           v-model="ruleForm.pri"
           auto-complete="off"
-          :autosize="{ minRows: 2, maxRows: 6}"
+          :autosize="{ minRows: 2, maxRows: 8}"
         ></el-input>
       </el-form-item>
-      <el-form-item label="输入助记词" prop="memwd" v-if="flag_zjc">
+      <el-form-item label="输入助记词" prop="memwd" v-if="flag_zjc" class="form-row form-label">
         <el-input
           placeholder="请输入12个单词的助记词"
           type="textarea"
           v-model="ruleForm.memwd"
           auto-complete="off"
-          :autosize="{ minRows: 2, maxRows: 6}"
+          :autosize="{ minRows: 2, maxRows: 8}"
         ></el-input>
       </el-form-item>
 
@@ -213,12 +214,23 @@ export default {
 @import "~style/common.scss";
 .importaccount-wrap {
   @include common-container;
+  .form-row{
+        margin: 20px 10px;
+  }
 }
 </style>
 <style lang="scss">
 .qos-dialog {
   .el-dialog__body {
     padding: 0 30px !important;
+  }
+}
+.form-label{
+  .el-form-item__label{
+    width: 90px !important;
+  }
+  .el-form-item__content{
+    margin-left: 90px !important;
   }
 }
 </style>

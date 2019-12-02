@@ -42,16 +42,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '您点击了确认,助记词不会再展示!'
-        })
+        // this.$message({
+        //   type: 'success',
+        //   message: '您点击了确认,助记词不会再展示!'
+        // })
         this.$router.push({ name: 'homepage' })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '您点击了取消,请妥善保存助记词!'
-        })
+        // this.$message({
+        //   type: 'info',
+        //   message: '您点击了取消,请妥善保存助记词!'
+        // })
       })
     }
   }

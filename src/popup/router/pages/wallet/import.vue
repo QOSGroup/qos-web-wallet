@@ -1,9 +1,11 @@
 <template>
   <div class="importaccount-wrap">
-    <el-page-header @back="goBack" content="导入账户"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="导入账户"></el-page-header>
+    </div>
+
     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px">
-      <el-form-item label="导入类型" prop="type">
+      <el-form-item label="导入类型" prop="type" class="form-row form-label">
         <el-select
           v-model="ruleForm.value"
           placeholder="请选择"
@@ -20,7 +22,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="输入私钥" prop="pri" v-if="flag_pri">
+      <el-form-item label="输入私钥" prop="pri" v-if="flag_pri" class="form-row form-label">
         <el-input
           placeholder="请输入私钥"
           type="textarea"
@@ -29,20 +31,20 @@
           :autosize="{ minRows: 2, maxRows: 6}"
         ></el-input>
       </el-form-item>
-      <el-form-item label="输入助记词" prop="memwd" v-if="flag_zjc">
+      <el-form-item label="输入助记词" prop="memwd" v-if="flag_zjc" class="form-row form-label">
         <el-input
           placeholder="请输入12个单词的助记词"
           type="textarea"
           v-model="ruleForm.memwd"
           auto-complete="off"
-          :autosize="{ minRows: 2, maxRows: 6}"
+          :autosize="{ minRows: 2, maxRows: 8 }"
         ></el-input>
       </el-form-item>
 
-      <el-form-item label="新密码" prop="password">
+      <el-form-item label="新密码" prop="password" class="form-row form-label">
         <el-input placeholder="请输入密码" v-model="ruleForm.password" show-password auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="重复密码" prop="repassword">
+      <el-form-item label="重复密码" prop="repassword" class="form-row form-label">
         <el-input
           placeholder="请再次输入密码"
           v-model="ruleForm.repassword"
@@ -196,7 +198,10 @@ export default {
       store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
       // 创建账户成功,拷贝bg store中的accounts到popup store中
       const bgState = bg.getBgState()
-      store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'passCheck'], bgState })
+      store.commit(types.CLONE_STATE, {
+        keyArr: ['accounts', 'passCheck'],
+        bgState
+      })
       // 账户导入后,默认跳转homepage页面
       this.$router.push({ name: 'homepage' })
     },
@@ -218,12 +223,26 @@ export default {
 @import "~style/common.scss";
 .importaccount-wrap {
   @include common-container;
+  .form-row{
+        margin: 20px 10px;
+  }
+  .el-form-item__label{
+    width: 80px
+  }
 }
 </style>
 <style lang="scss">
 .qos-dialog {
   .el-dialog__body {
     padding: 0 30px !important;
+  }
+}
+.form-label{
+  .el-form-item__label{
+    width: 90px !important;
+  }
+  .el-form-item__content{
+    margin-left: 90px !important;
   }
 }
 </style>
