@@ -1,35 +1,29 @@
 <template>
   <div class="modify-wrap">
-    <el-page-header @back="goBack" content="变更委托方式"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="变更委托方式"></el-page-header>
+    </div>
 
-    <div>
-      <div style="float:left;width:100px;">
-        <el-image style="width: 100px; height: 100px" :src="validator.logo"></el-image>
+    <div class="div-contents">
+      <div class="logo-div">
+        <el-image class="logo-image" :src="validator.logo"></el-image>
       </div>
-      <div style="float:right;width:200px;">
-        <div style="text-align:left;">
-          <div style="float:left;font-size: medium;">{{ validator.moniker }}</div>
-          <div style="float:left;">
-            <el-link :href="validator.validatorUrl" target="_blank">
-              <i class="el-icon-link"></i>
-            </el-link>
-          </div>
-          <!-- <div><el-button type="primary" size="mini" plain @click="selectValidator()">选择委托对象</el-button></div> -->
+      <div>
+        <div class="text-info">
+          <span>{{ validator.moniker }}</span>
+          <el-link :href="validator.validatorUrl" target="_blank">
+            <i class="el-icon-link"></i>
+          </el-link>
         </div>
-        <div style="text-align:left;">
-          <span>
-            <br />
-            {{ validator.address }}
-          </span>
+        <div class="text-info">
+          <span>{{ validator.address }}</span>
         </div>
       </div>
     </div>
-
-    <div>
+    <div class="text-info">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
-    <div v-if="this.$route.params.is_compound == 'true'">
+    <div v-if="this.$route.params.is_compound == 'true'" class="text-info">
       <div class="div_modify">复投</div>
       <div class="div_modify">
         <i class="el-icon-right"></i>
@@ -76,7 +70,9 @@ import store from '@/store'
 import { rpc } from '@/utils/rpc'
 export default {
   data () {
-    const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
+    const index = store.getters.accounts.findIndex(
+      x => x.address === store.getters.currentAccount.address
+    )
     return {
       // 用户信息
       amount: this.$route.params.amount,
@@ -113,12 +109,18 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     confirm () {
-      let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
-      details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
-      if ((this.$route.params.is_compound).toString() === 'true') {
-        details += '<br /><span style="color:red;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
+      let details =
+        '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' +
+        this.currentAccount.address
+      details +=
+        '<br /><span style="color:green;">验证人地址:</span><br />' +
+        this.validator.address
+      if (this.$route.params.is_compound.toString() === 'true') {
+        details +=
+          '<br /><span style="color:red;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
       } else {
-        details += '<br /><span style="color:red;">委托方式修改:</span>:<br />"不复投"修改为"复投"'
+        details +=
+          '<br /><span style="color:red;">委托方式修改:</span>:<br />"不复投"修改为"复投"'
       }
       details += '</span>'
       this.$confirm(details, '交易确认', {
@@ -127,11 +129,11 @@ export default {
         cancelButtonText: '取消',
         // type: 'warning',
         dangerouslyUseHTMLString: true
-      }).then(() => {
-        this.commitTx()
-      }).catch(() => {
-
       })
+        .then(() => {
+          this.commitTx()
+        })
+        .catch(() => {})
     },
     commitTx () {
       this.onloading = true
@@ -147,7 +149,7 @@ export default {
       }
       // 组装data数据,调用rpc接口,提交交易
       const data = {
-        is_compound: !((this.$route.params.is_compound).toString() === 'true'),
+        is_compound: !(this.$route.params.is_compound.toString() === 'true'),
         base: myBase
       }
       const res = account.sendModifyDelegationTx(this.validator.address, data)
@@ -186,13 +188,21 @@ export default {
 @import "~style/common.scss";
 .modify-wrap {
   @include common-container;
-}
-div {
-  text-align: left;
-  overflow: hidden;
-  overflow-y: auto;
-  margin: 1% 0 2% 0;
-  vertical-align: middle;
+  .div-contents {
+    display: flex;
+    margin: 10px 10px;
+  }
+  .logo-div {
+    width: 100px;
+    height: 100px;
+  }
+  .logo-image {
+    width: 100px;
+    height: 100px;
+  }
+  .text-info {
+    margin: 10px 10px;
+  }
 }
 span {
   word-break: break-all;
