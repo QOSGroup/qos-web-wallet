@@ -4,42 +4,37 @@
       <el-page-header @back="goBack" :content="title"></el-page-header>
     </div>
 
-    <div>
-      <div style="float:left;width:100px;">
-        <el-image style="width: 100px; height: 100px" :src="validator.logo"></el-image>
+    <div class="div-contents">
+      <div>
+        <el-image class="logo-image" :src="validator.logo"></el-image>
       </div>
-      <div style="float:right;width:200px;">
-        <div style="text-align:left;">
-          <div style="float:left;font-size: medium;">{{ validator.moniker }}</div>
-          <div style="float:left;">
-            <el-link :href="validator.validatorUrl" target="_blank">
-              <i class="el-icon-link"></i>
-            </el-link>
-          </div>
+      <div>
+        <div class="text-row">
+          <span>{{ validator.moniker }}</span>
+          <el-link :href="validator.validatorUrl" target="_blank">
+            <i class="el-icon-link"></i>
+          </el-link>
         </div>
-        <div style="text-align:left;">
-          <span>
-            <br />
-            {{ validator.address }}
-          </span>
+        <div class="text-row">
+          <span>{{ validator.address }}</span>
         </div>
       </div>
     </div>
 
-    <div>
+    <div class="text-row">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
-    <div>
+    <div class="text-row">
       <span>{{operation == "delegate" ? "追加" : "撤回"}}数量：</span>
     </div>
-    <div>
-      <el-input type="input" v-model="form.tokens" clearable size="small" style="width:75%;"></el-input>
-      <el-button size="mini" style="float:right;height:38px;" @click="setMax">最大值</el-button>
+    <div class="text-row">
+      <el-input placeholder="0" v-model="form.tokens" clearable size="small" class="btn-tokens"></el-input>
+      <el-button size="small" @click="setMax">最大值</el-button>
     </div>
-    <div>
+    <div class="text-row">
       <span>账户余额：{{ amount }}QOS</span>
     </div>
-    <div v-if="delegation.delegate_amount == 0">
+    <div class="text-row" v-if="delegation.delegate_amount == 0">
       <el-radio v-model="form.compound" label="0">不复投</el-radio>
       <el-radio v-model="form.compound" label="1">复投</el-radio>
     </div>
@@ -51,7 +46,7 @@
       <el-slider v-model="form.gas"></el-slider>
     </div>-->
 
-    <div style="text-align:center;">
+    <div class="btn-confirm">
       <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
     </div>
 
@@ -65,7 +60,7 @@
       <span>{{ this.error }}</span>
       <span slot="footer" class="dialog-footer">
         <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="dialogVisible = false, onloading = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -77,7 +72,9 @@ import { rpc } from '@/utils/rpc'
 import { numForNoDecimal } from '@/utils/index'
 export default {
   data () {
-    const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
+    const index = store.getters.accounts.findIndex(
+      x => x.address === store.getters.currentAccount.address
+    )
     return {
       title:
         this.$route.params.operation === 'delegate' ? '追加委托' : '撤回委托',
@@ -123,20 +120,27 @@ export default {
       this.$data.form.tokens = this.$data.amount
     },
     confirm () {
-      let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
-      details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
-      details += '<br /><span style="color:red;">操作金额</span>:<br />' + this.form.tokens.toString() + 'QOS</span>'
+      let details =
+        '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' +
+        this.currentAccount.address
+      details +=
+        '<br /><span style="color:green;">验证人地址:</span><br />' +
+        this.validator.address
+      details +=
+        '<br /><span style="color:red;">操作金额</span>:<br />' +
+        this.form.tokens.toString() +
+        'QOS</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         // type: 'warning',
         dangerouslyUseHTMLString: true
-      }).then(() => {
-        this.commitTx()
-      }).catch(() => {
-
       })
+        .then(() => {
+          this.commitTx()
+        })
+        .catch(() => {})
     },
     commitTx () {
       this.onloading = true
@@ -183,7 +187,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.error = '网络错误,请稍后重试!'
+          this.error = '交易失败,请检查交易信息并重试!'
           this.dialogVisible = true
         })
     },
@@ -205,13 +209,24 @@ export default {
 @import "~style/common.scss";
 .delegateorunbond-wrap {
   @include common-container;
-}
-div {
-  text-align: left;
-  overflow: hidden;
-  overflow-y: auto;
-  margin: 1% 0 2% 0;
-  vertical-align: middle;
+  .div-contents {
+    display: flex;
+    margin: 10px;
+  }
+  .logo-image {
+    width: 100px;
+    height: 100px;
+  }
+  .btn-confirm{
+    text-align: center;
+    margin: 20px;
+  }
+  .text-row{
+    margin: 15px 10px
+  }
+  .btn-tokens{
+    width: 75%;
+  }
 }
 span {
   word-break: break-all;

@@ -63,7 +63,6 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="80%"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>导入类型有误,请重新选择!</span>
@@ -165,7 +164,6 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     setImportTypes () {
-      console.log('设置页面显示隐藏')
       const type = this.ruleForm.value
       if (type === '0') {
         this.flag_pri = true
@@ -207,13 +205,6 @@ export default {
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   }
 }

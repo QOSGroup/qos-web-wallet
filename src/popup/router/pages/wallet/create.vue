@@ -12,7 +12,7 @@
         <el-input placeholder="请再次输入密码" v-model="form.repassword" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')" :loading="hasCreate">立即创建</el-button>
+        <el-button type="primary" @click="onSubmit('form')" :loading="hasCreate" :onloading="onloading">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -58,14 +58,14 @@ export default {
         ],
         repassword: [{ validator: validatePass2, trigger: 'blur' }]
       },
-      hasCreate: false
+      onloading: false
     }
   },
   methods: {
     onSubmit (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.hasCreate = true
+          this.onloading = true
           // 随机创建助记词
           const mn = rpc.generateMnemonic()
           // // 调用背景页函数
@@ -87,6 +87,7 @@ export default {
           })
         } else {
           console.log('error newwallet!!')
+          this.onloading = false
           return false
         }
       })

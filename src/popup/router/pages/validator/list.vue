@@ -77,8 +77,9 @@ export default {
       x => x.address === store.getters.currentAccount.address
     )
     return {
+      address: store.getters.currentAccount.address,
       // 当前账户的所有委托
-      delegations: this.$route.params.delegations,
+      delegations: [],
       // 所有validators
       validators: [],
       // 用户所选的validator信息
@@ -95,6 +96,7 @@ export default {
     }
   },
   created () {
+    this.getDelegations(this.$data.address)
     this.getValidators()
   },
   methods: {
@@ -117,26 +119,29 @@ export default {
     },
     setValidator (validator) {
       this.$router.push({ name: 'delegationcreate', params: validator })
-      // const choose = validator.validator
-      // const account = rpc.recoveryAccountByPrivateKey(
-      //   this.currentAccount.privateKey
-      // )
-      // const res = account.queryDelagationOne(
-      //   this.currentAccount.address,
-      //   choose
-      // )
-      // res
-      //   .then(result => {
-      //     this.$message({
-      //       showClose: true,
-      //       message: '已有委托,请从‘我的委托’中进行追加或撤回!',
-      //       type: 'warning'
-      //     })
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      //     this.$router.push({ name: 'delegationcreate', params: validator })
-      //   })
+    },
+    getDelegations (address) {
+      // 刷新委托信息
+      this.delegations = []
+      const account = rpc.recoveryAccountByPrivateKey(
+        this.currentAccount.privateKey
+      )
+      const res = account.queryDelagationAll(address)
+      res
+        .then(async result => {
+          if (result.status === 200) {
+            this.delegations = result.data
+          } else {
+            this.$message({
+              showClose: true,
+              message: '系统查询数据失败,请稍后重试!',
+              type: 'warning'
+            })
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     getValidators () {
       const account = rpc.recoveryAccountByPrivateKey(

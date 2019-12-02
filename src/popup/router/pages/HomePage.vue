@@ -209,11 +209,6 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          // this.$message({
-          //   showClose: true,
-          //   message: '该账户在链上的‘委托信息’查询失败!',
-          //   type: 'warning'
-          // })
         })
     },
     getValidator (delegation, i) {
@@ -281,8 +276,7 @@ export default {
     },
     createDelegation (qos) {
       this.$router.push({
-        name: 'validatorlist',
-        params: { delegations: this.delegations }
+        name: 'validatorlist'
       })
     },
     delegateorunbond (operation, qos, delegation) {

@@ -168,7 +168,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          this.error = '网络错误,请稍后重试!'
+          this.error = '交易失败,请检查交易信息并重试!'
           this.dialogVisible = true
         })
     },

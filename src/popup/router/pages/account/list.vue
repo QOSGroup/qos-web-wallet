@@ -13,13 +13,13 @@
       </div>
     </div>
     <div class="btns-wrap">
-      <el-button type="primary" plain @click="addAccount" size="small" style="width:30%;">
+      <el-button type="primary" plain @click="addAccount" size="mini" class="btn-list">
         <i class="el-icon-plus"></i>新建账户
       </el-button>
-      <el-button type="success" plain @click="importAccount" size="small" style="width:30%;">
+      <el-button type="success" plain @click="importAccount" size="mini" class="btn-list">
         <i class="el-icon-download"></i>导入账户
       </el-button>
-      <el-button type="warning" plain @click="exportAccount" size="small" style="width:30%;">
+      <el-button type="warning" plain @click="exportAccount" size="mini" class="btn-list">
         <i class="el-icon-upload2"></i>导出私钥
       </el-button>
     </div>
@@ -256,7 +256,8 @@ export default {
     font-size: 14px;
   }
   .btns-wrap {
-    margin: 15px;
+    margin: 15px 10px;
+    text-align: center;
   }
   .row-wrap {
     margin: 0 15px 15px !important;
@@ -275,6 +276,9 @@ export default {
     .cont-wrap {
       line-height: 28px;
     }
+  }
+  .btn-list{
+    width: 30%;
   }
 }
 </style>
