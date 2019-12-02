@@ -3,7 +3,7 @@
     <div class="home-top-info">
       <div>
         <br />
-        <div style="float:left;width:90%;text-align:left;" @click="accNameModify">
+        <div style="float:left;width:90%;text-align:left;" @click="accNameModify" class="link-wrap">
           <span style="font-size:24px;">{{ userName }}</span>
         </div>
         <div style="float:right;width:10%;" @click="showAccountList">
@@ -25,7 +25,7 @@
           <div>
             <div class="text-wrap">
               <div class="text-title">QOS</div>
-              <div class="link-wrap ">
+              <div class="link-wrap">
                 <span class="number-style">{{ qos }}</span>
                 <i class="el-icon-link"></i>
               </div>
@@ -38,30 +38,30 @@
           </div>
 
           <div v-for="qcp in qcps" :key="qcp">
-            <div>
-              <div>{{ qcp.coin_name }}</div>
-              <div>
-                {{ qcp.amount }}
+            <div class="text-wrap">
+              <div class="text-title">{{ qcp.coin_name }}</div>
+              <div class="link-wrap">
+                <span class="number-style">{{ qcp.amount }}</span>
                 <i class="el-icon-link"></i>
               </div>
-              <div>
+              <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer([qcp.coin_name])">转账</el-button>
                 <el-button type="primary" size="small" plain @click="approve([qcp.coin_name])">预授权</el-button>
               </div>
-              <el-divider width="80%"></el-divider>
             </div>
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="我的委托" name="delegation">
           <div v-for="(delegation, index) in delegations" :key="index">
-            <div>
-              <div style="float:left;width:100px;">
-                <el-image style="width: 100px; height: 100px" :src="delegation.logo"></el-image>
+            <div class="div_contents">
+              <div>
+                <el-image class="logo-image" :src="delegation.logo"></el-image>
               </div>
-              <div style="float:right;width:200px;">
-                <div style="text-align:left;">
-                  <div style="float:left;font-size: medium;">{{ delegation.moniker }}</div>
-                  <div style="float:left;">
+              <div class="text-detail">
+                <div class="div_contents">
+                  <div class="text-moniker">{{ delegation.moniker }}</div>
+                  <div class="link-wrap text-link">
                     <el-link :href="delegation.validatorUrl" target="_blank">
                       <i class="el-icon-link"></i>
                     </el-link>
@@ -75,46 +75,45 @@
                 </div>
               </div>
             </div>
-            <div>
-              <div style="text-align:left;float:left;">
-                <span>委托金额：{{ delegation.delegate_amount }}</span>
-              </div>
-              <div style="float:right;">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="delegateorunbond('delegate', qos.toString(), delegation)"
-                >追加</el-button>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="delegateorunbond('unbond', qos.toString(), delegation)"
-                >撤回</el-button>
-              </div>
+
+            <div class="text-row">
+              <span>委托金额：{{ delegation.delegate_amount }}</span>
             </div>
-            <div>
-              <div style="vertical-align:middle;text-align:left;float:left;">
-                <span>复投方式：{{ delegation.is_compound ? "已复投" : "未复投" }}</span>
-              </div>
-              <div style="float:right;">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="modifyCompound([ delegation.is_compound ], qos.toString(), delegation)"
-                >更改</el-button>
-              </div>
+            <div class="btn-operate">
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                @click="delegateorunbond('delegate', qos.toString(), delegation)"
+              >追加</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                @click="delegateorunbond('unbond', qos.toString(), delegation)"
+              >撤回</el-button>
             </div>
-            <el-divider width="80%"></el-divider>
+
+            <div class="text-row">
+              <span>复投方式：{{ delegation.is_compound ? "已复投" : "未复投" }}</span>
+            </div>
+            <div class="btn-operate">
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                @click="modifyCompound([ delegation.is_compound ], qos.toString(), delegation)"
+              >更改</el-button>
+            </div>
+
+            <el-divider class="line-divider"></el-divider>
           </div>
 
-          <div>
+          <div class="text-wrap">
             <el-button icon="el-icon-plus" circle @click="createDelegation" title="新增委托"></el-button>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="我的授权" name="approve">暂不支持该功能！</el-tab-pane>
+        <el-tab-pane label="我的授权" name="approve" class="tab-info">暂不支持该功能！</el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -147,8 +146,7 @@ export default {
       // currentAccount: store.getters.currentAccount
     })
   },
-  created () {
-  },
+  created () {},
   mounted () {
     console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏
@@ -352,8 +350,8 @@ span {
   cursor: pointer;
 }
 .home-top-info {
-  background:rgba(50, 115, 200, 1);
-  height:125px;
+  background: rgba(50, 115, 200, 1);
+  height: 125px;
   color: #ffffff;
   // border-radius: 6px;
   padding: 0 8px;
@@ -374,5 +372,32 @@ span {
 }
 .number-style {
   font-size: 30px;
+}
+.logo-image {
+  height: 100px;
+  width: 100px;
+}
+.text-detail {
+  width: 180px;
+}
+.div_contents {
+  display: flex;
+  margin: 10px 5px;
+}
+.text-row {
+  float: left;
+  margin: 10px 10px;
+  width: 150px;
+}
+.btn-operate {
+  float: right;
+  margin: 0px 5px;
+  height: 30px;
+}
+.line-divider {
+  margin-top: 80px;
+}
+.tab-info{
+  text-align: center;
 }
 </style>

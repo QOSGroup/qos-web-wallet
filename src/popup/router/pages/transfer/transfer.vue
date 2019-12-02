@@ -4,22 +4,23 @@
     <div>
       <button @click="onProcess">processMsg</button>
     </div>-->
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="转账"></el-page-header>
+    </div>
 
-    <el-page-header @back="goBack" content="转账"></el-page-header>
-    <el-divider></el-divider>
-    <div style="margin-left:6%;">
+    <div class="row">
       <span>资产类型：{{ coin }}</span>
     </div>
-    <div style="margin-left:6%;">
+    <div class="row">
       <span>资产余额：{{ balance }}</span>
     </div>
-    <el-form :model="form" ref="form" v-bind:rules="rules" label-width="100px">
-      <el-form-item label="接收方地址" prop="address">
-        <el-input placeholder="请输入地址" v-model="form.address" clearable size="small"></el-input>
+    <el-form :model="form" ref="form" v-bind:rules="rules">
+      <el-form-item label="接收方地址:" prop="address" class="form-row">
+        <el-input placeholder="请输入地址" v-model="form.address" clearable size="small" class="form-input"></el-input>
       </el-form-item>
 
-      <el-form-item label="转账数量" prop="tokens">
-        <el-input placeholder="请输金额" v-model="form.tokens" clearable size="mini" style="width:65%;"></el-input>
+      <el-form-item label="转账数量:" prop="tokens" class="form-row">
+        <el-input placeholder="请输金额" v-model="form.tokens" clearable size="mini" class="form-number-input"></el-input>
         <el-button size="mini" @click="setMax">最大值</el-button>
       </el-form-item>
 
@@ -29,7 +30,7 @@
       </el-form-item>
     </el-form>
 
-    <div style="text-align:center;">
+    <div class="btn-confirm">
       <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
     </div>
 
@@ -217,17 +218,26 @@ export default {
 @import "~style/common.scss";
 .transfer-wrap {
   @include common-container;
-  div {
-    text-align: left;
-    overflow: hidden;
-    overflow-y: auto;
-    margin: 3% 0 4% 0;
-    vertical-align: middle;
-  }
   span {
     word-break: break-all;
     word-wrap: break-word;
-    font-size: 14px;
+    font-size: 16px;
+  }
+  .row{
+    margin: 20px 20px
+  }
+  .btn-confirm{
+    text-align: center;
+    margin-top: 20px;
+  }
+  .form-row{
+    margin: 10px 20px;
+  }
+  .form-input{
+    width:265px
+  }
+  .form-number-input{
+    width:195px
   }
 }
 </style>

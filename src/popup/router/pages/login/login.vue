@@ -9,10 +9,10 @@
         <el-button class="btn btn-login" type="primary" @click="enterWallet">进入我的钱包</el-button>
       </el-form-item>
     </el-form>
-    <div style="text-align:left;height:30px;">
+    <div class="text-link">
       <el-link target="_blank" @click="forgetPassword">忘记密码？</el-link>
     </div>
-    <div style="text-align:left;height:30px;">
+    <div class="text-link">
       <el-link target="_blank" @click="noWallet">没有钱包？</el-link>
     </div>
 
@@ -105,6 +105,10 @@ export default {
   }
   .btn-login {
     width: 100%;
+  }
+  .text-link{
+    text-align:left;
+    height:30px;
   }
 }
 </style>

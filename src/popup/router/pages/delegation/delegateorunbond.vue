@@ -15,7 +15,6 @@
               <i class="el-icon-link"></i>
             </el-link>
           </div>
-          <!-- <div><el-button type="primary" size="mini" plain @click="selectValidator()">选择委托对象</el-button></div> -->
         </div>
         <div style="text-align:left;">
           <span>

@@ -14,10 +14,10 @@
       <span>输入密码：</span>
       <el-input placeholder="请输入密码" v-model="password" show-password auto-complete="off" class="pwd-input"></el-input>
     </div>
-    <div v-if="flag_privateKey">
+    <div class="row" v-if="flag_privateKey">
       <span>您的私钥：</span>
     </div>
-    <div v-if="flag_privateKey">
+    <div class="row" v-if="flag_privateKey">
       <el-input
         placeholder="私钥"
         type="textarea"
@@ -27,11 +27,11 @@
       ></el-input>
     </div>
     <div class="row">
-      <span style="color:red;">注意：永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你帐户中的任何资产。</span>
+      <span style="color:red;">注意：永远不要公开这个私钥。<br />任何拥有你的私钥的人都可以窃取你帐户中的任何资产。</span>
     </div>
     <div style="text-align:center;">
-      <el-button type="primary" @click="exportPrikey">确定</el-button>
-      <el-button @click="goBack">取消</el-button>
+      <el-button type="primary" @click="exportPrikey" :disabled="hasClick">确定</el-button>
+      <el-button @click="goBack">返回</el-button>
     </div>
   </div>
 </template>
@@ -53,7 +53,8 @@ export default {
       prikey: '',
       flag_password: true,
       flag_privateKey: false,
-      currentAccount: store.getters.accounts[index]
+      currentAccount: store.getters.accounts[index],
+      hasClick: false
     }
   },
   computed: {},
@@ -75,6 +76,8 @@ export default {
       this.flag_password = false
       this.flag_privateKey = true
       this.prikey = privateKey
+
+      this.hasClick = true
     },
     goBack () {
       window.history.length > 1

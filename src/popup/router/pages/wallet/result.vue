@@ -1,20 +1,21 @@
 <template>
   <div class="newwalletresult-wrap">
-    <el-page-header @back="goBack" content="创建钱包"></el-page-header>
-    <el-divider></el-divider>
-    <div>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="创建钱包"></el-page-header>
+    </div>
+
+    <div class="row">
       <span>钱包创建成功，钱包助记词为：</span>
-      <el-input type="textarea" v-model="form.memwd" :autosize="{ minRows: 2, maxRows: 6}"></el-input>
-      <span>助记词是您恢复钱包的唯一手段，请牢记助记词，并确保助记词的安全。</span>
+      <el-input type="textarea" v-model="form.memwd" :autosize="{ minRows: 2, maxRows: 8 }"></el-input>
+      <span class="text-message">注意:助记词是您恢复钱包的唯一手段，请牢记助记词，并确保助记词的安全。</span>
+    </div>
+    <div class="row">
+      <el-button type="primary" @click="exportMemwd" size="mini">导出助记词</el-button>
+      <span>请勿使用在线服务保存助记词!</span>
     </div>
     <br />
-    <div>
-      <el-button type="primary" @click="exportMemwd">导出助记词</el-button>
-      <span>请勿使用在线服务保存助记词</span>
-    </div>
-    <br />
-    <div>
-      <el-button type="primary" @click="confirm" plain>确定</el-button>
+    <div class="btn-confirm">
+      <el-button type="primary" @click="confirm" plain size="small">确定</el-button>
     </div>
   </div>
 </template>
@@ -62,6 +63,15 @@ export default {
 @import "~style/common.scss";
 .newwalletresult-wrap {
   @include common-container;
+  .row{
+    margin: 20px;
+  }
+  .btn-confirm{
+    text-align: center
+  }
+  .text-message{
+    color: red;
+  }
 }
 </style>
 <style lang="scss">
