@@ -54,20 +54,20 @@
 
         <el-tab-pane label="我的委托" name="delegation">
           <div v-for="(delegation, index) in delegations" :key="index">
-            <div class="div_contents">
+            <div class="div-contents">
               <div>
                 <el-image class="logo-image" :src="delegation.logo"></el-image>
               </div>
               <div class="text-detail">
-                <div class="div_contents">
-                  <div class="text-moniker">{{ delegation.moniker }}</div>
-                  <div class="link-wrap text-link">
+                <div class="div-contents">
+                  <div>{{ delegation.moniker }}</div>
+                  <div class="link-wrap">
                     <el-link :href="delegation.validatorUrl" target="_blank">
                       <i class="el-icon-link"></i>
                     </el-link>
                   </div>
                 </div>
-                <div style="text-align:left;">
+                <div>
                   <span>
                     <br />
                     {{ delegation.validator_address }}
@@ -184,11 +184,6 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          // this.$message({
-          //   showClose: true,
-          //   message: '该账户在链上的‘账户信息’查询失败!',
-          //   type: 'warning'
-          // })
         })
     },
     getDelegations (address) {
@@ -286,7 +281,8 @@ export default {
     },
     createDelegation (qos) {
       this.$router.push({
-        name: 'validatorlist'
+        name: 'validatorlist',
+        params: { delegations: this.delegations }
       })
     },
     delegateorunbond (operation, qos, delegation) {
@@ -380,7 +376,7 @@ span {
 .text-detail {
   width: 180px;
 }
-.div_contents {
+.div-contents {
   display: flex;
   margin: 10px 5px;
 }

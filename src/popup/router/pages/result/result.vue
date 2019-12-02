@@ -4,8 +4,8 @@
       <el-page-header @back="goBack" content="交易结果"></el-page-header>
     </div>
     <div class="row">
-      <div><span>交易已提交，上链中...</span></div>
-      <div>
+      <div class="text-info"><span>交易已提交，上链中...</span></div>
+      <div class="text-info">
         <span>交易hash：{{ txhash }}</span>
       </div>
     </div>
@@ -52,9 +52,13 @@ export default {
   }
   .row{
     margin: 20px;
+    text-align: center;
   }
   .btn-confirm{
     text-align: center
+  }
+  .text-info{
+    margin-top: 10px;
   }
 }
 </style>

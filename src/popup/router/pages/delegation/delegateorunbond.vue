@@ -1,7 +1,8 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" :content="title"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" :content="title"></el-page-header>
+    </div>
 
     <div>
       <div style="float:left;width:100px;">
@@ -123,7 +124,7 @@ export default {
     },
     confirm () {
       let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
-      details += '<br /><span style="color:green;">验证人地址:</span>:<br />' + this.validator.address
+      details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
       details += '<br /><span style="color:red;">操作金额</span>:<br />' + this.form.tokens.toString() + 'QOS</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
@@ -176,12 +177,13 @@ export default {
               params: { hash: result.data.hash }
             })
           } else {
-            this.error = result.statusText
+            this.error = '交易失败,请检查交易信息并重试!'
             this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error
+          console.log(error)
+          this.error = '网络错误,请稍后重试!'
           this.dialogVisible = true
         })
     },

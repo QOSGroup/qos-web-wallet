@@ -164,13 +164,14 @@ export default {
             })
           } else {
             this.onloading = false
-            this.error = result.statusText
+            this.error = '交易失败,请检查交易信息并重试!'
             this.dialogVisible = true
           }
         })
         .catch(error => {
+          console.log(error)
           this.onloading = false
-          this.error = error
+          this.error = '网络错误,请稍后重试!'
           this.dialogVisible = true
         })
     },

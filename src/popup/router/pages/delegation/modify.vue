@@ -52,7 +52,7 @@
     </div>-->
 
     <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="confirm">确定</el-button>
+      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
     </div>
 
     <el-dialog
@@ -96,6 +96,7 @@ export default {
       form: {
         gas: 0 // 支付的gas费用
       },
+      onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
       error: '',
@@ -113,11 +114,11 @@ export default {
     },
     confirm () {
       let details = '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' + this.currentAccount.address
-      alert(this.$route.params.is_compound)
-      if (this.$route.params.is_compound === 'true') {
-        details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
+      details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
+      if ((this.$route.params.is_compound).toString() === 'true') {
+        details += '<br /><span style="color:red;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
       } else {
-        details += '<br /><span style="color:green;">委托方式修改:</span>:<br />"不复投"修改为"复投"'
+        details += '<br /><span style="color:red;">委托方式修改:</span>:<br />"不复投"修改为"复投"'
       }
       details += '</span>'
       this.$confirm(details, '交易确认', {
@@ -133,6 +134,7 @@ export default {
       })
     },
     commitTx () {
+      this.onloading = true
       // 点击完成确认按钮后,调用修改委托方式.
       const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
@@ -145,7 +147,7 @@ export default {
       }
       // 组装data数据,调用rpc接口,提交交易
       const data = {
-        is_compound: !(this.$route.params.is_compound === 'true'),
+        is_compound: !((this.$route.params.is_compound).toString() === 'true'),
         base: myBase
       }
       const res = account.sendModifyDelegationTx(this.validator.address, data)
@@ -158,13 +160,13 @@ export default {
               params: { hash: result.data.hash }
             })
           } else {
-            console.log(result)
-            this.error = result
+            this.error = '交易失败,请检查交易信息并重试!'
             this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error
+          console.log(error)
+          this.error = '网络错误,请稍后重试!'
           this.dialogVisible = true
         })
     },

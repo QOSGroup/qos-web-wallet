@@ -129,7 +129,7 @@ export default {
       details += '<br /><span style="color:green;">验证人地址:</span><br />' + this.validator.address
       details += '<br /><span style="color:red;">委托金额:</span><br />' + this.form.tokens.toString() + 'QOS'
       details += '<br /><span style="color:red;">委托方式:</span><br />'
-      details += this.form.compound === 1 ? '复投' : '不复投' + '</span>'
+      details += this.form.compound === '1' ? '复投' : '不复投' + '</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
         confirmButtonText: '确定',
@@ -170,12 +170,13 @@ export default {
               params: { hash: result.data.hash }
             })
           } else {
-            this.error = result
+            this.error = '交易失败,请检查交易信息并重试!'
             this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error
+          console.log(error)
+          this.error = '网络错误,请稍后重试!'
           this.dialogVisible = true
         })
     },
