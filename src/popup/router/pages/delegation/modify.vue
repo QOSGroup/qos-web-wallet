@@ -23,7 +23,7 @@
     <div class="text-info">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
-    <div v-if="this.$route.params.is_compound == 'true'" class="text-info">
+    <div v-if="this.$route.params.iscompound.toString() === 'true'" class="text-info">
       <div class="div_modify">复投</div>
       <div class="div_modify">
         <i class="el-icon-right"></i>
@@ -115,7 +115,7 @@ export default {
       details +=
         '<br /><span style="color:green;">验证人地址:</span><br />' +
         this.validator.address
-      if (this.$route.params.is_compound.toString() === 'true') {
+      if (this.$route.params.iscompound.toString() === 'true') {
         details +=
           '<br /><span style="color:red;">委托方式修改:</span>:<br />"复投"修改为"不复投"'
       } else {
@@ -149,7 +149,7 @@ export default {
       }
       // 组装data数据,调用rpc接口,提交交易
       const data = {
-        is_compound: !(this.$route.params.is_compound.toString() === 'true'),
+        is_compound: !(this.$route.params.iscompound.toString() === 'true'),
         base: myBase
       }
       const res = account.sendModifyDelegationTx(this.validator.address, data)

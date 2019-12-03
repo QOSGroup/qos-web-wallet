@@ -21,10 +21,16 @@ export async function setCurrentAccountLocal (accountList, pwd, name) {
   return new Promise(async (resolve) => {
     // 设置当前登录账户:默认所有登录成功账户中的第一个
     const currentAcc = await getCurrentAccount()
+    const accList = await getAccountList()
     const encryptKey = encrypt(accountList[0].privateKey, pwd)
     const address = accountList[0].address
     if (!name) {
-      name = address.substr(address.length - 4, address.length - 1)
+      const acc = accList.find(x => x.address === address)
+      if (acc) {
+        name = acc.name
+      } else {
+        name = address.substr(address.length - 4, address.length - 1)
+      }
     }
     const accFirst = { name: name, address: address, encryptKey: encryptKey }
     // 当前登录账户为空、登录的账户存在accountList中

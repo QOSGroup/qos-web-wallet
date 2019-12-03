@@ -20,7 +20,7 @@
       </el-form-item>
 
       <el-form-item label="转账数量:" prop="tokens" class="form-row">
-        <el-input placeholder="请输金额" v-model="form.tokens" clearable size="mini" class="form-number-input"></el-input>
+        <el-input @input="oninput" placeholder="请输金额" v-model="form.tokens" clearable size="mini" class="form-number-input"></el-input>
         <el-button size="mini" @click="setMax">最大值</el-button>
       </el-form-item>
 
@@ -28,17 +28,16 @@
         <span>{{ form.gas }}</span>
         <el-slider v-model="form.gas"></el-slider>
       </el-form-item>
-    </el-form>
 
-    <div class="btn-confirm">
-      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
-    </div>
+      <el-form-item class="btn-confirm">
+        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
       width="80%"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>{{ this.error }}</span>
@@ -66,17 +65,25 @@ export default {
         callback(new Error('请输入接收地址'))
       } else {
         const res = rpc.verifyBech32StringByAccAddress(this.form.address)
-        console.log('res==addr verify==', res)
-        callback(new Error('地址格式有误,请检查!'))
+        if (!res) {
+          callback(new Error('地址格式有误,请检查!'))
+        }
+      }
+    }
+    var validateTokens = (rule, value, callback) => {
+      if (parseFloat(value) === 0) {
+        callback(new Error('委托数量不可为0'))
+      } else if (parseFloat(value) > parseFloat(this.balance)) {
+        callback(new Error('委托数量不可大于账户余额'))
       }
     }
     return {
       rules: {
         address: [
-          { validator: validateAddr, trigger: 'blur' },
-          { required: true, message: '请输入接收地址', trigger: 'blur' }
+          { required: true, message: '请输入接收地址', trigger: 'blur' },
+          { validator: validateAddr, trigger: 'blur' }
         ],
-        tokens: [{ required: true, message: '请输入转账数量', trigger: 'blur' }]
+        tokens: [{ required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'blur' }, { validator: validateTokens, trigger: 'blur' }]
       },
       // 根据用户地址链上查询的数据
       // coins: [],
@@ -106,6 +113,11 @@ export default {
   },
   created () {},
   methods: {
+    oninput (e) {
+      // 通过正则过滤小数点后两位
+      e = (e.match(/^\d*(\.?\d{0,4})/g)[0]) || null
+      this.form.tokens = e
+    },
     goBack () {
       window.history.length > 1
         ? this.$router.push({
@@ -123,14 +135,13 @@ export default {
         this.form.address
       details +=
         '<br /><span style="color:red;">转账金额</span>:<br />' +
-        this.form.tokens.toString() +
+        parseFloat(this.form.tokens).toString() +
         this.coin +
         '</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        // type: 'warning',
         dangerouslyUseHTMLString: true
       })
         .then(() => {
@@ -235,10 +246,10 @@ export default {
     margin: 10px 20px;
   }
   .form-input{
-    width:265px
+    width:310px
   }
   .form-number-input{
-    width:195px
+    width:240px
   }
 }
 </style>

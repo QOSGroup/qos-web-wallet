@@ -26,31 +26,25 @@
     <div class="text-row">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
-
-    <div class="text-row">
-      <span>委托数量：</span>
-    </div>
-    <div class="text-row">
-      <el-input placeholder="0" v-model="form.tokens" clearable size="small" class="btn-tokens"></el-input>
-      <el-button size="mini" @click="setMax">最大值</el-button>
-    </div>
-    <div class="text-row">
-      <span>委托方式:</span>
-      <el-radio-group v-model="form.compound" size="mini">
-        <el-radio label="0" border>不复投</el-radio>
-        <el-radio label="1" border>复投</el-radio>
-      </el-radio-group>
-    </div>
-    <!-- <div>
-      <span>最大手续费：{{ form.gas }}</span>
-    </div>
-    <div class="block">
-      <el-slider v-model="form.gas"></el-slider>
-    </div>-->
-
-    <div class="btn-confirm">
-      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
-    </div>
+    <el-form :model="form" ref="form" v-bind:rules="rules">
+      <el-form-item label="委托数量:" prop="tokens" class="text-row">
+        <el-input @input="oninput" placeholder="0" v-model="form.tokens" clearable size="small" class="btn-tokens"></el-input>
+        <el-button size="mini" @click="setMax">最大值</el-button>
+      </el-form-item>
+      <el-form-item label="委托方式:" prop="compound" class="text-row">
+        <el-radio-group v-model="form.compound" size="mini">
+          <el-radio label="0" border>不复投</el-radio>
+          <el-radio label="1" border>复投</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-if="false" label="最大手续费:" prop="gas" class="text-row">
+        <span>{{ form.gas }}</span>
+        <el-slider v-model="form.gas"></el-slider>
+      </el-form-item>
+      <el-form-item class="btn-confirm">
+        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-dialog title="提示" :visible.sync="dialogVisible" width="80%" custom-class="qos-dialog">
       <span>{{ this.error }}</span>
@@ -70,7 +64,23 @@ export default {
     const index = store.getters.accounts.findIndex(
       x => x.address === store.getters.currentAccount.address
     )
+    var validateTokens = (rule, value, callback) => {
+      if (parseFloat(value) === 0) {
+        callback(new Error('委托数量不可为0'))
+      } else if (parseFloat(value) > parseFloat(this.amount)) {
+        callback(new Error('委托数量不可大于账户余额'))
+      }
+    }
     return {
+      rules: {
+        tokens: [
+          { required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'blur' },
+          { validator: validateTokens, trigger: 'blur' }
+        ],
+        compound: [
+          { required: true, message: '请选择委托方式', trigger: 'blur' }
+        ]
+      },
       title: '新建委托',
       // 用户信息
       amount: '0',
@@ -106,6 +116,11 @@ export default {
     this.getAccount(this.currentAccount.address)
   },
   methods: {
+    oninput (e) {
+      // 通过正则过滤小数点后两位
+      e = (e.match(/^\d*(\.?\d{0,4})/g)[0]) || null
+      this.form.tokens = e
+    },
     goBack () {
       window.history.length > 1
         ? this.$router.go(-1)
@@ -126,7 +141,7 @@ export default {
         this.validator.address
       details +=
         '<br /><span style="color:red;">委托金额:</span><br />' +
-        this.form.tokens.toString() +
+        parseFloat(this.form.tokens).toString() +
         'QOS'
       details += '<br /><span style="color:red;">委托方式:</span><br />'
       details += this.form.compound === '1' ? '复投' : '不复投' + '</span>'
@@ -232,8 +247,8 @@ export default {
   .text-row {
     margin: 15px 10px;
   }
-  .btn-tokens{
-    width: 75%;
+  .btn-tokens {
+    width: 260px;
   }
 }
 span {

@@ -33,7 +33,7 @@ export function isNotEmpty (value) {
  */
 
 export function numFor4Decimal (num) {
-  return num / 10000
+  return parseFloat(num) / 10000
 }
 
 /**
@@ -42,7 +42,7 @@ export function numFor4Decimal (num) {
  */
 
 export function numForNoDecimal (num) {
-  return num * 10000
+  return parseFloat(num) * 10000
 }
 
 /**

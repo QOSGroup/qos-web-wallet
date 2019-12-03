@@ -3,12 +3,12 @@
     <div class="header-wrap">
       <el-page-header @back="goBack" content="创建钱包"></el-page-header>
     </div>
-    <el-form ref="form" :model="form" label-width="80px" v-bind:rules="rules">
+    <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="账户名称" prop="name" class="form-row">
         <el-input placeholder="请输入名称" v-model="form.name" ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :loading="onloading" @click="onSubmit('form')" >立即创建</el-button>
+        <el-button type="primary" :loading="isBtnLoading" @click="onSubmit()">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -28,36 +28,27 @@ export default {
         name: '',
         password: store.getters.passCheck
       },
-      onloading: false
+      isBtnLoading: false
     }
   },
   methods: {
-    onSubmit (formName) {
-      this.onloading = 'true'
-      this.$refs[formName].validate(async valid => {
-        if (valid) {
-          this.onloading = true
-          // 随机创建助记词
-          const mn = rpc.generateMnemonic()
-          // // 调用背景页函数
-          const bg = getBackground()
-          await bg.saveAccount({ mnemonic: mn, pwd: this.form.password, name: this.form.name })
-          // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
-          const currentAccount = await getCurrentAccount()
-          store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
-          // 创建账户成功,拷贝bg store中的accounts到popup store中
-          const bgState = bg.getBgState()
-          store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
-          // 账户新建后,默认跳转newwalletresult页面
-          this.$router.push({
-            name: 'walletresult',
-            params: { mnemonic: mn }
-          })
-        } else {
-          console.log('error newwallet!!')
-          this.onloading = false
-          return false
-        }
+    async onSubmit () {
+      this.isBtnLoading = true
+      // 随机创建助记词
+      const mn = rpc.generateMnemonic()
+      // // 调用背景页函数
+      const bg = getBackground()
+      await bg.saveAccount({ mnemonic: mn, pwd: this.form.password, name: this.form.name })
+      // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+      const currentAccount = await getCurrentAccount()
+      store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+      // 创建账户成功,拷贝bg store中的accounts到popup store中
+      const bgState = bg.getBgState()
+      store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
+      // 账户新建后,默认跳转newwalletresult页面
+      this.$router.push({
+        name: 'walletresult',
+        params: { mnemonic: mn }
       })
     },
     goBack () {

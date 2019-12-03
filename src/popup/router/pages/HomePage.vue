@@ -101,7 +101,7 @@
                 type="primary"
                 size="mini"
                 plain
-                @click="modifyCompound([ delegation.is_compound ], qos.toString(), delegation)"
+                @click="modifyCompound(delegation.is_compound, qos.toString(), delegation)"
               >更改</el-button>
             </div>
 
@@ -153,13 +153,19 @@ export default {
     this.getDelegations(this.$data.address)
 
     var clipboard = new ClipboardJS('.btn')
-
+    let _this = this
     clipboard.on('success', function (e) {
-      console.info('Action:', e.action)
+      // console.info('Action:', e.action)
       console.info('Text:', e.text)
-      console.info('Trigger:', e.trigger)
-
+      // console.info('Trigger:', e.trigger)
       e.clearSelection()
+      _this.$message({
+        showClose: true,
+        message: '复制成功',
+        type: 'info',
+        center: true,
+        duration: 500
+      })
     })
   },
   methods: {
@@ -289,7 +295,7 @@ export default {
         name: 'modifycompound',
         params: {
           amount: qos,
-          is_compound: isCompound,
+          iscompound: isCompound,
           delegation: delegation
         }
       })
@@ -376,7 +382,7 @@ span {
 .text-row {
   float: left;
   margin: 10px 10px;
-  width: 150px;
+  width: 200px;
 }
 .btn-operate {
   float: right;

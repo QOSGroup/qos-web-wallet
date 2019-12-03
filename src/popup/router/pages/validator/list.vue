@@ -203,11 +203,11 @@ export default {
     height: 100px;
   }
   .text-moniker {
-    width: 100px;
+    width: 140px;
     align-items: center;
   }
   .text-detail {
-    width: 180px;
+    width: 240px;
     height: 100px;
     align-items: center;
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="newwalletresult-wrap">
     <div class="header-wrap">
-      <el-page-header @back="goBack" content="创建钱包"></el-page-header>
+      <el-page-header @back="confirm" content="创建钱包"></el-page-header>
     </div>
 
     <div class="row">

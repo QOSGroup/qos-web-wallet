@@ -20,35 +20,25 @@
         </div>
       </div>
     </div>
-
     <div class="text-row">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
     <div class="text-row">
-      <span>{{operation == "delegate" ? "追加" : "撤回"}}数量：</span>
-    </div>
-    <div class="text-row">
-      <el-input placeholder="0" v-model="form.tokens" clearable size="small" class="btn-tokens"></el-input>
-      <el-button size="small" @click="setMax">最大值</el-button>
-    </div>
-    <div class="text-row">
       <span>账户余额：{{ amount }}QOS</span>
     </div>
-    <div class="text-row" v-if="delegation.delegate_amount == 0">
-      <el-radio v-model="form.compound" label="0">不复投</el-radio>
-      <el-radio v-model="form.compound" label="1">复投</el-radio>
-    </div>
-
-    <!-- <div>
-      <span>最大手续费：{{ form.gas }}</span>
-    </div>
-    <div class="block">
-      <el-slider v-model="form.gas"></el-slider>
-    </div>-->
-
-    <div class="btn-confirm">
-      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
-    </div>
+    <el-form :model="form" ref="form" v-bind:rules="rules">
+      <el-form-item :label="operation == 'delegate' ? '追加数量:' : '撤回数量:'" prop="tokens" class="text-row">
+        <el-input @input="oninput" placeholder="0" v-model="form.tokens" clearable size="small" class="btn-tokens"></el-input>
+        <el-button size="mini" @click="setMax">最大值</el-button>
+      </el-form-item>
+      <el-form-item v-if="false" label="最大手续费:" prop="gas" class="text-row">
+        <span>{{ form.gas }}</span>
+        <el-slider v-model="form.gas"></el-slider>
+      </el-form-item>
+      <el-form-item class="btn-confirm">
+        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-dialog
       title="提示"
@@ -75,7 +65,26 @@ export default {
     const index = store.getters.accounts.findIndex(
       x => x.address === store.getters.currentAccount.address
     )
+    var validateTokens = (rule, value, callback) => {
+      if (parseFloat(value) === 0) {
+        callback(new Error('委托数量不可为0'))
+      } else if (this.operation === 'delegate') {
+        if (parseFloat(value) > parseFloat(this.amount)) {
+          callback(new Error('追加数量不可大于账户余额'))
+        }
+      } else if (this.operation === 'unbond') {
+        if (parseFloat(value) > parseFloat(this.delegation.delegate_amount)) {
+          callback(new Error('撤回数量不可大于当前委托'))
+        }
+      }
+    }
     return {
+      rules: {
+        tokens: [
+          { required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'blur' },
+          { validator: validateTokens, trigger: 'blur' }
+        ]
+      },
       title:
         this.$route.params.operation === 'delegate' ? '追加委托' : '撤回委托',
       // 用户信息
@@ -108,6 +117,11 @@ export default {
     }
   },
   methods: {
+    oninput (e) {
+      // 通过正则过滤小数点后两位
+      e = (e.match(/^\d*(\.?\d{0,4})/g)[0]) || null
+      this.form.tokens = e
+    },
     goBack () {
       window.history.length > 1
         ? this.$router.push({
@@ -117,7 +131,13 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     setMax () {
-      this.$data.form.tokens = this.$data.amount
+      if (this.operation === 'delegate') {
+        this.$data.form.tokens = this.$data.amount
+      } else if (this.operation === 'unbond') {
+        this.$data.form.tokens = this.$data.delegation.delegate_amount
+      } else {
+        this.$data.form.tokens = 0
+      }
     },
     confirm () {
       let details =
@@ -128,7 +148,7 @@ export default {
         this.validator.address
       details +=
         '<br /><span style="color:red;">操作金额</span>:<br />' +
-        this.form.tokens.toString() +
+        parseFloat(this.form.tokens).toString() +
         'QOS</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
@@ -225,7 +245,7 @@ export default {
     margin: 15px 10px
   }
   .btn-tokens{
-    width: 75%;
+    width: 260px;
   }
 }
 span {

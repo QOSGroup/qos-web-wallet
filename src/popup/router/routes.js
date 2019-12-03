@@ -39,7 +39,7 @@ export default [
     component: HomePage
   },
   {
-    path: '/transfer/transfer/?:coin',
+    path: '/transfer/transfer/:coin',
     name: 'transfer',
     component: Transfer
   },
@@ -54,7 +54,7 @@ export default [
     component: WalletCreate2
   },
   {
-    path: '/wallet/result',
+    path: '/wallet/result/:mnemonic',
     name: 'walletresult',
     component: WalletResult
   },
@@ -69,22 +69,22 @@ export default [
     component: WalletImport2
   },
   {
-    path: '/delegation/deleagteorunbond',
+    path: '/delegation/deleagteorunbond/:amount/:operation/:delegation',
     name: 'delegateorunbond',
     component: DelegateOrUnbond
   },
   {
-    path: '/delegation/modify',
+    path: '/delegation/modify/:amount/:iscompound/:delegation',
     name: 'modifycompound',
     component: ModifyCompound
   },
   {
-    path: '/delegation/create',
+    path: '/delegation/create/:description/:validator',
     name: 'delegationcreate',
     component: DelegationCreate
   },
   {
-    path: '/result/result',
+    path: '/result/result/:hash',
     name: 'txresult',
     component: TxResult
   },
