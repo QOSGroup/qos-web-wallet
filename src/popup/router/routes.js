@@ -39,7 +39,7 @@ export default [
     component: HomePage
   },
   {
-    path: '/transfer/transfer/:coin',
+    path: '/transfer/transfer',
     name: 'transfer',
     component: Transfer
   },

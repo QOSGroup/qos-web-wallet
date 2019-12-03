@@ -2,11 +2,11 @@
   <div class="homepage-wrap">
     <div class="home-top-info">
       <div class="contents-head">
-        <div @click="accNameModify" class="link-wrap div-left">
-          <span >{{ userName }}</span>
+        <div class="div-left">
+          <span class="link-wrap" @click="accNameModify">{{ userName }}</span>
         </div>
-        <div @click="showAccountList" class="div-right">
-          <i class="el-icon-more" title="更多"></i>
+        <div @click="showAccountList" class="link-wrap div-right">
+          <i class="el-icon-setting" title="账户设置"></i>
         </div>
       </div>
       <div class="contents-head">
@@ -137,7 +137,7 @@ export default {
       address: store.getters.currentAccount.address,
       qos: 0,
       qcps: [],
-      delegations: []
+      delegations: [],
     }
   },
   computed: {
@@ -373,7 +373,7 @@ span {
   width: 100px;
 }
 .text-detail {
-  width: 180px;
+  width: 230px;
 }
 .div-contents {
   display: flex;
@@ -400,13 +400,13 @@ span {
 }
 .div-left{
   margin-top: 15px;
-  width: 90%;
+  width: 95%;
   font-size: 20px;
   font-weight: 100
 }
 .div-right{
-    margin-top: 15px;
-    font-size: 20px;
-    font-weight: 100
+  margin-top: 15px;
+  font-size: 20px;
+  font-weight: 100
 }
 </style>
