@@ -30,8 +30,21 @@ export default {
     }
   },
   methods: {
+    fakeClick (obj) {
+      var ev = document.createEvent('MouseEvents')
+      ev.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+      obj.dispatchEvent(ev)
+    },
+    exportRaw (name, data) {
+      var urlObject = window.URL || window.webkitURL || window
+      var exportBlob = new Blob([data])
+      var saveLink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+      saveLink.href = urlObject.createObjectURL(exportBlob)
+      saveLink.download = name
+      this.fakeClick(saveLink)
+    },
     exportMemwd () {
-      console.log('exportMemwd!')
+      this.exportRaw('助记词.txt', this.form.memwd)
     },
     goBack () {
       this.$router.push({ name: 'homepage' })

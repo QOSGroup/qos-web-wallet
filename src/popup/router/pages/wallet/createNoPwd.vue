@@ -32,10 +32,11 @@ export default {
     }
   },
   methods: {
-    async conifrm () {
+    conifrm () {
       // 设置按钮loading
-      this.isBtnLoading = true
-      await this.onSubmit()
+      this.onSubmit().finally(result => {
+        this.isBtnLoading = true
+      })
     },
     onSubmit () {
       return new Promise(async (resolve) => {
