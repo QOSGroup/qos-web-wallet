@@ -25,11 +25,12 @@ export async function setCurrentAccountLocal (accountList, pwd, name) {
     const encryptKey = encrypt(accountList[0].privateKey, pwd)
     const address = accountList[0].address
     if (!name) {
-      const acc = accList.find(x => x.address === address)
-      if (acc) {
-        name = acc.name
-      } else {
-        name = address.substr(address.length - 4, address.length - 1)
+      name = address.substr(address.length - 4, address.length - 1)
+      if (isNotEmptyObject(currentAcc)) {
+        const acc = accList.find(x => x.address === currentAcc.address)
+        if (acc) {
+          name = acc.name
+        }
       }
     }
     const accFirst = { name: name, address: address, encryptKey: encryptKey }

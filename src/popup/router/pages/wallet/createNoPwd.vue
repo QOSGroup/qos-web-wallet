@@ -7,8 +7,8 @@
       <el-form-item label="账户名称" prop="name" class="form-row">
         <el-input placeholder="请输入名称" v-model="form.name" ></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :loading="isBtnLoading" @click="onSubmit()">立即创建</el-button>
+      <el-form-item class="btn-create">
+        <el-button type="primary" :loading="isBtnLoading" @click="conifrm">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -32,23 +32,30 @@ export default {
     }
   },
   methods: {
-    async onSubmit () {
+    async conifrm () {
+      // 设置按钮loading
       this.isBtnLoading = true
-      // 随机创建助记词
-      const mn = rpc.generateMnemonic()
-      // // 调用背景页函数
-      const bg = getBackground()
-      await bg.saveAccount({ mnemonic: mn, pwd: this.form.password, name: this.form.name })
-      // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
-      const currentAccount = await getCurrentAccount()
-      store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
-      // 创建账户成功,拷贝bg store中的accounts到popup store中
-      const bgState = bg.getBgState()
-      store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
-      // 账户新建后,默认跳转newwalletresult页面
-      this.$router.push({
-        name: 'walletresult',
-        params: { mnemonic: mn }
+      await this.onSubmit()
+    },
+    onSubmit () {
+      return new Promise(async (resolve) => {
+        // 随机创建助记词
+        const mn = rpc.generateMnemonic()
+        // // 调用背景页函数
+        const bg = getBackground()
+        await bg.saveAccount({ mnemonic: mn, pwd: this.form.password, name: this.form.name })
+        // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+        const currentAccount = await getCurrentAccount()
+        store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+        // 创建账户成功,拷贝bg store中的accounts到popup store中
+        const bgState = bg.getBgState()
+        store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
+        // 账户新建后,默认跳转newwalletresult页面
+        this.$router.push({
+          name: 'walletresult',
+          params: { mnemonic: mn }
+        })
+        return resolve()
       })
     },
     goBack () {
@@ -66,6 +73,9 @@ export default {
   @include common-container;
   .form-row{
         margin: 20px 10px;
+  }
+  .btn-create{
+    margin-left: 10px;
   }
 }
 </style>

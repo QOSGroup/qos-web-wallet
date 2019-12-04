@@ -11,7 +11,7 @@
       <el-form-item label="重复密码" prop="repassword" class="form-row">
         <el-input placeholder="请再次输入密码" v-model="form.repassword" show-password auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="btn-create">
         <el-button type="primary" @click="onSubmit('form')" :loading="isBtnLoading">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
@@ -106,6 +106,9 @@ export default {
   @include common-container;
   .form-row{
         margin: 20px 10px;
+  }
+  .btn-create{
+    margin-left: 10px;
   }
 }
 </style>

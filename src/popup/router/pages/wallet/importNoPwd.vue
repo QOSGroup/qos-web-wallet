@@ -3,7 +3,7 @@
     <div class="header-wrap">
       <el-page-header @back="goBack" content="导入账户"></el-page-header>
     </div>
-    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="120px">
+    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px">
       <el-form-item label="导入类型" prop="type" class="form-row form-label">
         <el-select
           v-model="ruleForm.value"
