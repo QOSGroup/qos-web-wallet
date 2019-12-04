@@ -46,7 +46,7 @@
       </el-form-item>
     </el-form>
 
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="80%" custom-class="qos-dialog">
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="300px" custom-class="qos-dialog">
       <span>{{ this.error }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false, onloading = false">确 定</el-button>

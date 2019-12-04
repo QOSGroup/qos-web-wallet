@@ -73,8 +73,8 @@ export function registerGloablFunction (global) {
 
   global.deleteMsg = function (msg) {
     console.log('global.deleteMsg:  ------  start')
-    console.log(msg)
     store.commit(types.DELETEMSGBYCALLBACKID, msg.callbackId)
+    store.commit(types.DELETE_ACTIONNUM)
     console.log('global.deleteMsg:  ------  end')
   }
 

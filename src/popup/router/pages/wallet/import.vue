@@ -62,7 +62,7 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="80%"
+      width="300px"
       custom-class="qos-dialog"
     >
       <span>导入类型有误,请重新选择!</span>

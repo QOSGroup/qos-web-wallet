@@ -9,18 +9,16 @@ const extension = require('extensionizer')
 
 // 非登录权限下使用
 const whiteListPage = ['/login/login', '/register/register', '/wallet/create', '/wallet/result', '/wallet/import']
-// const whiteListPage = ['/login', '/register', '/transfer', '/newwallet', '/newwalletresult', '/importwalletwithseed', '/homepage', '/delegateorunbond', '/txresult', '/accountlist', '/newaccount', '/importaccount']
 
 // 获取backgroud.js中store中的state
 const bg = extension.extension.getBackgroundPage()
 const bgState = bg.getBgState()
 // 无论是否登录,将bg store的msgQueue[0]拷贝至popup页面的store.state.msgQueueLast
-store.commit(types.SET_MSGQUEUE_FIRST, bgState.msgQueue[bgState.msgQueue.length - 1])
+store.commit(types.SET_MSGQUEUE_LAST, bgState.msgQueue[bgState.msgQueue.length - 1])
 // 已经登录,直接进行bg store的拷贝
 if (bgState.accounts.length !== 0) {
   store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'currentAccount', 'passCheck'], bgState })
 }
-
 export async function beforeEach (to, from, next) {
   const accounts = store.getters.accounts
   // 是否未登录
@@ -40,8 +38,7 @@ export async function beforeEach (to, from, next) {
 
   // 获取popup store中的msgQueueLast
   const last = store.getters.msgQueueLast
-  console.log('msgQueueLast: ---------- popup -------', last)
-  console.log(last)
+  console.log('msgQueueLast: --- popup ---', last)
   if (isNotEmptyObject(last)) {
     const data = last.params
     // console.log('from.params---', from, from.params)

@@ -43,7 +43,7 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="80%"
+      width="300px"
       :before-close="handleClose"
       custom-class="qos-dialog"
     >
