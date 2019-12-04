@@ -103,10 +103,10 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     addAccount () {
-      this.$router.push({ name: 'walletcreate2' })
+      this.$router.push({ name: 'walletcreateNoPwd' })
     },
     importAccount () {
-      this.$router.push({ name: 'walletimport2' })
+      this.$router.push({ name: 'walletimportNoPwd' })
     },
     exportAccount () {
       this.$router.push({ name: 'accountexport' })

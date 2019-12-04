@@ -11,8 +11,8 @@ import Transfer from './pages/transfer/transfer'
 import WalletCreate from './pages/wallet/create'
 import WalletResult from './pages/wallet/result'
 import WalletImport from './pages/wallet/import'
-import WalletCreate2 from './pages/wallet/create2'
-import WalletImport2 from './pages/wallet/import2'
+import WalletcreateNoPwd from './pages/wallet/createNoPwd'
+import WalletimportNoPwd from './pages/wallet/importNoPwd'
 
 import DelegateOrUnbond from './pages/delegation/delegateorunbond'
 import ModifyCompound from './pages/delegation/modify'
@@ -49,9 +49,9 @@ export default [
     component: WalletCreate
   },
   {
-    path: '/wallet/create2',
-    name: 'walletcreate2',
-    component: WalletCreate2
+    path: '/wallet/createNoPwd',
+    name: 'walletcreateNoPwd',
+    component: WalletcreateNoPwd
   },
   {
     path: '/wallet/result/:mnemonic',
@@ -64,9 +64,9 @@ export default [
     component: WalletImport
   },
   {
-    path: '/wallet/import2',
-    name: 'walletimport2',
-    component: WalletImport2
+    path: '/wallet/importNoPwd',
+    name: 'walletimportNoPwd',
+    component: WalletimportNoPwd
   },
   {
     path: '/delegation/deleagteorunbond/:amount/:operation/:delegation',

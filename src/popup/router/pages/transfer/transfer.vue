@@ -20,7 +20,7 @@
       </el-form-item>
 
       <el-form-item label="转账数量:" prop="tokens" class="form-row">
-        <el-input @input="oninput" placeholder="请输金额" v-model="form.tokens" clearable size="mini" class="form-number-input"></el-input>
+        <el-input @input="oninput" placeholder="0" v-model="form.tokens" clearable size="mini" class="form-number-input"></el-input>
         <el-button size="mini" @click="setMax">最大值</el-button>
       </el-form-item>
 
@@ -30,7 +30,7 @@
       </el-form-item>
 
       <el-form-item class="btn-confirm">
-        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
+        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading" :disabled="isDisabled1 || isDisabled2">确定</el-button>
       </el-form-item>
     </el-form>
 
@@ -63,27 +63,39 @@ export default {
     var validateAddr = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入接收地址'))
+        this.isDisabled1 = true
+        return false
       } else {
         const res = rpc.verifyBech32StringByAccAddress(this.form.address)
         if (!res) {
           callback(new Error('地址格式有误,请检查!'))
+          this.isDisabled1 = true
+          return false
         }
       }
+      this.isDisabled1 = false
+      return true
     }
     var validateTokens = (rule, value, callback) => {
       if (parseFloat(value) === 0) {
         callback(new Error('委托数量不可为0'))
+        this.isDisabled2 = true
+        return false
       } else if (parseFloat(value) > parseFloat(this.balance)) {
         callback(new Error('委托数量不可大于账户余额'))
+        this.isDisabled2 = true
+        return false
       }
+      this.isDisabled2 = false
+      return true
     }
     return {
       rules: {
         address: [
-          { required: true, message: '请输入接收地址', trigger: 'blur' },
-          { validator: validateAddr, trigger: 'blur' }
+          { required: true, message: '请输入接收地址', trigger: 'change' },
+          { validator: validateAddr, trigger: 'change' }
         ],
-        tokens: [{ required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'blur' }, { validator: validateTokens, trigger: 'blur' }]
+        tokens: [{ required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'change' }, { validator: validateTokens, trigger: 'change' }]
       },
       // 根据用户地址链上查询的数据
       // coins: [],
@@ -97,6 +109,8 @@ export default {
       },
       // 确定按钮
       onloading: false,
+      isDisabled1: true,
+      isDisabled2: true,
       // 弹出提示框数据
       dialogVisible: false,
       error: '',

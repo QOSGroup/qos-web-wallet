@@ -42,7 +42,7 @@
         <el-slider v-model="form.gas"></el-slider>
       </el-form-item>
       <el-form-item class="btn-confirm">
-        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
+        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading" :disabled="isDisabled">确定</el-button>
       </el-form-item>
     </el-form>
 
@@ -67,15 +67,21 @@ export default {
     var validateTokens = (rule, value, callback) => {
       if (parseFloat(value) === 0) {
         callback(new Error('委托数量不可为0'))
+        this.isDisabled = true
+        return false
       } else if (parseFloat(value) > parseFloat(this.amount)) {
         callback(new Error('委托数量不可大于账户余额'))
+        this.isDisabled = true
+        return false
       }
+      this.isDisabled = false
+      return true
     }
     return {
       rules: {
         tokens: [
-          { required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'blur' },
-          { validator: validateTokens, trigger: 'blur' }
+          { required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'change' },
+          { validator: validateTokens, trigger: 'change' }
         ],
         compound: [
           { required: true, message: '请选择委托方式', trigger: 'blur' }
@@ -102,6 +108,7 @@ export default {
         gas: 0, // 支付的gas费用
         compound: '0' // 页面选择是否复投
       },
+      isDisabled: true,
       onloading: false,
       // 弹出提示框数据
       dialogVisible: false,

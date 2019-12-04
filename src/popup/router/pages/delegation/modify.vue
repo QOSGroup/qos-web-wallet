@@ -23,6 +23,9 @@
     <div class="text-info">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
+    <div class="text-info">
+      <span>变更方式:</span>
+    </div>
     <div v-if="this.$route.params.iscompound.toString() === 'true'" class="text-info">
       <div class="div_modify">复投</div>
       <div class="div_modify">
@@ -53,7 +56,6 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="80%"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>{{ this.error }}</span>
@@ -171,13 +173,6 @@ export default {
           this.error = '交易失败,请检查交易信息并重试!'
           this.dialogVisible = true
         })
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   },
   computed: {}
