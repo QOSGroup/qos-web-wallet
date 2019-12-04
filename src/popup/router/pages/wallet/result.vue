@@ -7,7 +7,7 @@
     <div class="row">
       <span>钱包创建成功，钱包助记词为：</span>
       <el-input type="textarea" v-model="form.memwd" :autosize="{ minRows: 2, maxRows: 8 }"></el-input>
-      <span class="text-message">注意:助记词是您恢复钱包的唯一手段，请牢记助记词，并确保助记词的安全。</span>
+      <span class="text-message">注意:助记词是您恢复私钥的唯一手段，请牢记助记词，并确保助记词的安全。</span>
     </div>
     <div class="row">
       <el-button type="primary" @click="exportMemwd" size="mini">导出助记词</el-button>
