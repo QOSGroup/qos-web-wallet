@@ -124,6 +124,7 @@ import { mapState } from 'vuex'
 import store from '@/store'
 import { numFor4Decimal } from '@/utils/index'
 import ClipboardJS from 'clipboard'
+import { setInterval, clearInterval } from 'timers'
 
 export default {
   data () {
@@ -138,7 +139,7 @@ export default {
       qos: 0,
       qcps: [],
       delegations: [],
-      copyFlag: false
+      clipboard: new ClipboardJS('.btn')
     }
   },
   computed: {
@@ -153,24 +154,23 @@ export default {
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)
 
-    var clipboard = new ClipboardJS('.btn')
     let _this = this
-    if (!this.copyFlag) {
-      clipboard.on('success', function (e) {
+    this.clipboard.on('success', function (e) {
       // console.info('Action:', e.action)
-        console.info('Text:', e.text)
-        // console.info('Trigger:', e.trigger)
-        e.clearSelection()
-        this.copyFlag = true
-        _this.$message({
-          showClose: true,
-          message: '复制成功',
-          type: 'info',
-          center: true,
-          duration: 500
-        })
+      // console.info('Text:', e.text)
+      // console.info('Trigger:', e.trigger)
+      e.clearSelection()
+      _this.$message({
+        showClose: true,
+        message: '复制成功',
+        type: 'info',
+        center: true,
+        duration: 500
       })
-    }
+    })
+  },
+  beforeDestroy () {
+    this.clipboard.destroy()
   },
   methods: {
     getAccount (address) {
