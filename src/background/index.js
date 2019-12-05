@@ -17,19 +17,29 @@ import {
 import { rpc } from '@/utils/rpc'
 
 // 注册成功、登录成功、账户切换、修改账户名称:完成持久化存储当前账户信息
-export async function setCurrentAccountLocal (accountList, pwd, name) {
+export async function setCurrentAccountLocal (decryptAccList, pwd, name, flag) {
   return new Promise(async (resolve) => {
     // 设置当前登录账户:默认所有登录成功账户中的第一个
     const currentAcc = await getCurrentAccount()
     const accList = await getAccountList()
-    const encryptKey = encrypt(accountList[0].privateKey, pwd)
-    const address = accountList[0].address
+    const encryptKey = encrypt(decryptAccList[0].privateKey, pwd)
+    const address = decryptAccList[0].address
     if (!name) {
       name = address.substr(address.length - 4, address.length - 1)
-      if (isNotEmptyObject(currentAcc)) {
-        const acc = accList.find(x => x.address === currentAcc.address)
-        if (acc) {
-          name = acc.name
+      if (flag === 'login') {
+        if (isNotEmptyObject(currentAcc)) {
+          const acc0 = decryptAccList.find(x => x.address === currentAcc.address)
+          if (acc0) {
+            const acc = accList.find(x => x.address === currentAcc.address)
+            if (acc) {
+              name = acc.name
+            }
+          } else {
+            const acc = accList.find(x => x.address === address)
+            if (acc) {
+              name = acc.name
+            }
+          }
         }
       }
     }
@@ -39,11 +49,14 @@ export async function setCurrentAccountLocal (accountList, pwd, name) {
       await setCurrentAccount(accFirst)
       store.commit(types.SET_CURRENT_ACCOUNT, accFirst)
     } else {
-      let acc = accountList.find(x => x.address === currentAcc.address)
+      // 用户密码解密成功的账户列表中查询注销前账户是否在其中
+      let acc = decryptAccList.find(x => x.address === currentAcc.address)
       if (!acc) {
+        // 不在其中
         await setCurrentAccount(accFirst)
         store.commit(types.SET_CURRENT_ACCOUNT, accFirst)
       } else {
+        // 在其中:更新
         await setCurrentAccount({ name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
         store.commit(types.SET_CURRENT_ACCOUNT, { name: name, address: acc.address, encryptKey: encrypt(acc.privateKey, pwd) })
       }
@@ -89,6 +102,11 @@ export function registerGloablFunction (global) {
     store.commit(types.SET_CURRENT_ACCOUNT)
   }
 
+  global.accountPassCheckDelete = function () {
+    // 不传递account 将设置为null
+    store.commit(types.SET_PASS_CHECK)
+  }
+
   // bg store 设置当前账户
   global.setCurrentAccount = function (account) {
     // 不传递account 将设置为null
@@ -116,7 +134,7 @@ export function registerGloablFunction (global) {
       await setAccount(account, pwd, name)
       // 当前账户本地持久化:更新
       const list = [account]
-      await setCurrentAccountLocal(list, pwd, name)
+      await setCurrentAccountLocal(list, pwd, name, 'create')
 
       // bg store 存储登录信息
       store.commit(types.SET_PASS_CHECK, pwd)
@@ -144,7 +162,7 @@ export function registerGloablFunction (global) {
       return false
     }
     // 本地持久化存储当前账户
-    await setCurrentAccountLocal(accountList, pwd)
+    await setCurrentAccountLocal(accountList, pwd, null, 'login')
     store.commit(types.SET_PASS_CHECK, pwd)
     // 返回该密码可以解密的账户列表
     return accountList

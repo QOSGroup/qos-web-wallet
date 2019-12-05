@@ -53,7 +53,6 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="300px"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>{{ error }}</span>
@@ -123,6 +122,8 @@ export default {
       // 移除popup和bg store中的当前账户信息
       bg.accountCurrentDelete()
       store.commit(types.SET_CURRENT_ACCOUNT)
+      bg.accountPassCheckDelete()
+      store.commit(types.SET_PASS_CHECK)
       // 跳转登录
       this.$router.push({ name: 'login' })
     },
@@ -183,13 +184,6 @@ export default {
             // })
           })
       }
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     },
     async changeAccount (address) {
       // 切换账户,首先获取到本地存储的账户列表

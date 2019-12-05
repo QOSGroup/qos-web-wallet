@@ -109,6 +109,10 @@ export default {
     state.msgQueueLast = null
   },
   [types.SET_PASS_CHECK] (state, payload) {
-    state.passCheck = payload
+    if (payload) {
+      state.passCheck = payload
+      return
+    }
+    state.passCheck = ''
   }
 }

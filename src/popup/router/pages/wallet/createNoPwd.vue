@@ -32,14 +32,21 @@ export default {
     }
   },
   methods: {
-    conifrm () {
-      // 设置按钮loading
-      this.onSubmit().finally(result => {
-        this.isBtnLoading = true
-      })
+    async conifrm () {
+      await this.onSubmit().then(mn => {
+        // 账户新建后,默认跳转newwalletresult页面
+        this.$router.push({
+          name: 'walletresult',
+          params: { mnemonic: mn }
+        })
+      }
+
+      )
     },
     onSubmit () {
       return new Promise(async (resolve) => {
+      // 设置按钮loading
+        this.isBtnLoading = true
         // 随机创建助记词
         const mn = rpc.generateMnemonic()
         // // 调用背景页函数
@@ -51,12 +58,8 @@ export default {
         // 创建账户成功,拷贝bg store中的accounts到popup store中
         const bgState = bg.getBgState()
         store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
-        // 账户新建后,默认跳转newwalletresult页面
-        this.$router.push({
-          name: 'walletresult',
-          params: { mnemonic: mn }
-        })
-        return resolve()
+
+        return resolve(mn)
       })
     },
     goBack () {
