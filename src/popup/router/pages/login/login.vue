@@ -6,21 +6,20 @@
         <el-input v-model="ruleForm.pwd" placeholder="请输入登录密码" show-password></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="btn btn-login" type="primary" @click="enterWallet">进入我的钱包</el-button>
+        <el-button class="btn btn-login" type="primary" @click="enterWallet('ruleForm')">进入我的钱包</el-button>
       </el-form-item>
     </el-form>
-    <div style="text-align:left;height:30px;">
+    <div class="text-link">
       <el-link target="_blank" @click="forgetPassword">忘记密码？</el-link>
     </div>
-    <div style="text-align:left;height:30px;">
+    <div class="text-link">
       <el-link target="_blank" @click="noWallet">没有钱包？</el-link>
     </div>
 
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="80%"
-      :before-close="handleClose"
+      width="300px"
       custom-class="qos-dialog"
     >
       <span>密码不匹配,请重新输入!</span>
@@ -66,34 +65,31 @@ export default {
     noWallet () {
       this.$router.push({ name: 'walletcreate' })
     },
-    async enterWallet () {
-      const bg = getBackground()
-      const acclist = await bg.login(this.ruleForm.pwd)
-      // 解密出账户列表
-      if (acclist) {
-        // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
-        const currentAccount = await getCurrentAccount()
-        store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
-        // 创建账户成功,拷贝bg store中的accounts到popup store中
-        const bgState = bg.getBgState()
-        store.commit(types.CLONE_STATE, { keyArr: ['accounts'], bgState })
-        // process MSG  返回当前账户地址
-        if (this.$store.getters.msgQueueLast && this.$store.getters.msgQueueLast.callbackId) {
-          console.log(this.$store.getters.msgQueueLast.callbackId)
-          bg.msgProcessed(new Res(true, { addr: store.getters.currentAccount.address }, this.$store.getters.msgQueueLast.callbackId))
+    async enterWallet (formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          const bg = getBackground()
+          const acclist = await bg.login(this.ruleForm.pwd)
+          // 解密出账户列表
+          if (acclist) {
+            // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+            const currentAccount = await getCurrentAccount()
+            store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+            // 创建账户成功,拷贝bg store中的accounts到popup store中
+            const bgState = bg.getBgState()
+            store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'passCheck'], bgState })
+            // process MSG  返回当前账户地址
+            if (this.$store.getters.msgQueueLast && this.$store.getters.msgQueueLast.callbackId) {
+              console.log(this.$store.getters.msgQueueLast.callbackId)
+              bg.msgProcessed(new Res(true, { addr: store.getters.currentAccount.address }, this.$store.getters.msgQueueLast.callbackId))
+            }
+            // 跳转主页,如果有消息,自动跳转后续消息处理
+            this.$router.push({ name: 'homepage' })
+          } else {
+            this.dialogVisible = true
+          }
         }
-        // 跳转主页,如果有消息,自动跳转后续消息处理
-        this.$router.push({ name: 'homepage' })
-      } else {
-        this.dialogVisible = true
-      }
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
+      })
     }
   }
 }
@@ -113,6 +109,10 @@ export default {
   }
   .btn-login {
     width: 100%;
+  }
+  .text-link{
+    text-align:left;
+    height:30px;
   }
 }
 </style>

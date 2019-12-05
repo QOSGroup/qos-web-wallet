@@ -1,32 +1,30 @@
 <template>
   <div class="homepage-wrap">
     <div class="home-top-info">
-      <div>
-        <br />
-        <div style="float:left;width:90%;text-align:left;" @click="accNameModify">
-          <span style="font-size:24px;">{{ userName }}</span>
+      <div class="contents-head">
+        <div class="div-left">
+          <span class="link-wrap" @click="accNameModify">{{ userName }}</span>
         </div>
-        <div style="float:right;width:10%;" @click="showAccountList">
-          <i class="el-icon-more" style="font-size:24px;" title="更多"></i>
+        <div @click="showAccountList" class="link-wrap div-right">
+          <i class="el-icon-setting" title="账户设置"></i>
         </div>
       </div>
-      <div>
-        <div style="width:88%;float:left;font-size:medium;text-align:left">
+      <div class="contents-head">
+        <div class="div-left">
           <span>{{ address }}</span>
         </div>
-        <div>
+        <div class="div-right">
           <i class="el-icon-document-copy btn" :data-clipboard-text="address" title="复制"></i>
         </div>
       </div>
     </div>
-    <!-- <el-divider></el-divider> -->
     <div>
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick" stretch>
         <el-tab-pane label="我的资产" name="balance">
           <div>
             <div class="text-wrap">
               <div class="text-title">QOS</div>
-              <div class="link-wrap ">
+              <div class="link-wrap">
                 <span class="number-style">{{ qos }}</span>
                 <i class="el-icon-link"></i>
               </div>
@@ -39,36 +37,36 @@
           </div>
 
           <div v-for="qcp in qcps" :key="qcp">
-            <div>
-              <div>{{ qcp.coin_name }}</div>
-              <div>
-                {{ qcp.amount }}
+            <div class="text-wrap">
+              <div class="text-title">{{ qcp.coin_name }}</div>
+              <div class="link-wrap">
+                <span class="number-style">{{ qcp.amount }}</span>
                 <i class="el-icon-link"></i>
               </div>
-              <div>
+              <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer([qcp.coin_name])">转账</el-button>
                 <el-button type="primary" size="small" plain @click="approve([qcp.coin_name])">预授权</el-button>
               </div>
-              <el-divider width="80%"></el-divider>
             </div>
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="我的委托" name="delegation">
           <div v-for="(delegation, index) in delegations" :key="index">
-            <div>
-              <div style="float:left;width:100px;">
-                <el-image style="width: 100px; height: 100px" :src="delegation.logo"></el-image>
+            <div class="div-contents">
+              <div>
+                <el-image class="logo-image" :src="delegation.logo"></el-image>
               </div>
-              <div style="float:right;width:200px;">
-                <div style="text-align:left;">
-                  <div style="float:left;font-size: medium;">{{ delegation.moniker }}</div>
-                  <div style="float:left;">
+              <div class="text-detail">
+                <div class="div-contents">
+                  <div>{{ delegation.moniker }}</div>
+                  <div class="link-wrap">
                     <el-link :href="delegation.validatorUrl" target="_blank">
                       <i class="el-icon-link"></i>
                     </el-link>
                   </div>
                 </div>
-                <div style="text-align:left;">
+                <div>
                   <span>
                     <br />
                     {{ delegation.validator_address }}
@@ -76,46 +74,45 @@
                 </div>
               </div>
             </div>
-            <div>
-              <div style="text-align:left;float:left;">
-                <span>委托金额：{{ delegation.delegate_amount }}</span>
-              </div>
-              <div style="float:right;">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="delegateorunbond('delegate', qos.toString(), delegation)"
-                >追加</el-button>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="delegateorunbond('unbond', qos.toString(), delegation)"
-                >撤回</el-button>
-              </div>
+
+            <div class="text-row">
+              <span>委托金额：{{ delegation.delegate_amount }}</span>
             </div>
-            <div>
-              <div style="vertical-align:middle;text-align:left;float:left;">
-                <span>复投方式：{{ delegation.is_compound ? "已复投" : "未复投" }}</span>
-              </div>
-              <div style="float:right;">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="modifyCompound([ delegation.is_compound ], qos.toString(), delegation)"
-                >更改</el-button>
-              </div>
+            <div class="btn-operate">
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                @click="delegateorunbond('delegate', qos.toString(), delegation)"
+              >追加</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                @click="delegateorunbond('unbond', qos.toString(), delegation)"
+              >撤回</el-button>
             </div>
-            <el-divider width="80%"></el-divider>
+
+            <div class="text-row">
+              <span>复投方式：{{ delegation.is_compound ? "已复投" : "未复投" }}</span>
+            </div>
+            <div class="btn-operate">
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                @click="modifyCompound(delegation.is_compound, qos.toString(), delegation)"
+              >更改</el-button>
+            </div>
+
+            <el-divider class="line-divider"></el-divider>
           </div>
 
-          <div>
+          <div class="text-wrap">
             <el-button icon="el-icon-plus" circle @click="createDelegation" title="新增委托"></el-button>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="我的授权" name="approve">暂不支持该功能！</el-tab-pane>
+        <el-tab-pane label="我的授权" name="approve" class="tab-info">暂不支持该功能！</el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -127,6 +124,7 @@ import { mapState } from 'vuex'
 import store from '@/store'
 import { numFor4Decimal } from '@/utils/index'
 import ClipboardJS from 'clipboard'
+import { setInterval, clearInterval } from 'timers'
 
 export default {
   data () {
@@ -140,7 +138,8 @@ export default {
       address: store.getters.currentAccount.address,
       qos: 0,
       qcps: [],
-      delegations: []
+      delegations: [],
+      clipboard: new ClipboardJS('.btn')
     }
   },
   computed: {
@@ -155,15 +154,23 @@ export default {
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)
 
-    var clipboard = new ClipboardJS('.btn')
-
-    clipboard.on('success', function (e) {
-      console.info('Action:', e.action)
-      console.info('Text:', e.text)
-      console.info('Trigger:', e.trigger)
-
+    let _this = this
+    this.clipboard.on('success', function (e) {
+      // console.info('Action:', e.action)
+      // console.info('Text:', e.text)
+      // console.info('Trigger:', e.trigger)
       e.clearSelection()
+      _this.$message({
+        showClose: true,
+        message: '复制成功',
+        type: 'info',
+        center: true,
+        duration: 500
+      })
     })
+  },
+  beforeDestroy () {
+    this.clipboard.destroy()
   },
   methods: {
     getAccount (address) {
@@ -186,11 +193,6 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          // this.$message({
-          //   showClose: true,
-          //   message: '该账户在链上的‘账户信息’查询失败!',
-          //   type: 'warning'
-          // })
         })
     },
     getDelegations (address) {
@@ -216,11 +218,6 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          // this.$message({
-          //   showClose: true,
-          //   message: '该账户在链上的‘委托信息’查询失败!',
-          //   type: 'warning'
-          // })
         })
     },
     getValidator (delegation, i) {
@@ -302,7 +299,7 @@ export default {
         name: 'modifycompound',
         params: {
           amount: qos,
-          is_compound: isCompound,
+          iscompound: isCompound,
           delegation: delegation
         }
       })
@@ -345,15 +342,15 @@ span {
 }
 .el-icon-document-copy {
   font-size: 22px;
-  margin-top: 6px;
+  margin-top: 20px;
   cursor: pointer;
 }
 .el-icon-more {
   cursor: pointer;
 }
 .home-top-info {
-  background:rgba(50, 115, 200, 1);
-  height:125px;
+  background: rgba(50, 115, 200, 1);
+  height: 125px;
   color: #ffffff;
   // border-radius: 6px;
   padding: 0 8px;
@@ -374,5 +371,46 @@ span {
 }
 .number-style {
   font-size: 30px;
+}
+.logo-image {
+  height: 100px;
+  width: 100px;
+}
+.text-detail {
+  width: 230px;
+}
+.div-contents {
+  display: flex;
+  margin: 10px 5px;
+}
+.text-row {
+  float: left;
+  margin: 10px 10px;
+  width: 200px;
+}
+.btn-operate {
+  float: right;
+  margin: 0px 5px;
+  height: 30px;
+}
+.line-divider {
+  margin-top: 80px;
+}
+.tab-info{
+  text-align: center;
+}
+.contents-head{
+  display: flex;
+}
+.div-left{
+  margin-top: 15px;
+  width: 95%;
+  font-size: 20px;
+  font-weight: 100
+}
+.div-right{
+  margin-top: 15px;
+  font-size: 20px;
+  font-weight: 100
 }
 </style>

@@ -1,18 +1,19 @@
 <template>
   <div class="txresult-wrap">
-    <el-page-header @back="goBack" content="交易结果"></el-page-header>
-    <el-divider></el-divider>
-    <div>
-      <div><span>交易已提交，上链中...</span></div>
-      <div>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="交易结果"></el-page-header>
+    </div>
+    <div class="row">
+      <div class="text-info"><span>交易已提交，上链中...</span></div>
+      <div class="text-info">
         <span>交易hash：{{ txhash }}</span>
       </div>
     </div>
-    <div>
+    <div class="row">
       <el-button type="primary" size="small" plain @click="detailInWeb">在浏览器中查看</el-button>
     </div>
-    <div>
-      <el-button type="primary" size="mini" plain @click="confirm">确定</el-button>
+    <div class="btn-confirm">
+      <el-button type="primary" size="small" plain @click="confirm">确定</el-button>
     </div>
   </div>
 </template>
@@ -45,16 +46,19 @@ export default {
 @import "~style/common.scss";
 .txresult-wrap {
   @include common-container;
-  div {
-    text-align: center;
-    overflow: hidden;
-    overflow-y: auto;
-    margin-bottom: 10%;
-    vertical-align: middle;
-  }
   span {
     word-break: break-all;
     word-wrap: break-word;
+  }
+  .row{
+    margin: 20px;
+    text-align: center;
+  }
+  .btn-confirm{
+    text-align: center
+  }
+  .text-info{
+    margin-top: 10px;
   }
 }
 </style>

@@ -1,8 +1,6 @@
 <template>
   <div class="register-wrap">
     <img class="logo" src="/icons/qos.png" alt="qos logo" />
-    <div>{{testName}}</div>
-
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
       <el-form-item>
         <el-button class="btn btn-register" type="primary" @click="newWallet">立即创建</el-button>
@@ -23,9 +21,6 @@ export default {
     }
   },
   computed: {
-    testName () {
-      return this.$store.state.toPage.pageName
-    }
   },
   mounted () {
     console.log(this.$store.state.toPage.pageName)
@@ -49,10 +44,13 @@ export default {
     width: 20%;
     display: block;
     margin: 0 auto;
-    margin-bottom: 50px;
+    margin: 50px auto;
   }
   .btn-register {
     width: 100%;
+  }
+  .el-form-item{
+    margin: 20px 20px 20px 20px;
   }
 }
 </style>

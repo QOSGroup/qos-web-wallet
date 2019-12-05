@@ -26,12 +26,9 @@ export default {
     state.toPage = payload
   },
   [types.ADD_MSG_QUEUE] (state, payload) {
-    console.log('types.ADD_MSG_QUEUE-----------------start')
     const msgQueue = state.msgQueue
     msgQueue.push(payload)
     state.msgQueue = msgQueue
-    console.log(state.msgQueue)
-    console.log('types.ADD_MSG_QUEUE-----------------end')
   },
   [types.CLONE_STATE] (state, payload) {
     const keyArr = payload.keyArr
@@ -104,7 +101,7 @@ export default {
     }
     state.currentAccount = null
   },
-  [types.SET_MSGQUEUE_FIRST] (state, payload) {
+  [types.SET_MSGQUEUE_LAST] (state, payload) {
     if (payload) {
       state.msgQueueLast = payload
       return
@@ -112,6 +109,10 @@ export default {
     state.msgQueueLast = null
   },
   [types.SET_PASS_CHECK] (state, payload) {
-    state.passCheck = payload
+    if (payload) {
+      state.passCheck = payload
+      return
+    }
+    state.passCheck = ''
   }
 }

@@ -1,49 +1,52 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" content="验证人列表"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="验证人列表"></el-page-header>
+    </div>
 
     <div>
-      <div v-for="(validator, index) in validators" :key="index">
-        <div>
-          <div style="float:left;width:100px;">
-            <el-image style="width: 100px; height: 100px" :src="validator.description.logo"></el-image>
+      <div v-for="(validator, index) in validators" :key="index" class="row">
+        <div class="logo-addr-contents">
+          <div class="logo-div">
+            <el-image class="logo-image" :src="validator.description.logo"></el-image>
           </div>
-          <div style="float:right;width:200px;">
-            <div style="text-align:left;">
-              <div style="float:left;font-size:x-large;">{{ validator.description.moniker }}</div>
-              <div style="float:left;font-size:x-large;">
-                <el-link :href="validator.validator" target="_blank">
+          <div class="text-detail">
+            <div class="logo-addr-contents">
+              <div class="text-moniker text-validator">
+                <span>{{ validator.description.moniker }}</span>
+                <el-link :href="validator.validator" target="_blank" class="link-wrap">
                   <i class="el-icon-link"></i>
                 </el-link>
               </div>
-              <div style="float:right;">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="setValidator(validator)"
-                >委 托</el-button>
+              <div
+                v-if="delegations.findIndex(x => x.validator_address === validator.validator) < 0"
+                class="text-validator"
+              >
+                <el-button type="primary" size="mini" @click="setValidator(validator)">新建委托</el-button>
+              </div>
+              <div class="text-validator" v-else>
+                <el-button type="primary" size="mini" @click="toHomepage(validator)">已有委托</el-button>
               </div>
             </div>
-            <div style="text-align:left;">
+            <div class="text-validator">
               <span>{{ validator.validator }}</span>
             </div>
-            <div style="text-align:left;">
+            <div class="text-validator">
               <span>总委托：{{ validator.bondTokens / 10000 }}</span>
             </div>
           </div>
         </div>
 
-        <div>
+        <div class="text-validator">
           <span>验证状态：{{ validator.status === 'active' ? '活跃' : '非活跃' }}</span>
         </div>
-        <div>
+        <div class="text-validator">
           <span>佣&nbsp;&nbsp;金&nbsp;&nbsp;率：{{ validator.commission.commission_rates.rate }}</span>
         </div>
-        <div>
+        <div class="text-validator">
           <span>官方网址: {{ validator.description.website }}</span>
         </div>
-        <div>
+        <div class="text-validator">
           <span>详细信息: {{ validator.description.details }}</span>
         </div>
         <el-divider width="80%"></el-divider>
@@ -53,7 +56,7 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="80%"
+      width="300px"
       :before-close="handleClose"
       custom-class="qos-dialog"
     >
@@ -74,6 +77,9 @@ export default {
       x => x.address === store.getters.currentAccount.address
     )
     return {
+      address: store.getters.currentAccount.address,
+      // 当前账户的所有委托
+      delegations: [],
       // 所有validators
       validators: [],
       // 用户所选的validator信息
@@ -90,6 +96,7 @@ export default {
     }
   },
   created () {
+    this.getDelegations(this.$data.address)
     this.getValidators()
   },
   methods: {
@@ -104,26 +111,36 @@ export default {
     setMax () {
       this.$data.form.tokens = this.$data.amount
     },
+    toHomepage (validator) {
+      this.$router.push({
+        name: 'homepage',
+        params: { validator, activeName: 'delegation' }
+      })
+    },
     setValidator (validator) {
-      const choose = validator.validator
+      this.$router.push({ name: 'delegationcreate', params: validator })
+    },
+    getDelegations (address) {
+      // 刷新委托信息
+      this.delegations = []
       const account = rpc.recoveryAccountByPrivateKey(
         this.currentAccount.privateKey
       )
-      const res = account.queryDelagationOne(
-        this.currentAccount.address,
-        choose
-      )
+      const res = account.queryDelagationAll(address)
       res
-        .then(result => {
-          this.$message({
-            showClose: true,
-            message: '已有委托,请从‘我的委托’中进行追加或撤回!',
-            type: 'warning'
-          })
+        .then(async result => {
+          if (result.status === 200) {
+            this.delegations = result.data
+          } else {
+            this.$message({
+              showClose: true,
+              message: '系统查询数据失败,请稍后重试!',
+              type: 'warning'
+            })
+          }
         })
         .catch(error => {
           console.log(error)
-          this.$router.push({ name: 'delegationcreate', params: validator })
         })
     },
     getValidators () {
@@ -138,15 +155,16 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '系统发生错误,请稍后再试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
+          console.log(error)
           this.$message({
             showClose: true,
-            message: error,
+            message: '网络错误,请稍后重试!',
             type: 'error'
           })
         })
@@ -169,13 +187,36 @@ export default {
 @import "~style/common.scss";
 .delegateorunbond-wrap {
   @include common-container;
-}
-div {
-  text-align: left;
-  overflow: hidden;
-  overflow-y: auto;
-  margin: 2% 0 3% 0;
-  vertical-align: middle;
+  .row {
+    margin: 10px;
+  }
+  .logo-addr-contents {
+    display: flex;
+  }
+  .logo-div{
+    width: 100px;
+    height: 100px;
+    align-items: center;
+  }
+  .logo-image {
+    width: 100px;
+    height: 100px;
+  }
+  .text-moniker {
+    width: 140px;
+    align-items: center;
+  }
+  .text-detail {
+    width: 240px;
+    height: 100px;
+    align-items: center;
+  }
+  .link-wrap {
+    cursor: pointer;
+  }
+  .text-validator {
+    margin: 5px 5px;
+  }
 }
 span {
   word-break: break-all;

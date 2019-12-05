@@ -1,9 +1,11 @@
 <template>
   <div class="accountmodify-wrap">
-    <el-page-header @back="goBack" content="账户名称修改"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="账户名称修改"></el-page-header>
+    </div>
+
     <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="账户名称" prop="name">
+      <el-form-item label="账户名称" prop="name" class="form-row">
         <el-input v-model="form.name" :placeholder="this.$route.params.name"></el-input>
       </el-form-item>
       <el-form-item>
@@ -63,5 +65,8 @@ export default {
 @import "~style/common.scss";
 .accountmodify-wrap {
   @include common-container;
+  .form-row{
+    margin: 20px 10px
+  }
 }
 </style>

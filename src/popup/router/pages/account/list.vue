@@ -13,13 +13,13 @@
       </div>
     </div>
     <div class="btns-wrap">
-      <el-button type="primary" plain @click="addAccount" size="small" style="width:30%;">
+      <el-button type="primary" plain @click="addAccount" size="mini" class="btn-list">
         <i class="el-icon-plus"></i>新建账户
       </el-button>
-      <el-button type="success" plain @click="importAccount" size="small" style="width:30%;">
+      <el-button type="success" plain @click="importAccount" size="mini" class="btn-list">
         <i class="el-icon-download"></i>导入账户
       </el-button>
-      <el-button type="warning" plain @click="exportAccount" size="small" style="width:30%;">
+      <el-button type="warning" plain @click="exportAccount" size="mini" class="btn-list">
         <i class="el-icon-upload2"></i>导出私钥
       </el-button>
     </div>
@@ -52,8 +52,7 @@
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="80%"
-      :before-close="handleClose"
+      width="300px"
       custom-class="qos-dialog"
     >
       <span>{{ error }}</span>
@@ -72,6 +71,7 @@ import { getBackground } from '../../../common/bgcontact'
 import clone from 'clone'
 import { setCurrentAccount, getAccountList } from '@/business/auth'
 import { rpc } from '@/utils/rpc'
+import { numFor4Decimal } from '@/utils/index'
 
 export default {
   data () {
@@ -102,10 +102,10 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     addAccount () {
-      this.$router.push({ name: 'walletcreate2' })
+      this.$router.push({ name: 'walletcreateNoPwd' })
     },
     importAccount () {
-      this.$router.push({ name: 'walletimport2' })
+      this.$router.push({ name: 'walletimportNoPwd' })
     },
     exportAccount () {
       this.$router.push({ name: 'accountexport' })
@@ -122,6 +122,8 @@ export default {
       // 移除popup和bg store中的当前账户信息
       bg.accountCurrentDelete()
       store.commit(types.SET_CURRENT_ACCOUNT)
+      bg.accountPassCheckDelete()
+      store.commit(types.SET_PASS_CHECK)
       // 跳转登录
       this.$router.push({ name: 'login' })
     },
@@ -143,14 +145,14 @@ export default {
               let list = []
               list.push({
                 cointype: 'QOS',
-                amount: result.data.value.qos
+                amount: numFor4Decimal(result.data.value.qos)
               })
               qcps = result.data.value.qcps
               if (qcps) {
                 for (let qcp of qcps) {
                   list.push({
                     cointype: qcp.coin_name,
-                    amount: qcp.amount
+                    amount: numFor4Decimal(qcp.amount)
                   })
                 }
               }
@@ -182,13 +184,6 @@ export default {
             // })
           })
       }
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     },
     async changeAccount (address) {
       // 切换账户,首先获取到本地存储的账户列表
@@ -255,7 +250,8 @@ export default {
     font-size: 14px;
   }
   .btns-wrap {
-    margin: 15px;
+    margin: 15px 10px;
+    text-align: center;
   }
   .row-wrap {
     margin: 0 15px 15px !important;
@@ -274,6 +270,9 @@ export default {
     .cont-wrap {
       line-height: 28px;
     }
+  }
+  .btn-list{
+    width: 30%;
   }
 }
 </style>

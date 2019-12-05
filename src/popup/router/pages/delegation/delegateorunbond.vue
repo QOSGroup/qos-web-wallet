@@ -1,71 +1,56 @@
 <template>
   <div class="delegateorunbond-wrap">
-    <el-page-header @back="goBack" :content="title"></el-page-header>
-    <el-divider></el-divider>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" :content="title"></el-page-header>
+    </div>
 
-    <div>
-      <div style="float:left;width:100px;">
-        <el-image style="width: 100px; height: 100px" :src="validator.logo"></el-image>
+    <div class="div-contents">
+      <div>
+        <el-image class="logo-image" :src="validator.logo"></el-image>
       </div>
-      <div style="float:right;width:200px;">
-        <div style="text-align:left;">
-          <div style="float:left;font-size: medium;">{{ validator.moniker }}</div>
-          <div style="float:left;">
-            <el-link :href="validator.validatorUrl" target="_blank">
-              <i class="el-icon-link"></i>
-            </el-link>
-          </div>
-          <!-- <div><el-button type="primary" size="mini" plain @click="selectValidator()">选择委托对象</el-button></div> -->
+      <div>
+        <div class="text-row">
+          <span>{{ validator.moniker }}</span>
+          <el-link :href="validator.validatorUrl" target="_blank">
+            <i class="el-icon-link"></i>
+          </el-link>
         </div>
-        <div style="text-align:left;">
-          <span>
-            <br />
-            {{ validator.address }}
-          </span>
+        <div class="text-row">
+          <span>{{ validator.address }}</span>
         </div>
       </div>
     </div>
-
-    <div>
+    <div class="text-row">
       <span>当前委托：{{ delegation.delegate_amount }} QOS</span>
     </div>
-    <div>
-      <span>{{operation == "delegate" ? "追加" : "撤回"}}数量：</span>
-    </div>
-    <div>
-      <el-input type="input" v-model="form.tokens" clearable size="small" style="width:75%;"></el-input>
-      <el-button size="mini" style="float:right;height:38px;" @click="setMax">最大值</el-button>
-    </div>
-    <div>
+    <div class="text-row">
       <span>账户余额：{{ amount }}QOS</span>
     </div>
-    <div v-if="delegation.delegate_amount == 0">
-      <el-radio v-model="form.compound" label="0">不复投</el-radio>
-      <el-radio v-model="form.compound" label="1">复投</el-radio>
-    </div>
-
-    <!-- <div>
-      <span>最大手续费：{{ form.gas }}</span>
-    </div>
-    <div class="block">
-      <el-slider v-model="form.gas"></el-slider>
-    </div>-->
-
-    <div style="text-align:center;">
-      <el-button type="primary" size="small" plain @click="confirm" :loading="onloading">确定</el-button>
-    </div>
+    <el-form :model="form" ref="form" v-bind:rules="rules">
+      <el-form-item :label="operation == 'delegate' ? '追加数量:' : '撤回数量:'" prop="tokens" class="text-row">
+        <el-input @input="oninput" placeholder="0" v-model="form.tokens" clearable size="small" class="btn-tokens"></el-input>
+        <el-button size="mini" @click="setMax">最大值</el-button>
+      </el-form-item>
+      <el-form-item v-if="false" label="最大手续费:" prop="gas" class="text-row">
+        <span>{{ form.gas }}</span>
+        <el-slider v-model="form.gas"></el-slider>
+      </el-form-item>
+      <el-form-item class="btn-confirm">
+        <el-button type="primary" size="small" plain @click="confirm" :loading="onloading" :disabled="isDisabled">确定</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
-      width="80%"
+      width="300px"
       :before-close="handleClose"
       custom-class="qos-dialog"
     >
       <span>{{ this.error }}</span>
       <span slot="footer" class="dialog-footer">
         <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="dialogVisible = false, onloading = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -74,11 +59,40 @@
 <script>
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
-import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
+import { numForNoDecimal } from '@/utils/index'
 export default {
   data () {
-    const index = store.getters.accounts.findIndex(x => x.address === store.getters.currentAccount.address)
+    const index = store.getters.accounts.findIndex(
+      x => x.address === store.getters.currentAccount.address
+    )
+    var validateTokens = (rule, value, callback) => {
+      if (parseFloat(value) === 0) {
+        this.isDisabled = true
+        callback(new Error('委托数量不可为0'))
+        return false
+      } else if (this.operation === 'delegate') {
+        if (parseFloat(value) > parseFloat(this.amount)) {
+          this.isDisabled = true
+          callback(new Error('追加数量不可大于账户余额'))
+          return false
+        }
+      } else if (this.operation === 'unbond') {
+        if (parseFloat(value) > parseFloat(this.delegation.delegate_amount)) {
+          this.isDisabled = true
+          callback(new Error('撤回数量不可大于当前委托'))
+          return false
+        }
+      }
+      this.isDisabled = false
+      return true
+    }
     return {
+      rules: {
+        tokens: [
+          { required: true, message: '请输入转账数量,限制最多4位小数', trigger: 'change' },
+          { validator: validateTokens, trigger: 'change' }
+        ]
+      },
       title:
         this.$route.params.operation === 'delegate' ? '追加委托' : '撤回委托',
       // 用户信息
@@ -95,7 +109,7 @@ export default {
       // 用户在当前validator的委托信息
       delegation: {
         delegator_address: this.$route.params.delegation.validator_address,
-        delegate_amount: numFor4Decimal(this.$route.params.delegation.delegate_amount),
+        delegate_amount: this.$route.params.delegation.delegate_amount,
         is_compound: this.$route.params.delegation.is_compound
       },
       form: {
@@ -103,6 +117,7 @@ export default {
         gas: 0, // 支付的gas费用
         compound: '0' // 页面选择是否复投
       },
+      isDisabled: true,
       onloading: false,
       // 弹出提示框数据
       dialogVisible: false,
@@ -111,6 +126,11 @@ export default {
     }
   },
   methods: {
+    oninput (e) {
+      // 通过正则过滤小数点后两位
+      e = (e.match(/^\d*(\.?\d{0,4})/g)[0]) || null
+      this.form.tokens = e
+    },
     goBack () {
       window.history.length > 1
         ? this.$router.push({
@@ -120,23 +140,36 @@ export default {
         : this.$router.push({ name: 'homepage' })
     },
     setMax () {
-      this.$data.form.tokens = this.$data.amount
+      if (this.operation === 'delegate') {
+        this.$data.form.tokens = this.$data.amount
+      } else if (this.operation === 'unbond') {
+        this.$data.form.tokens = this.$data.delegation.delegate_amount
+      } else {
+        this.$data.form.tokens = 0
+      }
     },
     confirm () {
-      let details = '<span style="word-break: break-all;"><span style="color:blue;">操作地址</span>:<br />' + this.currentAccount.address
-      details += '<br /><span style="color:green;">验证人地址</span>:<br />' + this.form.address
-      details += '<br /><span style="color:red;">操作金额</span>:<br />' + numForNoDecimal(this.form.tokens).toString() + this.coin + '</span>'
+      let details =
+        '<span style="word-break: break-all;"><span style="color:blue;">你的地址</span>:<br />' +
+        this.currentAccount.address
+      details +=
+        '<br /><span style="color:green;">验证人地址:</span><br />' +
+        this.validator.address
+      details +=
+        '<br /><span style="color:red;">操作金额</span>:<br />' +
+        parseFloat(this.form.tokens).toString() +
+        'QOS</span>'
       this.$confirm(details, '交易确认', {
         customClass: 'message-confirm',
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         // type: 'warning',
         dangerouslyUseHTMLString: true
-      }).then(() => {
-        this.commitTx()
-      }).catch(() => {
-
       })
+        .then(() => {
+          this.commitTx()
+        })
+        .catch(() => {})
     },
     commitTx () {
       this.onloading = true
@@ -154,7 +187,7 @@ export default {
       let data, res
       if (this.operation === 'delegate') {
         data = {
-          amount: this.form.tokens.toString(),
+          amount: numForNoDecimal(this.form.tokens).toString(),
           base: myBase
         }
         if (this.delegation.delegate_amount.toString() === '0') {
@@ -163,7 +196,7 @@ export default {
         res = account.sendCreateDelegateTx(this.validator.address, data)
       } else {
         data = {
-          unbond_amount: this.form.tokens.toString(),
+          unbond_amount: numForNoDecimal(this.form.tokens).toString(),
           base: myBase
         }
         res = account.sendUnbondDelegationTx(this.validator.address, data)
@@ -177,12 +210,13 @@ export default {
               params: { hash: result.data.hash }
             })
           } else {
-            this.error = result.statusText
+            this.error = '交易失败,请检查交易信息并重试!'
             this.dialogVisible = true
           }
         })
         .catch(error => {
-          this.error = error
+          console.log(error)
+          this.error = '交易失败,请检查交易信息并重试!'
           this.dialogVisible = true
         })
     },
@@ -204,13 +238,24 @@ export default {
 @import "~style/common.scss";
 .delegateorunbond-wrap {
   @include common-container;
-}
-div {
-  text-align: left;
-  overflow: hidden;
-  overflow-y: auto;
-  margin: 1% 0 2% 0;
-  vertical-align: middle;
+  .div-contents {
+    display: flex;
+    margin: 10px;
+  }
+  .logo-image {
+    width: 100px;
+    height: 100px;
+  }
+  .btn-confirm{
+    text-align: center;
+    margin: 20px;
+  }
+  .text-row{
+    margin: 15px 10px
+  }
+  .btn-tokens{
+    width: 260px;
+  }
 }
 span {
   word-break: break-all;

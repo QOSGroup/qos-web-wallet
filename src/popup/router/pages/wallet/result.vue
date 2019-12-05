@@ -1,20 +1,21 @@
 <template>
   <div class="newwalletresult-wrap">
-    <el-page-header @back="goBack" content="创建钱包"></el-page-header>
-    <el-divider></el-divider>
-    <div>
+    <div class="header-wrap">
+      <el-page-header @back="confirm" content="创建钱包"></el-page-header>
+    </div>
+
+    <div class="row">
       <span>钱包创建成功，钱包助记词为：</span>
-      <el-input type="textarea" v-model="form.memwd" :autosize="{ minRows: 2, maxRows: 6}"></el-input>
-      <span>助记词是您恢复钱包的唯一手段，请牢记助记词，并确保助记词的安全。</span>
+      <el-input type="textarea" v-model="form.memwd" :autosize="{ minRows: 2, maxRows: 8 }"></el-input>
+      <span class="text-message">注意:助记词是您恢复私钥的唯一手段，请牢记助记词，并确保助记词的安全。</span>
+    </div>
+    <div class="row">
+      <el-button type="primary" @click="exportMemwd" size="mini">导出助记词</el-button>
+      <span>请勿使用在线服务保存助记词!</span>
     </div>
     <br />
-    <div>
-      <el-button type="primary" @click="exportMemwd">导出助记词</el-button>
-      <span>请勿使用在线服务保存助记词</span>
-    </div>
-    <br />
-    <div>
-      <el-button type="primary" @click="confirm" plain>确定</el-button>
+    <div class="btn-confirm">
+      <el-button type="primary" @click="confirm" plain size="small">确定</el-button>
     </div>
   </div>
 </template>
@@ -29,8 +30,21 @@ export default {
     }
   },
   methods: {
+    fakeClick (obj) {
+      var ev = document.createEvent('MouseEvents')
+      ev.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+      obj.dispatchEvent(ev)
+    },
+    exportRaw (name, data) {
+      var urlObject = window.URL || window.webkitURL || window
+      var exportBlob = new Blob([data])
+      var saveLink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+      saveLink.href = urlObject.createObjectURL(exportBlob)
+      saveLink.download = name
+      this.fakeClick(saveLink)
+    },
     exportMemwd () {
-      console.log('exportMemwd!')
+      this.exportRaw('助记词.txt', this.form.memwd)
     },
     goBack () {
       this.$router.push({ name: 'homepage' })
@@ -42,16 +56,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '您点击了确认,助记词不会再展示!'
-        })
+        // this.$message({
+        //   type: 'success',
+        //   message: '您点击了确认,助记词不会再展示!'
+        // })
         this.$router.push({ name: 'homepage' })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '您点击了取消,请妥善保存助记词!'
-        })
+        // this.$message({
+        //   type: 'info',
+        //   message: '您点击了取消,请妥善保存助记词!'
+        // })
       })
     }
   }
@@ -62,6 +76,15 @@ export default {
 @import "~style/common.scss";
 .newwalletresult-wrap {
   @include common-container;
+  .row{
+    margin: 20px;
+  }
+  .btn-confirm{
+    text-align: center
+  }
+  .text-message{
+    color: red;
+  }
 }
 </style>
 <style lang="scss">

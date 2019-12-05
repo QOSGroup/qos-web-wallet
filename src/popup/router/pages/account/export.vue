@@ -1,23 +1,23 @@
 <template>
   <div class="accountexport-wrap">
-    <el-page-header @back="goBack" content="导出私钥"></el-page-header>
-    <el-divider></el-divider>
-    <div>
+    <div class="header-wrap">
+      <el-page-header @back="goBack" content="导出私钥"></el-page-header>
+    </div>
+
+    <div class="row mt">
       <span>账户名称：{{ name }}</span>
     </div>
-    <div>
+    <div class="row">
       <span>账户地址：{{ address }}</span>
     </div>
-    <div v-if="flag_password">
+    <div class="row" v-if="flag_password">
       <span>输入密码：</span>
+      <el-input placeholder="请输入密码" v-model="password" show-password auto-complete="off" class="pwd-input"></el-input>
     </div>
-    <div v-if="flag_password">
-      <el-input placeholder="请输入密码" v-model="password" show-password auto-complete="off"></el-input>
-    </div>
-    <div v-if="flag_privateKey">
+    <div class="row" v-if="flag_privateKey">
       <span>您的私钥：</span>
     </div>
-    <div v-if="flag_privateKey">
+    <div class="row" v-if="flag_privateKey">
       <el-input
         placeholder="私钥"
         type="textarea"
@@ -26,12 +26,12 @@
         :autosize="{ minRows: 2, maxRows: 6}"
       ></el-input>
     </div>
-    <div>
-      <span style="color:red;">注意：永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你帐户中的任何资产。</span>
+    <div class="row">
+      <span style="color:red;">注意：永远不要公开这个私钥。<br />任何拥有你的私钥的人都可以窃取你帐户中的任何资产。</span>
     </div>
     <div style="text-align:center;">
-      <el-button type="primary" @click="exportPrikey">确定</el-button>
-      <el-button @click="goBack">取消</el-button>
+      <el-button type="primary" @click="exportPrikey" :disabled="hasClick">确定</el-button>
+      <el-button @click="goBack">返回</el-button>
     </div>
   </div>
 </template>
@@ -39,12 +39,8 @@
 <script>
 import store from '@/store'
 import { getCurrentAccount } from '@/business/auth'
-import {
-  decrypt
-} from '@/utils/crypt'
-import {
-  isNotEmpty
-} from '@/utils'
+import { decrypt } from '@/utils/crypt'
+import { isNotEmpty } from '@/utils'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
@@ -57,7 +53,8 @@ export default {
       prikey: '',
       flag_password: true,
       flag_privateKey: false,
-      currentAccount: store.getters.accounts[index]
+      currentAccount: store.getters.accounts[index],
+      hasClick: false
     }
   },
   computed: {},
@@ -79,6 +76,8 @@ export default {
       this.flag_password = false
       this.flag_privateKey = true
       this.prikey = privateKey
+
+      this.hasClick = true
     },
     goBack () {
       window.history.length > 1
@@ -93,17 +92,22 @@ export default {
 @import "~style/common.scss";
 .accountexport-wrap {
   @include common-container;
-  div {
-    text-align: left;
-    overflow: hidden;
-    overflow-y: auto;
-    margin: 3% 0 2% 0;
-    vertical-align: middle;
-  }
   span {
     word-break: break-all;
     word-wrap: break-word;
     font-size: 14px;
+  }
+  .row {
+    margin: 0 15px 10px;
+    display: flex;
+    min-height: 25px;
+    align-items: center;
+    &.mt{
+      margin-top: 10px;
+    }
+  }
+  .pwd-input{
+    flex: 1;
   }
 }
 </style>
