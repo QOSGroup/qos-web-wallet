@@ -377,8 +377,9 @@ span {
   font-size: 30px;
 }
 .logo-image {
-  height: 100px;
+  // height: 100px;
   width: 100px;
+  margin: 25% 0;
 }
 .text-detail {
   width: 230px;

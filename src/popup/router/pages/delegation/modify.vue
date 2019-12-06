@@ -193,7 +193,8 @@ export default {
   }
   .logo-image {
     width: 100px;
-    height: 100px;
+    // height: 100px;
+    margin: 25% 0;
   }
   .text-info {
     margin: 10px 10px;

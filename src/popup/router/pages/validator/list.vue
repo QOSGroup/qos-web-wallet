@@ -194,7 +194,8 @@ export default {
   }
   .logo-image {
     width: 100px;
-    height: 100px;
+    // height: 100px;
+    margin: 25% 0;
   }
   .text-moniker {
     width: 140px;
