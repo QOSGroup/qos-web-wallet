@@ -27,7 +27,7 @@
     "element-ui": "^2.12.0",
     "extensionizer": "^1.0.1",
     "js-for-qos-httprpc": "https://github.com/wangkuanzzu/js-for-qos-httprpc.git",
-    "qosKeys": "https://github.com/QOSGroup/js-keys",
+    "qosKeys": "https://github.com/QOSGroup/js-keys.git",
     "vue": "^2.6.10",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

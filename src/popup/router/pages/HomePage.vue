@@ -131,12 +131,15 @@ import ClipboardJS from 'clipboard'
 
 export default {
   data () {
+    const index = store.getters.accounts.findIndex(
+      x => x.address === store.getters.currentAccount.address
+    )
     return {
       activeName:
         this.$route.params.activeName == null
           ? 'balance'
           : this.$route.params.activeName,
-      currentAccount: store.getters.currentAccount,
+      currentAccount: store.getters.accounts[index],
       userName: store.getters.currentAccount.name,
       address: store.getters.currentAccount.address,
       qos: 0,
@@ -153,7 +156,7 @@ export default {
   },
   created () {},
   mounted () {
-    console.log('store.getters.currentAccount:', store.getters.currentAccount)
+    // console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)

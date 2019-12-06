@@ -62,10 +62,9 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="300px"
-      :before-close="handleClose"
       custom-class="qos-dialog"
     >
-      <span>导入类型有误,请重新选择!</span>
+      <span>{{ error }}</span>
       <span slot="footer" class="dialog-footer">
         <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -139,6 +138,8 @@ export default {
       // 控制显示隐藏
       flag_pri: false,
       flag_zjc: false,
+      // 提示框
+      error: '',
       dialogVisible: false,
       rules: {
         type: [{ validator: checkImportType, trigger: 'blur' }],
@@ -173,20 +174,27 @@ export default {
       let mn, prikey
       // 私钥或助记词方式导入账户 todo
       const selectType = this.ruleForm.value
-      if (selectType === '1') {
+      if (selectType === '1' && this.ruleForm.memwd !== '') {
         mn = this.ruleForm.memwd
-      } else if (selectType === '0') {
+      } else if (selectType === '0' && this.ruleForm.pri !== '') {
         prikey = this.ruleForm.pri
       } else {
+        this.error = '导入类型与其对应值不得为空,请重新选择!'
         this.dialogVisible = true
         return
       }
       const bg = getBackground()
-      await bg.saveAccount({
+      const account = await bg.saveAccount({
         privateKey: prikey,
         mnemonic: mn,
         pwd: this.ruleForm.password
       })
+      console.log(account)
+      if (account.address === '') {
+        this.error = '您输入的私钥或助记词有误,请检查!'
+        this.dialogVisible = true
+        return false
+      }
       // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
       const currentAccount = await getCurrentAccount()
       store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
@@ -198,13 +206,6 @@ export default {
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   }
 }

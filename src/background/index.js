@@ -124,12 +124,14 @@ export function registerGloablFunction (global) {
       let account
       if (privateKey) {
         account = rpc.recoveryAccountByPrivateKey(privateKey)
-        // console.log('根据私钥恢复的账户信息:', account)
       }
       if (mnemonic) {
         account = rpc.importAccount(mnemonic)
-        // console.log('根据助记词恢复账户信息:', account)
       }
+      if (account.address === '') {
+        return resolve(account)
+      }
+      
       // 账户列表本地持久化:新增
       await setAccount(account, pwd, name)
       // 当前账户本地持久化:更新

@@ -20,12 +20,11 @@ if (bgState.accounts.length !== 0) {
   store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'currentAccount', 'passCheck'], bgState })
 }
 export async function beforeEach (to, from, next) {
-  console.log('---password---', store.getters.passCheck)
   const accounts = store.getters.accounts
   // 是否未登录
   if ((!accounts || accounts.length === 0) && whiteListPage.indexOf(to.path) === -1) {
     const accs = await getAccountList()
-    console.log('....', from.name, to.name)
+    // console.log('....', from.name, to.name)
     // if (from.name === to.name) {
     //   return next()
     // }
@@ -39,7 +38,7 @@ export async function beforeEach (to, from, next) {
 
   // 获取popup store中的msgQueueLast
   const last = store.getters.msgQueueLast
-  console.log('msgQueueLast: --- popup ---', last)
+  // console.log('msgQueueLast: --- popup ---', last)
   if (isNotEmptyObject(last)) {
     const data = last.params
     // console.log('from.params---', from, from.params)
