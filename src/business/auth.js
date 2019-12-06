@@ -30,6 +30,7 @@ export async function setAccount (account, pwd, name) {
   if (acc) {
     // acc = { name: name, address: account.address, encryptKey: encryptKey }
     acc.name = name
+    acc.encryptKey = encryptKey
   } else {
     list.push({ name: name, address: account.address, encryptKey: encryptKey })
   }
