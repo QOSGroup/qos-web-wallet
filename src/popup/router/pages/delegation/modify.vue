@@ -69,7 +69,7 @@
 
 <script>
 import store from '@/store'
-import { rpc } from '@/utils/rpc'
+import { rpc, qoschain } from '@/utils/rpc'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
@@ -83,7 +83,7 @@ export default {
         logo: this.$route.params.delegation.logo,
         moniker: this.$route.params.delegation.moniker,
         address: this.$route.params.delegation.validator_address,
-        validatorUrl: 'http://www.baidu.com'
+        validatorUrl: qoschain + '/validators/detail?addr=' + this.$route.params.delegation.validator_address + '&validators=' + this.$route.params.delegation.moniker
       },
       // 用户在当前validator的委托信息
       delegation: {

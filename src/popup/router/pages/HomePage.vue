@@ -24,9 +24,11 @@
           <div>
             <div class="text-wrap">
               <div class="text-title">QOS</div>
-              <div class="link-wrap">
+              <div>
                 <span class="number-style">{{ qos }}</span>
-                <i class="el-icon-link"></i>
+                <el-link :href="accountDetail" target="_blank">
+                  <i class="el-icon-link"></i>
+                </el-link>
               </div>
               <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer('QOS')">转账</el-button>
@@ -41,7 +43,9 @@
               <div class="text-title">{{ qcp.coin_name }}</div>
               <div class="link-wrap">
                 <span class="number-style">{{ qcp.amount }}</span>
-                <i class="el-icon-link"></i>
+                <el-link :href="accountDetail" target="_blank">
+                  <i class="el-icon-link"></i>
+                </el-link>
               </div>
               <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer([qcp.coin_name])">转账</el-button>
@@ -119,12 +123,11 @@
 </template>
 
 <script>
-import { rpc } from '@/utils/rpc'
+import { rpc, qoschain } from '@/utils/rpc'
 import { mapState } from 'vuex'
 import store from '@/store'
 import { numFor4Decimal } from '@/utils/index'
 import ClipboardJS from 'clipboard'
-import { setInterval, clearInterval } from 'timers'
 
 export default {
   data () {
@@ -139,7 +142,8 @@ export default {
       qos: 0,
       qcps: [],
       delegations: [],
-      clipboard: new ClipboardJS('.btn')
+      clipboard: new ClipboardJS('.btn'),
+      accountDetail: qoschain + '/account?addr=' + store.getters.currentAccount.address
     }
   },
   computed: {
@@ -234,7 +238,7 @@ export default {
               validator_address: delegation[i].validator_address,
               delegate_amount: numFor4Decimal(delegation[i].delegate_amount),
               is_compound: delegation[i].is_compound,
-              validatorUrl: 'http://www.baidu.com'
+              validatorUrl: qoschain + '/validators/detail?addr=' + delegation[i].validator_address + '&validators=' + result.data.description.moniker
             })
           } else {
             this.$message({

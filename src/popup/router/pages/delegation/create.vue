@@ -57,7 +57,7 @@
 
 <script>
 import store from '@/store'
-import { rpc } from '@/utils/rpc'
+import { rpc, qoschain } from '@/utils/rpc'
 import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
 export default {
   data () {
@@ -95,7 +95,7 @@ export default {
         logo: this.$route.params.description.logo,
         moniker: this.$route.params.description.moniker,
         address: this.$route.params.validator,
-        validatorUrl: this.$route.params.validator
+        validatorUrl: qoschain + '/validators/detail?addr=' + this.$route.params.validator + '&validators=' + this.$route.params.description.moniker
       },
       // 用户在当前validator的委托信息
       delegation: {

@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { qoschain } from '@/utils/rpc'
 export default {
   data () {
     return {
@@ -34,7 +35,7 @@ export default {
       this.$router.push({ name: 'homepage' })
     },
     detailInWeb () {
-      window.open('http://www.baidu.com', '_blank')
+      window.open(qoschain + '/txs/detail?hash=' + this.txhash, '_blank')
     }
   },
   computed: {},
