@@ -8,7 +8,7 @@
       <el-form-item label="账户名称" prop="name" class="form-row">
         <el-input v-model="form.name" :placeholder="this.$route.params.name"></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="btn-create">
         <el-button type="primary" @click="onSubmit('form')">确定</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
@@ -67,6 +67,9 @@ export default {
   @include common-container;
   .form-row{
     margin: 20px 10px
+  }
+  .btn-create{
+    margin-left: 10px;
   }
 }
 </style>

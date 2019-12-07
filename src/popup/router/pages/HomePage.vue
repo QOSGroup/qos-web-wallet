@@ -11,7 +11,7 @@
       </div>
       <div class="contents-head">
         <div class="div-left">
-          <span>{{ address }}</span>
+          <span>{{ addressDisplay }}</span>
         </div>
         <div class="div-right">
           <i class="el-icon-document-copy btn" :data-clipboard-text="address" title="复制"></i>
@@ -142,6 +142,7 @@ export default {
       currentAccount: store.getters.accounts[index],
       userName: store.getters.currentAccount.name,
       address: store.getters.currentAccount.address,
+      addressDisplay: store.getters.currentAccount.address.substring(0, 15) + '......' + store.getters.currentAccount.address.slice(-12),
       qos: 0,
       qcps: [],
       delegations: [],
@@ -349,7 +350,7 @@ span {
 }
 .el-icon-document-copy {
   font-size: 22px;
-  margin-top: 20px;
+  // margin-top: 20px;
   cursor: pointer;
 }
 .el-icon-more {
@@ -411,13 +412,13 @@ span {
   display: flex;
 }
 .div-left{
-  margin-top: 15px;
+  margin-top: 20px;
   width: 95%;
   font-size: 20px;
   font-weight: 100
 }
 .div-right{
-  margin-top: 15px;
+  margin-top: 20px;
   font-size: 20px;
   font-weight: 100
 }
