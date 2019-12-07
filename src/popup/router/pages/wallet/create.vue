@@ -25,6 +25,8 @@ import { getBackground } from '../../../common/bgcontact'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 import { getCurrentAccount } from '@/business/auth'
+import { sleeping } from '@/utils'
+
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
@@ -66,20 +68,8 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           this.isBtnLoading = true
-          // 随机创建助记词
-          const mn = rpc.generateMnemonic()
-          // // 调用背景页函数
-          const bg = getBackground()
-          await bg.saveAccount({ mnemonic: mn, pwd: this.form.password })
-          // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
-          const currentAccount = await getCurrentAccount()
-          store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
-          // 创建账户成功,拷贝bg store中的accounts到popup store中
-          const bgState = bg.getBgState()
-          store.commit(types.CLONE_STATE, {
-            keyArr: ['accounts', 'passCheck'],
-            bgState
-          })
+          await sleeping()
+          const mn = await this.commit()
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({
             name: 'walletresult',
@@ -89,6 +79,26 @@ export default {
           this.isBtnLoading = false
           return false
         }
+      })
+    },
+    async commit () {
+      return new Promise(async (resolve) => {
+        // 随机创建助记词
+        const mn = rpc.generateMnemonic()
+        // // 调用背景页函数
+        const bg = getBackground()
+        await bg.saveAccount({ mnemonic: mn, pwd: this.form.password })
+        // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+        const currentAccount = await getCurrentAccount()
+        store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+        // 创建账户成功,拷贝bg store中的accounts到popup store中
+        const bgState = bg.getBgState()
+        store.commit(types.CLONE_STATE, {
+          keyArr: ['accounts', 'passCheck'],
+          bgState
+        })
+
+        resolve(mn)
       })
     },
     goBack () {
