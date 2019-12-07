@@ -14,7 +14,7 @@
             <div class="logo-addr-contents">
               <div class="text-moniker text-validator">
                 <span>{{ validator.description.moniker }}</span>
-                <el-link :href="validator.validator" target="_blank" class="link-wrap">
+                <el-link :href="qoschain + '/validators/detail?addr=' + validator.validator + '&validators=' + validator.description.moniker" target="_blank" class="link-wrap">
                   <i class="el-icon-link"></i>
                 </el-link>
               </div>
@@ -70,7 +70,7 @@
 
 <script>
 import store from '@/store'
-import { rpc } from '@/utils/rpc'
+import { rpc, qoschain } from '@/utils/rpc'
 export default {
   data () {
     const index = store.getters.accounts.findIndex(
@@ -82,17 +82,11 @@ export default {
       delegations: [],
       // 所有validators
       validators: [],
-      // 用户所选的validator信息
-      validator: {
-        logo: '',
-        moniker: '',
-        address: '',
-        validatorUrl: ''
-      },
       // 弹出提示框数据
       dialogVisible: false,
       error: '',
-      currentAccount: store.getters.accounts[index]
+      currentAccount: store.getters.accounts[index],
+      qoschain: qoschain
     }
   },
   created () {
@@ -200,7 +194,8 @@ export default {
   }
   .logo-image {
     width: 100px;
-    height: 100px;
+    // height: 100px;
+    margin: 25% 0;
   }
   .text-moniker {
     width: 140px;

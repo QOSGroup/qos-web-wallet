@@ -11,7 +11,7 @@
       </div>
       <div class="contents-head">
         <div class="div-left">
-          <span>{{ address }}</span>
+          <span>{{ addressDisplay }}</span>
         </div>
         <div class="div-right">
           <i class="el-icon-document-copy btn" :data-clipboard-text="address" title="复制"></i>
@@ -24,9 +24,11 @@
           <div>
             <div class="text-wrap">
               <div class="text-title">QOS</div>
-              <div class="link-wrap">
+              <div>
                 <span class="number-style">{{ qos }}</span>
-                <i class="el-icon-link"></i>
+                <el-link :href="accountDetail" target="_blank">
+                  <i class="el-icon-link"></i>
+                </el-link>
               </div>
               <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer('QOS')">转账</el-button>
@@ -41,7 +43,9 @@
               <div class="text-title">{{ qcp.coin_name }}</div>
               <div class="link-wrap">
                 <span class="number-style">{{ qcp.amount }}</span>
-                <i class="el-icon-link"></i>
+                <el-link :href="accountDetail" target="_blank">
+                  <i class="el-icon-link"></i>
+                </el-link>
               </div>
               <div class="btn-wrap">
                 <el-button type="primary" size="small" plain @click="transfer([qcp.coin_name])">转账</el-button>
@@ -119,27 +123,31 @@
 </template>
 
 <script>
-import { rpc } from '@/utils/rpc'
+import { rpc, qoschain } from '@/utils/rpc'
 import { mapState } from 'vuex'
 import store from '@/store'
 import { numFor4Decimal } from '@/utils/index'
 import ClipboardJS from 'clipboard'
-import { setInterval, clearInterval } from 'timers'
 
 export default {
   data () {
+    const index = store.getters.accounts.findIndex(
+      x => x.address === store.getters.currentAccount.address
+    )
     return {
       activeName:
         this.$route.params.activeName == null
           ? 'balance'
           : this.$route.params.activeName,
-      currentAccount: store.getters.currentAccount,
+      currentAccount: store.getters.accounts[index],
       userName: store.getters.currentAccount.name,
       address: store.getters.currentAccount.address,
+      addressDisplay: store.getters.currentAccount.address.substring(0, 15) + '......' + store.getters.currentAccount.address.slice(-12),
       qos: 0,
       qcps: [],
       delegations: [],
-      clipboard: new ClipboardJS('.btn')
+      clipboard: new ClipboardJS('.btn'),
+      accountDetail: qoschain + '/account?addr=' + store.getters.currentAccount.address
     }
   },
   computed: {
@@ -149,7 +157,7 @@ export default {
   },
   created () {},
   mounted () {
-    console.log('store.getters.currentAccount:', store.getters.currentAccount)
+    // console.log('store.getters.currentAccount:', store.getters.currentAccount)
     // 打开页面默认加载我的资产导航栏
     this.getAccount(this.$data.address)
     this.getDelegations(this.$data.address)
@@ -234,7 +242,7 @@ export default {
               validator_address: delegation[i].validator_address,
               delegate_amount: numFor4Decimal(delegation[i].delegate_amount),
               is_compound: delegation[i].is_compound,
-              validatorUrl: 'http://www.baidu.com'
+              validatorUrl: qoschain + '/validators/detail?addr=' + delegation[i].validator_address + '&validators=' + result.data.description.moniker
             })
           } else {
             this.$message({
@@ -342,7 +350,7 @@ span {
 }
 .el-icon-document-copy {
   font-size: 22px;
-  margin-top: 20px;
+  // margin-top: 20px;
   cursor: pointer;
 }
 .el-icon-more {
@@ -373,8 +381,9 @@ span {
   font-size: 30px;
 }
 .logo-image {
-  height: 100px;
+  // height: 100px;
   width: 100px;
+  margin: 25% 0;
 }
 .text-detail {
   width: 230px;
@@ -403,13 +412,13 @@ span {
   display: flex;
 }
 .div-left{
-  margin-top: 15px;
+  margin-top: 20px;
   width: 95%;
   font-size: 20px;
   font-weight: 100
 }
 .div-right{
-  margin-top: 15px;
+  margin-top: 20px;
   font-size: 20px;
   font-weight: 100
 }
