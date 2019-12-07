@@ -245,7 +245,8 @@ export default {
   }
   .logo-image {
     width: 100px;
-    height: 100px;
+    // height: 100px;
+    margin: 25% 0;
   }
   .btn-confirm {
     text-align: center;
