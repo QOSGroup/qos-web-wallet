@@ -134,7 +134,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     getValidators () {
@@ -155,12 +155,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
-          this.$message({
-            showClose: true,
-            message: '网络错误,请稍后重试!',
-            type: 'error'
-          })
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     handleClose (done) {
