@@ -21,6 +21,7 @@ import { getBackground } from '../../../common/bgcontact'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 import { getCurrentAccount } from '@/business/auth'
+import { sleeping } from '@/utils'
 export default {
   data () {
     return {
@@ -33,17 +34,16 @@ export default {
   },
   methods: {
     async conifrm () {
-      await this.onSubmit().then(mn => {
-        // 账户新建后,默认跳转newwalletresult页面
-        this.$router.push({
-          name: 'walletresult',
-          params: { mnemonic: mn }
-        })
-      }
-
-      )
+      this.isBtnLoading = true
+      await sleeping(500)
+      const mn = await this.commit()
+      // 账户新建后,默认跳转newwalletresult页面
+      this.$router.push({
+        name: 'walletresult',
+        params: { mnemonic: mn }
+      })
     },
-    onSubmit () {
+    async commit () {
       return new Promise(async (resolve) => {
       // 设置按钮loading
         this.isBtnLoading = true

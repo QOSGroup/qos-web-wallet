@@ -12,7 +12,7 @@
         <el-input placeholder="请再次输入密码" v-model="form.repassword" show-password auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item class="btn-create">
-        <el-button type="primary" @click="onSubmit('form')" :loading="isBtnLoading">立即创建</el-button>
+        <el-button type="primary" @click="confirm('form')" :loading="isBtnLoading">立即创建</el-button>
         <el-button @click="goBack">取消</el-button>
       </el-form-item>
     </el-form>
@@ -64,11 +64,11 @@ export default {
     }
   },
   methods: {
-    onSubmit (formName) {
+    confirm (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           this.isBtnLoading = true
-          await sleeping()
+          await sleeping(500)
           const mn = await this.commit()
           // 账户新建后,默认跳转newwalletresult页面
           this.$router.push({

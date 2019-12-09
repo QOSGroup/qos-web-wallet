@@ -54,7 +54,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">导入</el-button>
+        <el-button type="primary" :loading="isBtnLoading" @click="confirm('ruleForm')">导入</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -79,25 +79,9 @@ import { getBackground } from '../../../common/bgcontact'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 import { getCurrentAccount } from '@/business/auth'
+import { sleeping } from '@/utils'
 export default {
   data () {
-    // var checkImportType = (rule, value, callback) => {
-    //   if (!value) {
-    //     return callback(new Error('导入类型不能为空'))
-    //   }
-    // }
-    // var checkPri = (rule, value, callback) => {
-    //   if (!value) {
-    //     return callback(new Error('私钥不能为空'))
-    //   }
-    // }
-
-    // var checkMemwd = (rule, value, callback) => {
-    //   if (!value) {
-    //     return callback(new Error('助记词不能为空'))
-    //   }
-    // }
-
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
@@ -142,13 +126,8 @@ export default {
       // 提示框
       error: '',
       dialogVisible: false,
+      isBtnLoading: false,
       rules: {
-        // type: [{ validator: checkImportType, trigger: 'blur' }],
-        // pri: [{ validator: checkPri, trigger: 'blur' }],
-        // memwd: [
-        //   { validator: checkMemwd, trigger: 'blur' },
-        //   { min: 12, message: '长度为 12 个单词', trigger: 'blur' }
-        // ],
         password: [
           { validator: validatePass, trigger: 'blur' },
           { min: 8, max: 16, message: '密码位数8-16位!', trigger: 'blur' }
@@ -175,44 +154,54 @@ export default {
         this.flag_zjc = true
       }
     },
-    async submitForm (formName) {
+    confirm (formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let mn, prikey
-          // 私钥或助记词方式导入账户 todo
-          const selectType = this.ruleForm.value
-          if (selectType === '1' && this.ruleForm.memwd !== '') {
-            mn = this.ruleForm.memwd
-          } else if (selectType === '0' && this.ruleForm.pri !== '') {
-            prikey = this.ruleForm.pri
-          } else {
-            this.error = '导入类型与其对应值不得为空,请重新选择!'
-            this.dialogVisible = true
-            return
-          }
-          const bg = getBackground()
-          const account = await bg.saveAccount({
-            privateKey: prikey,
-            mnemonic: mn,
-            pwd: this.ruleForm.password
-          })
-          if (account.address === '') {
-            this.error = '您输入的私钥或助记词有误,请检查!'
-            this.dialogVisible = true
-            return false
-          }
-          // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
-          const currentAccount = await getCurrentAccount()
-          store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
-          // 创建账户成功,拷贝bg store中的accounts到popup store中
-          const bgState = bg.getBgState()
-          store.commit(types.CLONE_STATE, {
-            keyArr: ['accounts', 'passCheck'],
-            bgState
-          })
+          this.isBtnLoading = true
+          await sleeping(500)
+          await this.submitForm()
           // 账户导入后,默认跳转homepage页面
           this.$router.push({ name: 'homepage' })
+        } else {
+          this.isBtnLoading = false
+          return false
         }
+      })
+    },
+    async submitForm () {
+      let mn, prikey
+      // 私钥或助记词方式导入账户 todo
+      const selectType = this.ruleForm.value
+      if (selectType === '1' && this.ruleForm.memwd !== '') {
+        mn = this.ruleForm.memwd
+      } else if (selectType === '0' && this.ruleForm.pri !== '') {
+        prikey = this.ruleForm.pri
+      } else {
+        this.error = '导入类型与其对应值不得为空,请重新选择!'
+        this.isBtnLoading = false
+        this.dialogVisible = true
+        return
+      }
+      const bg = getBackground()
+      const account = await bg.saveAccount({
+        privateKey: prikey,
+        mnemonic: mn,
+        pwd: this.ruleForm.password
+      })
+      if (account.address === '') {
+        this.error = '您输入的私钥或助记词有误,请检查!'
+        this.isBtnLoading = false
+        this.dialogVisible = true
+        return false
+      }
+      // popup store中存储currentAccount, 数据来源与持久化存储的当前账户
+      const currentAccount = await getCurrentAccount()
+      store.commit(types.SET_CURRENT_ACCOUNT, currentAccount)
+      // 创建账户成功,拷贝bg store中的accounts到popup store中
+      const bgState = bg.getBgState()
+      store.commit(types.CLONE_STATE, {
+        keyArr: ['accounts', 'passCheck'],
+        bgState
       })
     },
     resetForm (formName) {
