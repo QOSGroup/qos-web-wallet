@@ -194,13 +194,13 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '账户信息查询失败,请重试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     getDelegations (address) {
@@ -219,13 +219,13 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '委托信息查询失败,请重试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     getValidator (delegation, i) {
@@ -247,18 +247,13 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '委托信息查询失败,请重试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
-          console.log(error)
-          // this.$message({
-          //   showClose: true,
-          //   message: error,
-          //   type: 'warning'
-          // })
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     handleClick (tab, event) {
