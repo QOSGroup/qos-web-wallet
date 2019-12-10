@@ -58,7 +58,7 @@
         <el-tab-pane label="我的委托" name="delegation">
           <div v-for="(delegation, index) in delegations" :key="index">
             <div class="div-contents">
-              <div>
+              <div class="logo-div">
                 <el-image class="logo-image" :src="delegation.logo"></el-image>
               </div>
               <div class="text-detail">
@@ -375,10 +375,17 @@ span {
 .number-style {
   font-size: 30px;
 }
-.logo-image {
-  // height: 100px;
+.logo-div{
   width: 100px;
-  margin: 25% 0;
+  height: 100px;
+  position: relative;
+}
+.logo-image {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
 }
 .text-detail {
   width: 230px;

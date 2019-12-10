@@ -5,7 +5,7 @@
     </div>
 
     <div class="div-contents">
-      <div>
+      <div class="logo-div">
         <el-image class="logo-image" :src="validator.logo"></el-image>
       </div>
       <div>
@@ -242,10 +242,17 @@ export default {
     display: flex;
     margin: 10px;
   }
-  .logo-image {
+  .logo-div{
     width: 100px;
-    // height: 100px;
-    margin: 25% 0;
+    height: 100px;
+    position: relative;
+  }
+  .logo-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
   }
   .btn-confirm{
     text-align: center;
