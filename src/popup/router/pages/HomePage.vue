@@ -58,7 +58,7 @@
         <el-tab-pane label="我的委托" name="delegation">
           <div v-for="(delegation, index) in delegations" :key="index">
             <div class="div-contents">
-              <div>
+              <div class="logo-div">
                 <el-image class="logo-image" :src="delegation.logo"></el-image>
               </div>
               <div class="text-detail">
@@ -194,13 +194,13 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '账户信息查询失败,请重试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     getDelegations (address) {
@@ -219,13 +219,13 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '委托信息查询失败,请重试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     getValidator (delegation, i) {
@@ -247,18 +247,13 @@ export default {
           } else {
             this.$message({
               showClose: true,
-              message: result.statusText,
+              message: '委托信息查询失败,请重试!',
               type: 'warning'
             })
           }
         })
         .catch(error => {
-          console.log(error)
-          // this.$message({
-          //   showClose: true,
-          //   message: error,
-          //   type: 'warning'
-          // })
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     handleClick (tab, event) {
@@ -380,10 +375,17 @@ span {
 .number-style {
   font-size: 30px;
 }
-.logo-image {
-  // height: 100px;
+.logo-div{
   width: 100px;
-  margin: 25% 0;
+  height: 100px;
+  position: relative;
+}
+.logo-image {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
 }
 .text-detail {
   width: 230px;

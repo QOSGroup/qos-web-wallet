@@ -50,8 +50,7 @@
 </template>
 
 <script>
-// import QOSRpc from 'js-for-qos-httprpc'
-import { processMsg } from '../../../common/bgcontact'
+// import { processMsg } from '../../../common/bgcontact'
 import store from '@/store'
 import { rpc } from '@/utils/rpc'
 import { numFor4Decimal, numForNoDecimal } from '@/utils/index'
@@ -99,7 +98,6 @@ export default {
       },
       // 根据用户地址链上查询的数据
       // coins: [],
-      // coin: this.$route.params.coin,
       coin: 'QOS',
       balance: 0,
       form: {
@@ -118,9 +116,9 @@ export default {
     }
   },
   computed: {
-    inputParams () {
-      return JSON.stringify(this.$store.getters.firstMsg)
-    }
+    // inputParams () {
+    //   return JSON.stringify(this.$store.getters.firstMsg)
+    // }
   },
   mounted () {
     this.getAccount(this.currentAccount)
@@ -203,9 +201,9 @@ export default {
     setMax () {
       this.$data.form.tokens = this.$data.balance
     },
-    onProcess () {
-      processMsg()
-    },
+    // onProcess () {
+    //   processMsg()
+    // },
     getAccount (currentAccount) {
       const account = rpc.recoveryAccountByPrivateKey(
         currentAccount.privateKey
@@ -215,26 +213,9 @@ export default {
         if (result.status === 200) {
           if (this.$data.coin === 'QOS') {
             this.balance = numFor4Decimal(result.data.value.qos)
-          } else {
-            const qcps = result.data.value.qcps
-            if (qcps) {
-              for (let qcp of qcps) {
-                if (qcp.coin_name === this.coin) {
-                  this.balance = numFor4Decimal(qcp.amount)
-                  break
-                }
-              }
-            }
           }
         }
       })
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => {})
     }
   }
 }

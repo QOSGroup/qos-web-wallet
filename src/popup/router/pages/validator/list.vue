@@ -44,10 +44,10 @@
           <span>佣&nbsp;&nbsp;金&nbsp;&nbsp;率：{{ validator.commission.commission_rates.rate }}</span>
         </div>
         <div class="text-validator">
-          <span>官方网址: {{ validator.description.website }}</span>
+          <span>官方网址：<a :href="validator.description.website" class="link-wrap" target="_blank">{{ validator.description.website }}</a></span>
         </div>
         <div class="text-validator">
-          <span>详细信息: {{ validator.description.details }}</span>
+          <span>详细信息：{{ validator.description.details }}</span>
         </div>
         <el-divider width="80%"></el-divider>
       </div>
@@ -134,7 +134,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     getValidators () {
@@ -155,12 +155,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
-          this.$message({
-            showClose: true,
-            message: '网络错误,请稍后重试!',
-            type: 'error'
-          })
+          console.log('您访问的信息不存在!  error:', error)
         })
     },
     handleClose (done) {
@@ -190,12 +185,14 @@ export default {
   .logo-div{
     width: 100px;
     height: 100px;
-    align-items: center;
+    position: relative;
   }
   .logo-image {
-    width: 100px;
-    // height: 100px;
-    margin: 25% 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
   }
   .text-moniker {
     width: 140px;

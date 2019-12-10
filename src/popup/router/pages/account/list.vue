@@ -159,12 +159,12 @@ export default {
               this.accounts.push({ name: name, address: address, coins: list })
             } else {
               // alert(result.statusText);
-              this.error = result.statusText
+              this.error = '系统发生错误,请重试!'
               this.dialogVisible = true
             }
           })
           .catch(error => {
-            console.log(error)
+            console.log('您访问的信息不存在!  error:', error)
             localAcc = localAccountList.find(x => x.address === acc.address)
             name = localAcc.name
             this.accounts.push({
@@ -172,16 +172,6 @@ export default {
               address: acc.address,
               coins: [{ cointype: 'QOS', amount: 0 }]
             })
-            // this.$message({
-            //   showClose: true,
-            //   message:
-            //     '链上‘账户信息’查询失败!账户地址后4位:' +
-            //     acc.address.substr(
-            //       acc.address.length - 4,
-            //       acc.address.length - 1
-            //     ),
-            //   type: 'warning'
-            // })
           })
       }
     },

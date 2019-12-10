@@ -53,7 +53,7 @@
       </el-form-item> -->
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">导入</el-button>
+        <el-button type="primary" :loading="isBtnLoading" @click="confirm">导入</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -78,6 +78,7 @@ import { getBackground } from '../../../common/bgcontact'
 import store from '@/store'
 import * as types from '@/store/mutation-types'
 import { getCurrentAccount } from '@/business/auth'
+import { sleeping } from '@/utils'
 export default {
   data () {
     var checkImportType = (rule, value, callback) => {
@@ -96,26 +97,6 @@ export default {
         return callback(new Error('助记词不能为空'))
       }
     }
-
-    // var validatePass = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('请输入密码'))
-    //   } else {
-    //     if (this.ruleForm.repassword !== '') {
-    //       this.$refs.ruleForm.validateField('repassword')
-    //     }
-    //     callback()
-    //   }
-    // }
-    // var validatePass2 = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('请再次输入密码'))
-    //   } else if (value !== this.ruleForm.password) {
-    //     callback(new Error('两次输入密码不一致!'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     return {
       ruleForm: {
         pri: '',
@@ -141,6 +122,7 @@ export default {
       // 提示框
       error: '',
       dialogVisible: false,
+      isBtnLoading: false,
       rules: {
         type: [{ validator: checkImportType, trigger: 'blur' }],
         pri: [{ validator: checkPri, trigger: 'blur' }],
@@ -170,7 +152,14 @@ export default {
         this.flag_zjc = true
       }
     },
-    async submitForm (formName) {
+    async confirm () {
+      this.isBtnLoading = true
+      await sleeping(500)
+      await this.submitForm()
+      // 账户导入后,默认跳转homepage页面
+      this.$router.push({ name: 'homepage' })
+    },
+    async submitForm () {
       let mn, prikey
       // 私钥或助记词方式导入账户 todo
       const selectType = this.ruleForm.value
@@ -180,6 +169,7 @@ export default {
         prikey = this.ruleForm.pri
       } else {
         this.error = '导入类型与其对应值不得为空,请重新选择!'
+        this.isBtnLoading = false
         this.dialogVisible = true
         return
       }
@@ -189,9 +179,9 @@ export default {
         mnemonic: mn,
         pwd: this.ruleForm.password
       })
-      console.log(account)
       if (account.address === '') {
         this.error = '您输入的私钥或助记词有误,请检查!'
+        this.isBtnLoading = false
         this.dialogVisible = true
         return false
       }
@@ -201,8 +191,6 @@ export default {
       // 创建账户成功,拷贝bg store中的accounts到popup store中
       const bgState = bg.getBgState()
       store.commit(types.CLONE_STATE, { keyArr: ['accounts', 'passCheck'], bgState })
-      // 账户导入后,默认跳转homepage页面
-      this.$router.push({ name: 'homepage' })
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
